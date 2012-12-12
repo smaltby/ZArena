@@ -10,6 +10,7 @@ public class PlayerStats
 	private float money;
 	private int points;
 	private boolean alive;
+	private int wavesSinceDeath;
 	
 	public PlayerStats(String player)
 	{
@@ -39,6 +40,11 @@ public class PlayerStats
 		return alive;
 	}
 	
+	public int getWavesSinceDeath()
+	{
+		return wavesSinceDeath;
+	}
+	
 	public void addMoney(double money)
 	{
 		this.money += money;
@@ -66,6 +72,11 @@ public class PlayerStats
 		this.alive = alive;
 	}
 	
+	public void setWavesSinceDeath(int wavesSinceDeath)
+	{
+		this.wavesSinceDeath = wavesSinceDeath;
+	}
+	
 	public void messageStats()
 	{
 		getPlayer().sendMessage(ChatColor.DARK_GRAY+"Money: "+ChatColor.GRAY+money+ChatColor.DARK_GRAY+" Points: "+ChatColor.GRAY+points);
@@ -75,6 +86,7 @@ public class PlayerStats
 	{
 		money = 0;
 		points = 0;
+		wavesSinceDeath = 0;
 	}
 	
 }

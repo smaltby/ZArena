@@ -77,6 +77,7 @@ public class EntityListener implements Listener
 				{
 					stats.setAlive(false);
 					stats.subMoney(stats.getMoney() * plugin.getConfig().getDouble(Constants.MONEY_LOST));
+					stats.setWavesSinceDeath(0);
 				}
 			}
 		}

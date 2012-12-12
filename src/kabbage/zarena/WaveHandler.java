@@ -331,9 +331,13 @@ public class WaveHandler implements Runnable
 		
 		if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY) > 0)
 		{
-			if(wave % plugin.getConfig().getInt(Constants.RESPAWN_EVERY) == 0)
+			for(PlayerStats stats : gameHandler.getPlayerStats().values())
 			{
-				gameHandler.respawnPlayers();
+				if(!stats.isAlive())
+				{
+					if(stats.getWavesSinceDeath() % plugin.getConfig().getInt(Constants.RESPAWN_EVERY) == 0)
+						gameHandler.respawnPlayers();
+				}
 			}
 		}
 

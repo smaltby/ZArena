@@ -346,7 +346,7 @@ public class GameHandler
 		}
 	}
 	
-	void respawnPlayers()
+	public void respawnPlayers()
 	{
 		for(Player player : getPlayers())
 		{
