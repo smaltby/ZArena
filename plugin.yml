@@ -1,8 +1,7 @@
 name: ZArena
 main: kabbage.zarena.ZArena
 author: kabbage
-version: 0.1a
-softdepend: [SpoutPlugin]
+version: 0.1
 commands:
     zarena:
         description: Basic command for the plugin. Enter and leave, vote, get various info on various things, control spout options if you have spout, control the game and create levels.
