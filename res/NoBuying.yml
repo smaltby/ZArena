@@ -1,0 +1,8 @@
+Name: NoBuying
+Gamemode Choice Weight: 1.15
+Health Modifier: 1
+Zombie Amount Modifier: 1
+Difficulty Modifier: 1
+Scavenger: true
+Allowed Items:
+- NONE

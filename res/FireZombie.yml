@@ -1,0 +1,16 @@
+Type: Zombie
+Name: Fire Zombie
+Damage: 2
+HealthModifier: 5
+Range: 256
+Speed: 0.28
+WorthModifier: 4
+MinimumSpawnWave: 5
+SpawnChance: .015
+Immunities:
+- fire
+- fire tick
+DamageEffects:
+  - fire 80
+SpecialEffects:
+  - fire 60

@@ -1,0 +1,26 @@
+name: ZArena
+main: kabbage.zarena.ZArena
+author: kabbage
+version: 0.1a
+softdepend: [SpoutPlugin]
+commands:
+    zarena:
+        description: Basic command for the plugin. Enter and leave, vote, get various info on various things, control spout options if you have spout, control the game and create levels.
+        usage: /zarena enter | leave | vote <1|2|3> | stats | list | alive | session | gamemode| info | wave | dia 
+        aliases: [za]
+    zspawn:
+        description: Zombie spawn manipulation
+        usage: /zspawn set | remove | jump | list | markboss
+        aliases:
+    dspawn:
+        description: Death spawn creation and jumping to
+        usage: /dspawn set | jump
+        aliases:
+    ispawn:
+        description: Initial spawn creation and jumping to
+        usage: /ispawn set | jump
+        aliases:
+    zsign:
+        description: ZArena sign manipulation
+        usage: /zsign mark | markzspawn
+        aliases:

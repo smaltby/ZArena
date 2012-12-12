@@ -1,0 +1,9 @@
+Type: Wolf
+Name: Normal Wolf
+Damage: 1
+HealthModifier: 0.8
+Range: 256
+Speed: 0.3
+WorthModifier: 1
+MinimumSpawnWave: 1
+SpawnChance: 1

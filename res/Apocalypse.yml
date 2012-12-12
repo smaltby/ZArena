@@ -1,0 +1,7 @@
+Name: Apocalypse
+Gamemode Choice Weight: .85
+Health Modifier: 1
+Zombie Amount Modifier: 1
+Difficulty Modifier: 1
+Apocalypse: true
+Slow Regen: true

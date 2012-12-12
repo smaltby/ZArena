@@ -1,0 +1,16 @@
+Type: Wolf
+Name: Hell Hound
+Damage: 2
+HealthModifier: 1.5
+Range: 256
+Speed: 0.3
+WorthModifier: 2
+MinimumSpawnWave: 4
+SpawnChance: .05
+Immunities:
+- fire
+- fire tick
+DamageEffects:
+  - fire 80
+SpecialEffects:
+  - fire 60

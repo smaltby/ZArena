@@ -1,0 +1,12 @@
+Type: Skeleton
+Name: Wither Skeleton
+Damage: 4
+HealthModifier: 5
+Range: 256
+Speed: 0.3
+WorthModifier: 4
+MinimumSpawnWave: 4
+SpawnChance: .04
+Wither: true
+ShootDelay: 60
+Weapon: gold sword

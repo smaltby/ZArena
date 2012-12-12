@@ -1,0 +1,14 @@
+Type: Zombie
+Name: Giga Zombie
+Damage: 6
+HealthModifier: 12
+Range: 256
+Speed: 0.3
+WorthModifier: 10
+MinimumSpawnWave: 9
+SpawnChance: .005
+DamageEffects:
+  - knockback 9,3
+SpecialEffects:
+  - spawnerflames 2
+  - potionradius 16,slow,30,1

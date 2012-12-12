@@ -1,0 +1,12 @@
+Type: Skeleton
+Name: Normal Skeleton
+Damage: 2
+HealthModifier: 1
+Range: 256
+Speed: 0.25
+WorthModifier: 1
+MinimumSpawnWave: 1
+SpawnChance: 1
+Wither: false
+ShootDelay: 60
+Weapon: bow

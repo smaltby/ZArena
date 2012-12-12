@@ -1,0 +1,16 @@
+Type: Zombie
+Name: Strong Zombie
+Damage: 4
+HealthModifier: 5
+Range: 256
+Speed: 0.25
+WorthModifier: 2
+MinimumSpawnWave: 2
+SpawnChance: .05
+Armor:
+- air
+- air
+- air
+- iron helmet
+DamageEffects:
+- knockback 7,2
