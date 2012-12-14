@@ -26,11 +26,11 @@ public class ZSpawnCommands implements CommandExecutor {
 		{
 			switch(command.get(1).toLowerCase())
 			{
-			case "set":
+			case "set": case "add":
 				helpMessage = "/zspawn set <spawner-name>";
 				handler.setZSpawn(command.get(2));
 				break;
-			case "remove":
+			case "remove": case "delete":
 				helpMessage = "/zspawn remove <spawner-name | %nearest%>";
 				handler.removeZSpawn(command.get(2));
 				break;
