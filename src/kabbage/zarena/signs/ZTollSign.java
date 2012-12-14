@@ -99,6 +99,16 @@ public class ZTollSign extends ZSign implements Externalizable
 		return new ZTollSign(level, sign.getLocation(), costBlockLocation, price, lines[3], flags);
 	}
 	
+	private boolean canBeUsed()
+	{
+		boolean usable = true;
+		if(active && !opposite && usableOnce)
+			usable = false;
+		else if(!active && opposite && usableOnce)
+			usable = false;
+		return usable;
+	}
+	
 	public Block getCostBlock()
 	{
 		if(costBlockLocation != null)
@@ -143,12 +153,12 @@ public class ZTollSign extends ZSign implements Externalizable
 		switch(costBlock.getType())
 		{
 		case WOODEN_DOOR: case IRON_DOOR: case IRON_DOOR_BLOCK:
-			if(!active)
+			if(!active && canBeUsed())
 			{
 				((BlockDoor) nmsBlock).setDoor(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), true);
 				active = true;
 			}
-			else if(!usableOnce)
+			else if(active && canBeUsed())
 			{
 				((BlockDoor) nmsBlock).setDoor(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), false);
 				active = false;
@@ -157,12 +167,12 @@ public class ZTollSign extends ZSign implements Externalizable
 				return false;
 			return true;
 		case TRAP_DOOR:
-			if(!active)
+			if(!active && canBeUsed())
 			{
 				((BlockTrapdoor) nmsBlock).setOpen(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), true);
 				active = true;
 			}
-			else if(!usableOnce)
+			else if(active && canBeUsed())
 			{
 				((BlockTrapdoor) nmsBlock).setOpen(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), false);
 				active = false;
@@ -171,12 +181,12 @@ public class ZTollSign extends ZSign implements Externalizable
 				return false;
 			return true;
 		case LEVER:
-			if(!active)
+			if(!active && canBeUsed())
 			{
 				nmsBlock.interact(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), nmsPlayer, 0, 0f, 0f, 0f);
 				active = true;
 			}
-			else if(!usableOnce)
+			else if(active && canBeUsed())
 			{
 				nmsBlock.interact(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), nmsPlayer, 0, 0f, 0f, 0f);
 				active = false;
@@ -185,7 +195,7 @@ public class ZTollSign extends ZSign implements Externalizable
 				return false;
 			return true;
 		case STONE_BUTTON: case WOOD_BUTTON:
-			if(!active || !usableOnce)
+			if(canBeUsed())
 			{
 				nmsBlock.interact(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), nmsPlayer, 0, 0f, 0f, 0f);
 				active = true;
