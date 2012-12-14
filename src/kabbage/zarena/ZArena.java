@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import kabbage.customentitylibrary.CustomEntityLibrary;
 import kabbage.zarena.commands.DSpawnCommands;
 import kabbage.zarena.commands.ISpawnCommands;
 import kabbage.zarena.commands.ZACommands;
@@ -79,8 +78,6 @@ public class ZArena extends JavaPlugin
 	{
 		instance = this;
 		logger = Bukkit.getServer().getLogger();
-		
-		new CustomEntityLibrary();	//Initiate the CustomEntityLibrary. Workaround until I redesign it to be able to be used as a library
 		
 		loadConfiguration();	//Lots of stuff relies on the config, so load it early
 		//Load some stuff the game handler relies on

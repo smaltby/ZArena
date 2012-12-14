@@ -11,14 +11,9 @@ import org.bukkit.plugin.PluginManager;
 
 public class CustomEntityLibrary
 {
-	private LibraryEntityListener eListener;
-	
-	public static CustomEntityLibrary instance;
-	
-	public CustomEntityLibrary()
+	static
 	{
-		instance = this;
-		eListener = new LibraryEntityListener();
+		LibraryEntityListener eListener = new LibraryEntityListener();
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		eListener.registerEvents(pm, ZArena.getInstance());
 		
@@ -32,8 +27,8 @@ public class CustomEntityLibrary
 		}, 1L, 1L);
 	}
 	
-	private int tick = 0;
-	public void onTick()
+	private static int tick = 0;
+	public static void onTick()
 	{
 		if(tick % 20 == 0)
 		{
