@@ -84,6 +84,7 @@ public class ZArena extends JavaPlugin
 		loadDefaults();
 		if(getConfig().getBoolean(Constants.FIRST_TIME))
 			loadPluginFirstTime();
+		saveConfig();
 		loadDonatorInfo();
 		loadZSignCustomItems();
 		

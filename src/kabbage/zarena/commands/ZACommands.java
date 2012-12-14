@@ -33,6 +33,9 @@ public class ZACommands implements CommandExecutor
 			case "leave":
 				handler.leaveGame();
 				break;
+			case "reload":
+				handler.reloadConfig();
+				break;
 			case "stats":
 				handler.showGameStats();
 				break;

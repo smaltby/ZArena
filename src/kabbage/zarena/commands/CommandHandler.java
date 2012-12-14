@@ -377,6 +377,18 @@ public class CommandHandler
 		options.openOptions();
 	}
 	
+	public void reloadConfig()
+	{
+		if(!senderWrapper.isAdmin())
+		{
+			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			return;
+		}
+		senderWrapper.sendMessage(ChatColor.GREEN+"ZArena config reloaded.");
+		ZArena.getInstance().reloadConfig();
+		ZArena.getInstance().saveConfig();
+	}
+	
 	public void reloadSigns()
 	{
 		if(!senderWrapper.canCreateLevels())
