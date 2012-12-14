@@ -531,6 +531,12 @@ public class WaveHandler implements Runnable
 			type = defaultZombieType;
 
 		Location spawn = gameHandler.getLevel().getRandomZombieSpawn();
+		if(spawn == null)
+		{
+			ChatHelper.broadcastMessage(ChatColor.RED+"Error: ZArena level has no zombie spawns. Stopping game.");
+			gameHandler.stop();
+			return null;
+		}
 		CustomEntityWrapper customEnt = CustomZombie.spawn(spawn, type);
 		return customEnt;
 	}
