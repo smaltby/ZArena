@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import kabbage.customentitylibrary.CustomEntityLibrary;
 import kabbage.zarena.commands.DSpawnCommands;
 import kabbage.zarena.commands.ISpawnCommands;
 import kabbage.zarena.commands.ZACommands;
@@ -78,6 +79,8 @@ public class ZArena extends JavaPlugin
 	{
 		instance = this;
 		logger = Bukkit.getServer().getLogger();
+		
+		CustomEntityLibrary.load();
 		
 		loadConfiguration();	//Lots of stuff relies on the config, so load it early
 		//Load some stuff the game handler relies on
@@ -211,7 +214,7 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.AUTOSTART, true);
 		cfg.addDefault(Constants.AUTORUN, true);
 		cfg.addDefault(Constants.AUTOJOIN, false);
-		cfg.addDefault(Constants.SAVE_POSITION, false);
+		cfg.addDefault(Constants.SAVE_POSITION, true);
 		cfg.addDefault(Constants.GAME_WORLD, "world");
 		cfg.addDefault(Constants.GAME_LEAVE_WORLD, "world");
 		

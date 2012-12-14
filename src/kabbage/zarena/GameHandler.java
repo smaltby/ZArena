@@ -68,8 +68,9 @@ public class GameHandler
 		levelVoter = new LevelVoter(this);
 		players = new ArrayList<String>();
 		playerStats = new HashMap<String, PlayerStats>();
-		if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
-			playerLocations  = new HashMap<String, Location>();
+		playerItems = new HashMap<String, ItemStack[]>();
+		playerArmor = new HashMap<String, ItemStack[]>();
+		playerLocations  = new HashMap<String, Location>();
 	}
 	
 	/**
@@ -317,7 +318,6 @@ public class GameHandler
         {
         	ZArena.logger.log(Level.WARNING, "ZArena: Couldn't load the LevelHandler database. Ignore if this is the first time the plugin has been run.");
             levelHandler = new LevelHandler();
-            e.printStackTrace();
         }
 	}
 	
@@ -331,6 +331,8 @@ public class GameHandler
 		{
 			players.remove(player.getName());
 			playerStats.remove(player.getName());
+			clearInventory(player.getInventory());
+			player.teleport(getPlayersLeaveLocation(player));
 			if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
 				playerLocations.remove(player.getName());
 			if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
@@ -339,14 +341,12 @@ public class GameHandler
 				ItemStack[] contents = playerItems.get(player.getName());
 				if(contents != null)
 					pi.setContents(contents);
-				ItemStack[] armorContents = playerItems.get(player.getName());
+				ItemStack[] armorContents = playerArmor.get(player.getName());
 				if(armorContents != null)
 					pi.setArmorContents(armorContents);
 				playerItems.remove(player.getName());
 				playerArmor.remove(player.getName());
 			}
-			player.teleport(getPlayersLeaveLocation(player));
-			clearInventory(player.getInventory());
 		}
 	}
 	

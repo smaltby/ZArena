@@ -37,15 +37,11 @@ public class EntityListener implements Listener
 {
 	private ZArena plugin;
 	private GameHandler gameHandler;
-	private boolean worldExclusive;
-	private boolean disableHunger;
 	
 	public EntityListener()
 	{
 		plugin = ZArena.getInstance();
 		gameHandler = plugin.getGameHandler();
-		worldExclusive = plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE); 	//defined on start up so it doesn't have to be called from config
-		disableHunger = plugin.getConfig().getBoolean(Constants.DISABLE_HUNGER);	//every time an entity spawns
 	}
 	
 	public void registerEvents(PluginManager pm, ZArena plugin)
@@ -56,7 +52,7 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
-		if(worldExclusive)
+		if(plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE))
 		{
 			if(event.getLocation().getWorld().getName().equals(plugin.getConfig().getString(Constants.GAME_WORLD)) && event.getSpawnReason() != SpawnReason.CUSTOM)
 				event.setCancelled(true);
@@ -174,14 +170,14 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
-		if(disableHunger && plugin.getGameHandler().getPlayers().contains(event.getEntity()))
+		if(plugin.getConfig().getBoolean(Constants.DISABLE_HUNGER) && plugin.getGameHandler().getPlayers().contains(event.getEntity()))
 			event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event)
 	{
-		if(disableHunger && plugin.getGameHandler().getPlayers().contains(event.getEntity()) && event.getRegainReason() == RegainReason.SATIATED)
+		if(plugin.getConfig().getBoolean(Constants.DISABLE_HUNGER) && plugin.getGameHandler().getPlayers().contains(event.getEntity()) && event.getRegainReason() == RegainReason.SATIATED)
 			event.setCancelled(true);
 	}
 	

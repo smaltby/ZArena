@@ -71,6 +71,8 @@ public class ZLevel implements Externalizable
 	
 	public void addZombieSpawn(String name, Location location)
 	{
+		if(zSpawns.containsKey(name))
+			removeZombieSpawn(name);
 		zSpawns.put(name, LocationSer.convertFromBukkitLocation(location));
 		activeZSpawns.add(LocationSer.convertFromBukkitLocation(location));
 	}

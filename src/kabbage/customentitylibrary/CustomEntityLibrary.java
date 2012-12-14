@@ -10,13 +10,12 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.PluginManager;
 
 public class CustomEntityLibrary
-{
-	static
+{	
+	public static void load()
 	{
 		LibraryEntityListener eListener = new LibraryEntityListener();
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		eListener.registerEvents(pm, ZArena.getInstance());
-		
 		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(ZArena.getInstance(), new Runnable()
 		{
 			@Override
@@ -28,7 +27,7 @@ public class CustomEntityLibrary
 	}
 	
 	private static int tick = 0;
-	public static void onTick()
+	private static void onTick()
 	{
 		if(tick % 20 == 0)
 		{
