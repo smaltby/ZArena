@@ -39,7 +39,7 @@ public class LevelVoter implements Runnable
 		options = new LinkedHashMap<ZLevel, Gamemode>();
 		mappedVotes = new HashMap<Player, Integer>();
 		votes = new int[3];
-		currentVoteMessage = new String[3];
+		currentVoteMessage = new String[]{"","",""};
 		rnd = new Random();
 	}
 	
@@ -107,7 +107,7 @@ public class LevelVoter implements Runnable
 			options.put(gameHandler.getLevelHandler().getRandomLevel(options.keySet()), optionGm);
 		}
 		
-		ChatHelper.broadcastMessage(ChatHelper.VOTE_START);
+		ChatHelper.broadcastMessage(ChatHelper.VOTE_START, gameHandler.getBroadcastPlayers());
 		byte b = 1;
 		//Go through the entries, broadcasting each one.
 		for(Entry<ZLevel, Gamemode> entry : options.entrySet())
@@ -129,7 +129,7 @@ public class LevelVoter implements Runnable
 		options.clear();
 		mappedVotes.clear();
 		votes = new int[3];
-		currentVoteMessage = new String[3];
+		currentVoteMessage = new String[]{"","",""};
 		gameHandler.isVoting = false;
 	}
 	

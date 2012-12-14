@@ -119,6 +119,7 @@ public class GameHandler
 				player.teleport(player.getWorld().getSpawnLocation());
 			player.sendMessage(ChatHelper.VOTE_START);
 			player.sendMessage(levelVoter.getVoteMessage());
+			player.sendMessage(String.format(ChatHelper.VOTE_ENDS_IN, plugin.getConfig().getInt(Constants.VOTING_LENGTH)));
 		}
 		else
 		{
