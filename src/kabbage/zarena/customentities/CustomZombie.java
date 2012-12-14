@@ -90,7 +90,6 @@ public class CustomZombie extends EntityZombie
     
     public static CustomEntityWrapper spawn(Location location, EntityTypeConfiguration type)
 	{
-
     	CustomZombie ent = new CustomZombie(location.getWorld(), location, type);
 		if(((CraftWorld) location.getWorld()).getHandle().addEntity(ent, SpawnReason.CUSTOM))
 		{

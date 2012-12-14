@@ -48,6 +48,8 @@ public class GameHandler
 	private List<String> players;
 	private Map<String, PlayerStats> playerStats;
 	private Map<String, Location> playerLocations;
+	private Map<String, ItemStack[]> playerItems;
+	private Map<String, ItemStack[]> playerArmor;
 	
 	private Gamemode gamemode;
 	private ZLevel level;
@@ -89,6 +91,11 @@ public class GameHandler
 		playerStats.put(player.getName(), stats);
 		if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
 			playerLocations.put(player.getName(), player.getLocation());
+		if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
+		{
+			playerItems.put(player.getName(), player.getInventory().getContents());
+			playerArmor.put(player.getName(), player.getInventory().getArmorContents());
+		}
 		
 		clearInventory(player.getInventory());
 		player.setGameMode(org.bukkit.GameMode.ADVENTURE);
@@ -326,23 +333,20 @@ public class GameHandler
 			playerStats.remove(player.getName());
 			if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
 				playerLocations.remove(player.getName());
+			if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
+			{
+				PlayerInventory pi = player.getInventory();
+				ItemStack[] contents = playerItems.get(player.getName());
+				if(contents != null)
+					pi.setContents(contents);
+				ItemStack[] armorContents = playerItems.get(player.getName());
+				if(armorContents != null)
+					pi.setArmorContents(armorContents);
+				playerItems.remove(player.getName());
+				playerArmor.remove(player.getName());
+			}
 			player.teleport(getPlayersLeaveLocation(player));
 			clearInventory(player.getInventory());
-		}
-	}
-	
-	/**
-	 * Removes the name of a player from the game. Used when the player instance is no longer online.
-	 * @param player player to remove
-	 */
-	public void removePlayer(String player)
-	{
-		if(players.contains(player))
-		{
-			players.remove(player);
-			playerStats.remove(player);
-			if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
-				playerLocations.remove(player);
 		}
 	}
 	

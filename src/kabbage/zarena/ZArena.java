@@ -221,10 +221,11 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.GAME_LEAVE_LOCATION, locXYZ);
 		
 		cfg.addDefault(Constants.PLAYER_LIMIT, 12);
+		cfg.addDefault(Constants.SAVE_ITEMS, true);
 		cfg.addDefault(Constants.VOTING_LENGTH, 30);
 		cfg.addDefault(Constants.BROADCAST_ALL, false);
 		cfg.addDefault(Constants.WAVE_DELAY, 10);
-		cfg.addDefault(Constants.WORLD_EXCLUSIVE, true);
+		cfg.addDefault(Constants.WORLD_EXCLUSIVE, false);
 		cfg.addDefault(Constants.DISABLE_HUNGER, true);
 		cfg.addDefault(Constants.RESPAWN_EVERY, 3);
 		cfg.addDefault(Constants.SHOP_HEADER, "ZBuy");
@@ -526,16 +527,6 @@ public class ZArena extends JavaPlugin
 		{
 			if(spoutHandler != null)
 				spoutHandler.updatePlayerOptions(gameHandler);
-			if(gameHandler.getPlayerNames() != null)
-			{
-				for(String player : gameHandler.getPlayerNames())
-				{
-					if(Bukkit.getPlayer(player) == null)
-					{
-						gameHandler.removePlayer(player);
-					}
-				}
-			}
 		}
 		tick++;
 	}

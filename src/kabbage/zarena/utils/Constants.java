@@ -29,6 +29,7 @@ public class Constants
 	public static final String WORLD_EXCLUSIVE = "Options.World Exclusive";
 	public static final String DISABLE_HUNGER = "Options.Disable Hunger";
 	public static final String PLAYER_LIMIT = "Options.Player Limit";
+	public static final String SAVE_ITEMS = "Options.Save Items";
 	public static final String START_ITEMS = "Options.Start Items";
 	public static final String RESPAWN_EVERY = "Options.Respawn Every X Waves (0 to disable)";
 	public static final String SHOP_HEADER = "Options.Shop Sign Header";
