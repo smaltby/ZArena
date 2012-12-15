@@ -2,7 +2,10 @@ package kabbage.zarena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerStats
 {
@@ -12,12 +15,23 @@ public class PlayerStats
 	private boolean alive;
 	private int wavesSinceDeath;
 	
-	public PlayerStats(String player)
+	//Saved pre-game info
+	Location oldLocation;
+	ItemStack[] items;
+	ItemStack[] armor;
+	GameMode oldGameMode;
+	
+	public PlayerStats(Player player)
 	{
-		this.player = player;
+		this.player = player.getName();
 		money = 0;
 		points = 0;
 		alive = false;
+		
+		oldLocation = player.getLocation();
+		items = player.getInventory().getContents();
+		armor = player.getInventory().getArmorContents();
+		oldGameMode = player.getGameMode();
 	}
 	
 	public Player getPlayer()
@@ -43,6 +57,26 @@ public class PlayerStats
 	public int getWavesSinceDeath()
 	{
 		return wavesSinceDeath;
+	}
+	
+	public Location getOldLocation()
+	{
+		return oldLocation;
+	}
+	
+	public ItemStack[] getInventoryContents()
+	{
+		return items;
+	}
+	
+	public ItemStack[] getInventoryArmor()
+	{
+		return armor;
+	}
+	
+	public GameMode getOldGameMode()
+	{
+		return oldGameMode;
 	}
 	
 	public void addMoney(double money)

@@ -47,9 +47,6 @@ public class GameHandler
 	
 	private List<String> players;
 	private Map<String, PlayerStats> playerStats;
-	private Map<String, Location> playerLocations;
-	private Map<String, ItemStack[]> playerItems;
-	private Map<String, ItemStack[]> playerArmor;
 	
 	private Gamemode gamemode;
 	private ZLevel level;
@@ -68,9 +65,6 @@ public class GameHandler
 		levelVoter = new LevelVoter(this);
 		players = new ArrayList<String>();
 		playerStats = new HashMap<String, PlayerStats>();
-		playerItems = new HashMap<String, ItemStack[]>();
-		playerArmor = new HashMap<String, ItemStack[]>();
-		playerLocations  = new HashMap<String, Location>();
 	}
 	
 	/**
@@ -88,15 +82,8 @@ public class GameHandler
 			return;
 		
 		players.add(player.getName());
-		PlayerStats stats = new PlayerStats(player.getName());
+		PlayerStats stats = new PlayerStats(player);
 		playerStats.put(player.getName(), stats);
-		if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
-			playerLocations.put(player.getName(), player.getLocation());
-		if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
-		{
-			playerItems.put(player.getName(), player.getInventory().getContents());
-			playerArmor.put(player.getName(), player.getInventory().getArmorContents());
-		}
 		
 		clearInventory(player.getInventory());
 		player.setGameMode(org.bukkit.GameMode.ADVENTURE);
@@ -258,7 +245,7 @@ public class GameHandler
 	{
 		if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
 		{
-			Location oldLocation = playerLocations.get(player.getName());
+			Location oldLocation = getPlayerStats(player).getOldLocation();
 			if(oldLocation != null)
 				return oldLocation;
 		}
@@ -330,24 +317,23 @@ public class GameHandler
 	{
 		if(players.contains(player.getName()))
 		{
-			players.remove(player.getName());
-			playerStats.remove(player.getName());
+			PlayerStats stats = getPlayerStats(player);
 			clearInventory(player.getInventory());
 			player.teleport(getPlayersLeaveLocation(player));
-			if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
-				playerLocations.remove(player.getName());
+			player.setGameMode(stats.getOldGameMode());
 			if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
 			{
 				PlayerInventory pi = player.getInventory();
-				ItemStack[] contents = playerItems.get(player.getName());
+				ItemStack[] contents = stats.getInventoryContents();
 				if(contents != null)
 					pi.setContents(contents);
-				ItemStack[] armorContents = playerArmor.get(player.getName());
+				ItemStack[] armorContents = stats.getInventoryArmor();
 				if(armorContents != null)
 					pi.setArmorContents(armorContents);
-				playerItems.remove(player.getName());
-				playerArmor.remove(player.getName());
 			}
+			
+			players.remove(player.getName());
+			playerStats.remove(player.getName());
 		}
 	}
 	
