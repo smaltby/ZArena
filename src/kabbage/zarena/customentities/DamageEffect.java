@@ -80,8 +80,8 @@ public class DamageEffect
 			double prevX = playerLoc.getX();
 			double prevY = playerLoc.getY();
 			double prevZ = playerLoc.getZ();
-			player.teleport(new Location(playerLoc.getWorld(), prevX + Utils.parseDouble(args[1], playerLoc.getX()), prevY + Utils.parseDouble(args[2], playerLoc.getY()), 
-					Utils.parseDouble(args[3], prevZ + playerLoc.getZ())));
+			player.teleport(new Location(playerLoc.getWorld(), prevX + Utils.parseDouble(args[0], 0), prevY + Utils.parseDouble(args[1], 0), 
+					prevZ + Utils.parseDouble(args[2], 0)));
 			break;
 		case DAMAGE_HUNGER:
 			player.setFoodLevel(player.getFoodLevel() - Utils.parseInt(args[0], 1));

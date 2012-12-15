@@ -215,13 +215,13 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.AUTORUN, true);
 		cfg.addDefault(Constants.AUTOJOIN, false);
 		cfg.addDefault(Constants.SAVE_POSITION, true);
-		cfg.addDefault(Constants.GAME_WORLD, "world");
-		cfg.addDefault(Constants.GAME_LEAVE_WORLD, "world");
+		cfg.addDefault(Constants.GAME_WORLD, getServer().getWorlds().get(0).getName());
+		cfg.addDefault(Constants.GAME_LEAVE_WORLD, getServer().getWorlds().get(0).getName());
 		
 		List<Double> locXYZ = new ArrayList<Double>();
-		locXYZ.add(getServer().getWorld("world").getSpawnLocation().getX());
-		locXYZ.add(getServer().getWorld("world").getSpawnLocation().getY());
-		locXYZ.add(getServer().getWorld("world").getSpawnLocation().getZ());
+		locXYZ.add(getServer().getWorlds().get(0).getSpawnLocation().getX());
+		locXYZ.add(getServer().getWorlds().get(0).getSpawnLocation().getY());
+		locXYZ.add(getServer().getWorlds().get(0).getSpawnLocation().getZ());
 		cfg.addDefault(Constants.GAME_LEAVE_LOCATION, locXYZ);
 		
 		cfg.addDefault(Constants.PLAYER_LIMIT, 12);
