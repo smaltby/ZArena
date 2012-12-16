@@ -112,8 +112,6 @@ public class GameHandler
 		{
 			if(level != null)
 				player.teleport(level.getDeathSpawn());
-			else
-				player.teleport(player.getWorld().getSpawnLocation());
 			if(isWaiting)
 				start();
 		}
