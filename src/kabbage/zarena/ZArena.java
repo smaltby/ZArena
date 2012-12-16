@@ -225,6 +225,7 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.GAME_LEAVE_LOCATION, locXYZ);
 		
 		cfg.addDefault(Constants.PLAYER_LIMIT, 12);
+		cfg.addDefault(Constants.QUANTITY_ADJUST, true);
 		cfg.addDefault(Constants.SAVE_ITEMS, true);
 		cfg.addDefault(Constants.VOTING_LENGTH, 30);
 		cfg.addDefault(Constants.BROADCAST_ALL, false);
