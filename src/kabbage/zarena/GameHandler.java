@@ -407,19 +407,6 @@ public class GameHandler
 		{
 			for(PlayerStats stats : playerStats.values())
 			{
-				Player player = stats.getPlayer();
-				if(player.getWorld().getName() != plugin.getConfig().getString(Constants.GAME_WORLD))
-				{
-					boolean flag = false;
-					if(!player.isOp())
-					{
-						player.setOp(true);
-						flag = true;
-					}
-					plugin.getServer().dispatchCommand(player, "mv tp "+plugin.getConfig().getString(Constants.GAME_WORLD));
-					if(flag)
-						player.setOp(false);
-				}
 				addToGame(stats);
 			}
 

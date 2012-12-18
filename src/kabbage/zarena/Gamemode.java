@@ -25,6 +25,7 @@ public class Gamemode
 	private boolean isSlowRegen;
 	private double weight;
 	private double healthModifier;
+	private double damageModifier;
 	private double zombieAmountModifier;
 	private double difficultyModifier;
 	private List<String> defaultZombies = new ArrayList<String>();
@@ -43,6 +44,7 @@ public class Gamemode
 		isSlowRegen = config.getBoolean("Slow Regen", false);
 		weight = config.getDouble("Gamemode Choice Weight", 1);
 		healthModifier = config.getDouble("Health Modifier", 1);
+		damageModifier = config.getDouble("Damage Modifier", 1);
 		zombieAmountModifier = config.getDouble("Zombie Amount Modifier", 1);
 		difficultyModifier = config.getDouble("Difficulty Modifier", 1);
 		
@@ -157,6 +159,11 @@ public class Gamemode
 		if(itemCostModifiers.get(item.toUpperCase().replaceAll(" ", "_")) != null)
 			return itemCostModifiers.get(item.toUpperCase().replaceAll(" ", "_"));
 		return itemCostModifiers.get("ALL");
+	}
+	
+	public double getDamageModifier()
+	{
+		return damageModifier;
 	}
 	
 	public List<String> getDefaultSkeletons()

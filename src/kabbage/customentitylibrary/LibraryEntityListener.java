@@ -82,6 +82,11 @@ public class LibraryEntityListener implements Listener
 		if(CustomEntityWrapper.instanceOf(damager))
 		{
 			CustomEntityWrapper customEnt = CustomEntityWrapper.getCustomEntity(damager);
+			LivingEntity ent = (LivingEntity) event.getEntity();
+			int health = ent.getHealth() - customEnt.getType().getArmorPiercingDamage();
+			if(health < 0)
+				health = 0;
+			ent.setHealth(health);
 			event.setDamage(customEnt.getType().getDamage());
 		}
 		else if(damager instanceof Projectile)
@@ -90,6 +95,11 @@ public class LibraryEntityListener implements Listener
 			if(CustomEntityWrapper.instanceOf(proj.getShooter()))
 			{
 				CustomEntityWrapper customEnt = CustomEntityWrapper.getCustomEntity(proj.getShooter());
+				LivingEntity ent = (LivingEntity) event.getEntity();
+				int health = ent.getHealth() - customEnt.getType().getArmorPiercingDamage();
+				if(health < 0)
+					health = 0;
+				ent.setHealth(health);
 				event.setDamage(customEnt.getType().getDamage());
 			}
 		}

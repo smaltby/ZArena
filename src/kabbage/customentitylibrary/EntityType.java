@@ -18,6 +18,8 @@ public interface EntityType
 	
 	public int getDamage();
 	
+	public int getArmorPiercingDamage();
+	
 	public int getRange();
 	
 	public double getWorthModifier();

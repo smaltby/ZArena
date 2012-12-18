@@ -20,6 +20,7 @@ public class EntityTypeConfiguration implements EntityType
 	String type;
 	String name;
 	int damage;
+	int armorPierce;
 	int health;
 	double healthModifier;
 	int range;
@@ -38,6 +39,7 @@ public class EntityTypeConfiguration implements EntityType
 		type = config.getString("Type", "Zombie");
 		name = config.getString("Name", type);
 		damage = config.getInt("Damage", 2);
+		armorPierce = config.getInt("Armor Piercing", 0);
 		health = 10;	//Pointless default value. Health will be changed on entity spawn depending on the health modifier and the wave's default health.
 		healthModifier = config.getDouble("HealthModifier", 1);
 		range = config.getInt("Range", 256);
@@ -92,6 +94,12 @@ public class EntityTypeConfiguration implements EntityType
 	public int getDamage()
 	{
 		return damage;
+	}
+	
+	@Override
+	public int getArmorPiercingDamage()
+	{
+		return armorPierce;
 	}
 
 	@Override
