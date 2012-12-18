@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import kabbage.customentitylibrary.CustomEntityWrapper;
 import kabbage.zarena.commands.utils.CommandSenderWrapper;
 import kabbage.zarena.signs.ZSignCustomItem;
 import kabbage.zarena.utils.ChatHelper;
@@ -412,7 +413,9 @@ public class GameHandler
 
 			for(LivingEntity entity : plugin.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).getLivingEntities())
 			{
-				if(!(entity instanceof Player))
+				if(CustomEntityWrapper.instanceOf(entity))
+					entity.setHealth(0);
+				else if(!(entity instanceof Player) && plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE))
 					entity.setHealth(0);
 			}
 			isRunning = true;

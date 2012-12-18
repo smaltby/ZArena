@@ -61,8 +61,7 @@ public class CustomSkeleton extends EntitySkeleton
 		this.goalSelector.a(3, new PathfinderGoalFleeSun(this, this.bG));
 		if(!type.isWither())
 			this.goalSelector.a(4, new PathFinderGoalCustomArrowAttack(this, this.bG, type.getShootDelay(), 1));
-		float meleeSpeed = (type.isWither()) ? this.bG : this.bG * 1.5f;
-		this.goalSelector.a(5, new PathfinderGoalMeleeAttack(this, EntityHuman.class, meleeSpeed, false));
+		this.goalSelector.a(5, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bg, false));
 		this.goalSelector.a(6, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bG, type.getRange()));
 		this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, this.bG));
 		this.goalSelector.a(8, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
