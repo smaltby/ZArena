@@ -3,7 +3,6 @@ package kabbage.zarena.listeners;
 import kabbage.zarena.PlayerStats;
 import kabbage.zarena.ZArena;
 import kabbage.zarena.events.WaveChangeEvent;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;

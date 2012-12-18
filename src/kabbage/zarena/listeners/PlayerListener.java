@@ -17,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
@@ -73,6 +74,18 @@ public class PlayerListener implements Listener
 	public void onPlayerKick(PlayerKickEvent event)
 	{
 		gameHandler.removePlayer(event.getPlayer());
+	}
+	
+	@EventHandler
+	public void onCommandPreprocess(PlayerCommandPreprocessEvent event)
+	{
+		if(plugin.getConfig().getBoolean(Constants.DISABLE_NON_ZA) && plugin.getGameHandler().getPlayers().contains(event.getPlayer()))
+		{
+			if(!event.getMessage().equalsIgnoreCase("zarena") && !event.getMessage().equalsIgnoreCase("za"))
+			{
+				event.setCancelled(true);
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)

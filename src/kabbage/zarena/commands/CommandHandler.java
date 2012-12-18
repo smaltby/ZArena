@@ -30,6 +30,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class CommandHandler
@@ -86,6 +87,20 @@ public class CommandHandler
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
+		if(plugin.getConfig().getBoolean(Constants.DISABLE_JOIN_WITH_INV))
+		{
+			boolean isClear = true;
+			for(ItemStack item : player.getInventory().getContents())
+			{
+				if(item != null)
+					isClear =  false;
+			}
+			if(!isClear)
+			{
+				senderWrapper.sendMessage(ChatColor.RED + "Your inventory must be clear to join the game.");
+				return;
+			}
+		}
 		gameHandler.addPlayer(player);
 	}
 

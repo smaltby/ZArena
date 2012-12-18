@@ -232,6 +232,8 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.WAVE_DELAY, 10);
 		cfg.addDefault(Constants.WORLD_EXCLUSIVE, false);
 		cfg.addDefault(Constants.DISABLE_HUNGER, true);
+		cfg.addDefault(Constants.DISABLE_JOIN_WITH_INV, false);
+		cfg.addDefault(Constants.DISABLE_NON_ZA, false);
 		cfg.addDefault(Constants.RESPAWN_EVERY, 3);
 		cfg.addDefault(Constants.SHOP_HEADER, "ZBuy");
 		cfg.addDefault(Constants.TOLL_HEADER, "ZPay");
