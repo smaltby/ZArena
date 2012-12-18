@@ -103,8 +103,7 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
         this.rangedAttackTime = Math.max(this.rangedAttackTime - 1, 0);
         if (this.rangedAttackTime <= 0) {
             if (d0 <= (double) range && canSee) {
-                //this.b.d(this.target);
-            	doRangedAttack();
+                this.b.d(this.target);
                 this.rangedAttackTime = this.attackSpeed;	//Reset timer to attack speed
             }
         }
@@ -113,7 +112,8 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
     /**
      * Performs a ranged attack according to the AI's rangedAttackID.
      */
-    private void doRangedAttack()
+    @SuppressWarnings("unused")
+	private void doRangedAttack()
     {
         if (this.rangedAttackID == 1)
         {

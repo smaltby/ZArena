@@ -12,8 +12,13 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.util.UnsafeList;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
+import net.minecraft.server.Enchantment;
+import net.minecraft.server.EnchantmentManager;
+import net.minecraft.server.EntityArrow;
 import net.minecraft.server.EntityHuman;
+import net.minecraft.server.EntityLiving;
 import net.minecraft.server.EntityZombie;
+import net.minecraft.server.IRangedEntity;
 import net.minecraft.server.ItemStack;
 import net.minecraft.server.PathfinderGoalBreakDoor;
 import net.minecraft.server.PathfinderGoalFloat;
@@ -25,7 +30,7 @@ import net.minecraft.server.PathfinderGoalNearestAttackableTarget;
 import net.minecraft.server.PathfinderGoalRandomLookaround;
 import net.minecraft.server.PathfinderGoalRandomStroll;
 
-public class CustomZombie extends EntityZombie
+public class CustomZombie extends EntityZombie implements IRangedEntity
 {
 	private EntityTypeConfiguration type;
 	
@@ -78,7 +83,10 @@ public class CustomZombie extends EntityZombie
 
 		this.goalSelector.a(0, new PathfinderGoalFloat(this));
 		this.goalSelector.a(1, new PathfinderGoalBreakDoor(this));
-		this.goalSelector.a(2, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bG, false));
+		if(type.useRanged())
+			this.goalSelector.a(2, new PathFinderGoalCustomArrowAttack(this, this.bG, type.getShootDelay(), 1));
+		if(type.useMelee())
+			this.goalSelector.a(3, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bG, false));
 		this.goalSelector.a(4, new PathfinderGoalMoveTowardsRestriction(this, this.bG));
 		this.goalSelector.a(5, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bG, type.getRange()));
 		this.goalSelector.a(6, new PathfinderGoalRandomStroll(this, this.bG));
@@ -98,5 +106,26 @@ public class CustomZombie extends EntityZombie
 			return wrapper;
 		}
 		return null;
+	}
+
+	@Override
+	public void d(EntityLiving arg0)
+	{
+		//Copied from EntitySkeleton class
+		EntityArrow entityarrow = new EntityArrow(this.world, this, arg0, 1.6F, 12.0F);
+        int i = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_DAMAGE.id, this.bD());
+        int j = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK.id, this.bD());
+
+        if (i > 0)
+            entityarrow.b(entityarrow.c() + (double) i * 0.5D + 0.5D);
+
+        if (j > 0)
+            entityarrow.a(j);
+
+        if (EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_FIRE.id, this.bD()) > 0)
+            entityarrow.setOnFire(100);
+
+        this.makeSound("random.bow", 1.0F, 1.0F / (this.aB().nextFloat() * 0.4F + 0.8F));
+        this.world.addEntity(entityarrow);
 	}
 }

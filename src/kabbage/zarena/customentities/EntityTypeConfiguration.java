@@ -30,6 +30,10 @@ public class EntityTypeConfiguration implements EntityType
 	ItemStack[] items = new ItemStack[5];
 	int minimumSpawnWave;
 	double spawnChance;
+	int shootDelay;
+	boolean melee;
+	boolean ranged;
+	String rangedType;
 	List<DamageEffect> damageEffects = new ArrayList<DamageEffect>();
 	List<SpecialEffect> specialEffects = new ArrayList<SpecialEffect>();
 	
@@ -47,6 +51,10 @@ public class EntityTypeConfiguration implements EntityType
 		worthModifier = config.getDouble("WorthModifier", 1);
 		minimumSpawnWave = config.getInt("MinimumSpawnWave", 1);
 		spawnChance = config.getDouble("SpawnChance", .05);
+		shootDelay = config.getInt("ShootDelay", 60);
+		melee = config.getBoolean("Use Melee", true);
+		ranged = config.getBoolean("Use Ranged", false);
+		rangedType = config.getString("Ranged Attack Type", "Arrow");
 		if(config.getStringList("Immunities") != null)
 		{
 			for(String damageCauseName : config.getStringList("Immunities"))
@@ -118,6 +126,21 @@ public class EntityTypeConfiguration implements EntityType
 	{
 		return range;
 	}
+	
+	public boolean useMelee()
+	{
+		return melee;
+	}
+	
+	public boolean useRanged()
+	{
+		return ranged;
+	}
+	
+	public String getRangedAttackType()
+	{
+		return rangedType;
+	}
 
 	@Override
 	public float getSpeed()
@@ -161,6 +184,11 @@ public class EntityTypeConfiguration implements EntityType
 	public double getSpawnChance()
 	{
 		return spawnChance;
+	}
+	
+	public int getShootDelay()
+	{
+		return shootDelay;
 	}
 	
 	@Override
