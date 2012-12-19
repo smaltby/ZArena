@@ -5,24 +5,26 @@ import java.lang.reflect.Field;
 import kabbage.customentitylibrary.CustomEntityMoveEvent;
 import kabbage.customentitylibrary.CustomEntityWrapper;
 
+import net.minecraft.server.v1_4_5.EntityGiantZombie;
+import net.minecraft.server.v1_4_5.EntityHuman;
+import net.minecraft.server.v1_4_5.PathfinderGoalBreakDoor;
+import net.minecraft.server.v1_4_5.PathfinderGoalFloat;
+import net.minecraft.server.v1_4_5.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_4_5.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_4_5.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_4_5.PathfinderGoalMoveTowardsRestriction;
+import net.minecraft.server.v1_4_5.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_4_5.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_4_5.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_4_5.PathfinderGoalSelector;
+
+import org.bukkit.craftbukkit.v1_4_5.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_5.util.UnsafeList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.util.UnsafeList;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-
-import net.minecraft.server.EntityGiantZombie;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.PathfinderGoalBreakDoor;
-import net.minecraft.server.PathfinderGoalFloat;
-import net.minecraft.server.PathfinderGoalHurtByTarget;
-import net.minecraft.server.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.PathfinderGoalMeleeAttack;
-import net.minecraft.server.PathfinderGoalMoveTowardsRestriction;
-import net.minecraft.server.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.PathfinderGoalRandomLookaround;
-import net.minecraft.server.PathfinderGoalRandomStroll;
 
 public class CustomGiant extends EntityGiantZombie
 {
@@ -63,7 +65,7 @@ public class CustomGiant extends EntityGiantZombie
 		 try
 		 {
 			 //Enable PathfinderGoalSelector's "a" field to be editable
-			 Field gsa = net.minecraft.server.PathfinderGoalSelector.class.getDeclaredField("a");
+			 Field gsa = PathfinderGoalSelector.class.getDeclaredField("a");
 			 gsa.setAccessible(true);
 
 			 //Now take the instances goals/targets and set them as new lists so they can be rewritten

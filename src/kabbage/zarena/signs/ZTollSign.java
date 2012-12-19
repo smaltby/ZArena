@@ -10,19 +10,19 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
-import net.minecraft.server.BlockDoor;
-import net.minecraft.server.BlockTrapdoor;
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.v1_4_5.BlockDoor;
+import net.minecraft.server.v1_4_5.BlockTrapdoor;
+import net.minecraft.server.v1_4_5.EntityPlayer;
+import net.minecraft.server.v1_4_5.ItemInWorldManager;
+import net.minecraft.server.v1_4_5.MinecraftServer;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_5.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import kabbage.zarena.ZArena;
@@ -147,8 +147,8 @@ public class ZTollSign extends ZSign implements Externalizable
 	public boolean executeClick(Player player)
 	{
 		Block costBlock = getCostBlock();
-		net.minecraft.server.Block nmsBlock = net.minecraft.server.Block.byId[costBlock.getType().getId()];
-		net.minecraft.server.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
+		net.minecraft.server.v1_4_5.Block nmsBlock = net.minecraft.server.v1_4_5.Block.byId[costBlock.getType().getId()];
+		net.minecraft.server.v1_4_5.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
 		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 		switch(costBlock.getType())
 		{
@@ -254,8 +254,8 @@ public class ZTollSign extends ZSign implements Externalizable
 		Block costBlock = getCostBlock();
 		if(costBlock == null)
 			return;
-		net.minecraft.server.Block nmsBlock = net.minecraft.server.Block.byId[costBlock.getType().getId()];
-		net.minecraft.server.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
+		net.minecraft.server.v1_4_5.Block nmsBlock = net.minecraft.server.v1_4_5.Block.byId[costBlock.getType().getId()];
+		net.minecraft.server.v1_4_5.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
 		//We'll name him...Joe!
 		EntityPlayer player = new EntityPlayer(MinecraftServer.getServer(), nmsWorld, "Joe", new ItemInWorldManager(nmsWorld));
 		switch(costBlock.getType())

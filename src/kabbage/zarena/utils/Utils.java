@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import kabbage.zarena.ZArena;
 
-import net.minecraft.server.MathHelper;
+import net.minecraft.server.v1_4_5.MathHelper;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

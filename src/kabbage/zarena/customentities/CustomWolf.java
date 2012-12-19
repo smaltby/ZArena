@@ -4,27 +4,30 @@ import java.lang.reflect.Field;
 
 import kabbage.customentitylibrary.CustomEntityMoveEvent;
 import kabbage.customentitylibrary.CustomEntityWrapper;
-import net.minecraft.server.DamageSource;
-import net.minecraft.server.Entity;
-import net.minecraft.server.EntityAgeable;
-import net.minecraft.server.EntityAnimal;
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.EntityWolf;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.PathfinderGoalFloat;
-import net.minecraft.server.PathfinderGoalHurtByTarget;
-import net.minecraft.server.PathfinderGoalLeapAtTarget;
-import net.minecraft.server.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.PathfinderGoalMeleeAttack;
-import net.minecraft.server.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.PathfinderGoalRandomLookaround;
-import net.minecraft.server.PathfinderGoalRandomStroll;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.util.UnsafeList;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+
+import net.minecraft.server.v1_4_5.DamageSource;
+import net.minecraft.server.v1_4_5.Entity;
+import net.minecraft.server.v1_4_5.EntityAgeable;
+import net.minecraft.server.v1_4_5.EntityAnimal;
+import net.minecraft.server.v1_4_5.EntityHuman;
+import net.minecraft.server.v1_4_5.EntityWolf;
+import net.minecraft.server.v1_4_5.ItemStack;
+import net.minecraft.server.v1_4_5.PathfinderGoalFloat;
+import net.minecraft.server.v1_4_5.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_4_5.PathfinderGoalLeapAtTarget;
+import net.minecraft.server.v1_4_5.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_4_5.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_4_5.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_4_5.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_4_5.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_4_5.PathfinderGoalSelector;
+
+import org.bukkit.craftbukkit.v1_4_5.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_5.util.UnsafeList;
 
 public class CustomWolf extends EntityWolf
 {
@@ -97,7 +100,7 @@ public class CustomWolf extends EntityWolf
         try
 		{
 			//Enable PathfinderGoalSelector's "a" field to be editable
-			Field gsa = net.minecraft.server.PathfinderGoalSelector.class.getDeclaredField("a");
+			Field gsa = PathfinderGoalSelector.class.getDeclaredField("a");
 			gsa.setAccessible(true);
 
 			//Now take the instances goals/targets and set them as new lists so they can be rewritten

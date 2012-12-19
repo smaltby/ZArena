@@ -8,21 +8,23 @@ import kabbage.customentitylibrary.CustomEntityWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.util.UnsafeList;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-import net.minecraft.server.EntityHuman;
-import net.minecraft.server.EntityWither;
-import net.minecraft.server.IEntitySelector;
-import net.minecraft.server.PathfinderGoalArrowAttack;
-import net.minecraft.server.PathfinderGoalFloat;
-import net.minecraft.server.PathfinderGoalHurtByTarget;
-import net.minecraft.server.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.PathfinderGoalRandomLookaround;
-import net.minecraft.server.PathfinderGoalRandomStroll;
-import net.minecraft.server.PathfinderGoalRestrictSun;
+import net.minecraft.server.v1_4_5.EntityHuman;
+import net.minecraft.server.v1_4_5.EntityWither;
+import net.minecraft.server.v1_4_5.IEntitySelector;
+import net.minecraft.server.v1_4_5.PathfinderGoalArrowAttack;
+import net.minecraft.server.v1_4_5.PathfinderGoalFloat;
+import net.minecraft.server.v1_4_5.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_4_5.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_4_5.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_4_5.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_4_5.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_4_5.PathfinderGoalRestrictSun;
+import net.minecraft.server.v1_4_5.PathfinderGoalSelector;
+
+import org.bukkit.craftbukkit.v1_4_5.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_5.util.UnsafeList;
 
 public class CustomWither extends EntityWither
 {
@@ -48,7 +50,7 @@ public class CustomWither extends EntityWither
 		try
 		{
 			//Enable PathfinderGoalSelector's "a" field to be editable
-			Field gsa = net.minecraft.server.PathfinderGoalSelector.class.getDeclaredField("a");
+			Field gsa = PathfinderGoalSelector.class.getDeclaredField("a");
 			gsa.setAccessible(true);
 
 			//Now take the instances goals/targets and set them as new lists so they can be rewritten
@@ -62,10 +64,10 @@ public class CustomWither extends EntityWither
 		IEntitySelector entitySelector = null;
 		try
 		{
-			Field f = net.minecraft.server.EntityWither.class.getDeclaredField("bK");
+			Field f = EntityWither.class.getDeclaredField("bK");
 			f.setAccessible(true);
 			
-			entitySelector = (IEntitySelector) f.get(net.minecraft.server.EntityWither.class);
+			entitySelector = (IEntitySelector) f.get(EntityWither.class);
 		} catch (NoSuchFieldException | SecurityException  | IllegalArgumentException | IllegalAccessException e)
 		{
 			e.printStackTrace();

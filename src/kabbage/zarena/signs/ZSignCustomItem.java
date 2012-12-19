@@ -26,6 +26,7 @@ public class ZSignCustomItem
 		itemList.add(this);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public ItemStack getItem()
 	{
 		ItemStack stack;

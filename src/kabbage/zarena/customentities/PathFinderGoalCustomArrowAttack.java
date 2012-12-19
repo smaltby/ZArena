@@ -1,15 +1,16 @@
 package kabbage.zarena.customentities;
 
-import org.bukkit.event.entity.EntityTargetEvent;
+import net.minecraft.server.v1_4_5.Entity;
+import net.minecraft.server.v1_4_5.EntityArrow;
+import net.minecraft.server.v1_4_5.EntityLiving;
+import net.minecraft.server.v1_4_5.EntitySnowball;
+import net.minecraft.server.v1_4_5.IRangedEntity;
+import net.minecraft.server.v1_4_5.MathHelper;
+import net.minecraft.server.v1_4_5.PathfinderGoal;
+import net.minecraft.server.v1_4_5.Vec3D;
 
-import net.minecraft.server.Entity;
-import net.minecraft.server.EntityArrow;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.EntitySnowball;
-import net.minecraft.server.IRangedEntity;
-import net.minecraft.server.MathHelper;
-import net.minecraft.server.PathfinderGoal;
-import net.minecraft.server.Vec3D;
+import org.bukkit.craftbukkit.v1_4_5.event.CraftEventFactory;
+import org.bukkit.event.entity.EntityTargetEvent;
 
 /**
  * Customized for entities that use both melee and ranged attacks
@@ -73,7 +74,7 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
     public void d() {
         // CraftBukkit start
         EntityTargetEvent.TargetReason reason = this.target.isAlive() ? EntityTargetEvent.TargetReason.FORGOT_TARGET : EntityTargetEvent.TargetReason.TARGET_DIED;
-        org.bukkit.craftbukkit.event.CraftEventFactory.callEntityTargetEvent((Entity) b, null, reason);
+        CraftEventFactory.callEntityTargetEvent((Entity) b, null, reason);
         // CraftBukkit end
         this.target = null;
         this.f = 0;

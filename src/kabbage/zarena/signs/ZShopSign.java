@@ -76,6 +76,7 @@ public class ZShopSign extends ZSign implements Externalizable
 		return new ZShopSign(level, sign.getLocation(), material.getId(), 1, (short) 0, (byte) 0, price);
 	}
 	
+	@SuppressWarnings("deprecation")
 	public ItemStack getItem()
 	{
 		ItemStack stack;

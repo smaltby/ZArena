@@ -8,19 +8,20 @@ import java.util.Map.Entry;
 
 import kabbage.zarena.ZArena;
 
+import net.minecraft.server.v1_4_5.EntityLiving;
+import net.minecraft.server.v1_4_5.ItemStack;
+import net.minecraft.server.v1_4_5.PathfinderGoal;
+import net.minecraft.server.v1_4_5.PathfinderGoalSelector;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftEntity;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_4_5.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_5.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_5.util.UnsafeList;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.ItemStack;
-import net.minecraft.server.PathfinderGoal;
-import net.minecraft.server.PathfinderGoalSelector;
 
 public class CustomEntityWrapper
 {
@@ -49,7 +50,7 @@ public class CustomEntityWrapper
 		try
 		{
 			float initialSpeed = 0;
-			Field speed = net.minecraft.server.EntityLiving.class.getDeclaredField("bG");
+			Field speed = EntityLiving.class.getDeclaredField("bG");
 
 			speed.setAccessible(true);
 			initialSpeed = speed.getFloat(entity);
@@ -60,9 +61,9 @@ public class CustomEntityWrapper
 			PathfinderGoalSelector goalSelector;
 			PathfinderGoalSelector targetSelector;
 			
-			Field gsa = net.minecraft.server.PathfinderGoalSelector.class.getDeclaredField("a");
-			Field goalSelectorField = net.minecraft.server.EntityLiving.class.getDeclaredField("goalSelector");
-			Field targetSelectorField = net.minecraft.server.EntityLiving.class.getDeclaredField("targetSelector");
+			Field gsa = PathfinderGoalSelector.class.getDeclaredField("a");
+			Field goalSelectorField = EntityLiving.class.getDeclaredField("goalSelector");
+			Field targetSelectorField = EntityLiving.class.getDeclaredField("targetSelector");
 			
 			gsa.setAccessible(true);
 			goalSelectorField.setAccessible(true);
@@ -117,7 +118,7 @@ public class CustomEntityWrapper
 			{
 				if(items[i] != null)
 				{
-					ItemStack item = CraftItemStack.createNMSItemStack(items[i]);
+					ItemStack item = CraftItemStack.asNMSCopy(items[i]);
 					if(item != null)
 						entity.setEquipment(i, item);
 				}
@@ -177,7 +178,7 @@ public class CustomEntityWrapper
 		Field f;
 		try
 		{
-			f = net.minecraft.server.EntityLiving.class.getDeclaredField("bG");
+			f = EntityLiving.class.getDeclaredField("bG");
 
 			f.setAccessible(true);
 			float newSpeed = (float) (f.getFloat(entity) * modifier);

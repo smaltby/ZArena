@@ -121,7 +121,7 @@ public class LevelVoter implements Runnable
 		}
 		ChatHelper.broadcastMessage(String.format(ChatHelper.VOTE_ENDS_IN, plugin.getConfig().getInt(Constants.VOTING_LENGTH)), gameHandler.getBroadcastPlayers());
 		
-		gameHandler.voterTaskID = plugin.getServer().getScheduler().scheduleAsyncDelayedTask(plugin, this, plugin.getConfig().getInt(Constants.VOTING_LENGTH) * 20);
+		gameHandler.voterTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, plugin.getConfig().getInt(Constants.VOTING_LENGTH) * 20);
 	}
 	
 	public void resetVoting()
