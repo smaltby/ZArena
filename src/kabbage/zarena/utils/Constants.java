@@ -29,7 +29,7 @@ public class Constants
 	public static final String WORLD_EXCLUSIVE = "Options.World Exclusive";
 	public static final String DISABLE_HUNGER = "Options.Disable Hunger";
 	public static final String DISABLE_NON_ZA = "Options.Disable Non ZArena Commands In Game";
-	public static final String DISABLE_JOIN_WITH_INV = "Options.Disable Joining Game with Inventory";
+	public static final String DISABLE_JOIN_WITH_INV = "Options.Disable Joining Game With Inventory";
 	public static final String PLAYER_LIMIT = "Options.Player Limit";
 	public static final String QUANTITY_ADJUST = "Options.Adjust Quantity Based on Player Amount";
 	public static final String SAVE_ITEMS = "Options.Save Items";
