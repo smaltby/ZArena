@@ -80,7 +80,7 @@ public class ZArena extends JavaPlugin
 		instance = this;
 		logger = Bukkit.getServer().getLogger();
 		
-		CustomEntityLibrary.load();
+		CustomEntityLibrary.load(this);
 		
 		loadConfiguration();	//Lots of stuff relies on the config, so load it early
 		//Load some stuff the game handler relies on

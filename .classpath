@@ -8,5 +8,10 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="DROPBOX/Eclipse/Plugins/Referenced Libraries/spoutplugin.jar"/>
+	<classpathentry kind="lib" path="/CustomEntityLibrary/bin" sourcepath="/CustomEntityLibrary/src">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="CustomEntityLibrary/bin"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

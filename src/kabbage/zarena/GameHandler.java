@@ -318,8 +318,6 @@ public class GameHandler
 		{
 			PlayerStats stats = getPlayerStats(player);
 			clearInventory(player.getInventory());
-			player.teleport(getPlayersLeaveLocation(player));
-			player.setGameMode(stats.getOldGameMode());
 			if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
 			{
 				PlayerInventory pi = player.getInventory();
@@ -330,6 +328,8 @@ public class GameHandler
 				if(armorContents != null)
 					pi.setArmorContents(armorContents);
 			}
+			player.teleport(getPlayersLeaveLocation(player));
+			player.setGameMode(stats.getOldGameMode());
 			
 			players.remove(player.getName());
 			playerStats.remove(player.getName());
