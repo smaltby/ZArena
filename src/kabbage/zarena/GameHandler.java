@@ -18,6 +18,7 @@ import kabbage.zarena.commands.utils.CommandSenderWrapper;
 import kabbage.zarena.signs.ZSignCustomItem;
 import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Constants;
+import kabbage.zarena.utils.Utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,6 +32,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
+
+import com.google.common.io.Files;
 
 public class GameHandler
 {	
@@ -288,12 +291,9 @@ public class GameHandler
 	{
 		File path = new File(Constants.LEVEL_PATH);
 
-        FileInputStream fis;
-        ObjectInputStream ois;
-
         try {
-            fis = new FileInputStream(path);
-            ois = new ObjectInputStream(fis);
+        	FileInputStream fis = new FileInputStream(path);
+        	ObjectInputStream ois = new ObjectInputStream(fis);
 
             levelHandler = new LevelHandler();
             levelHandler.readExternal(ois);
@@ -358,16 +358,34 @@ public class GameHandler
 		}
 	}
 	
-	public void saveLevelHandler()
+	public void saveLevelHandler(boolean backup)
 	{
 		File path = new File(Constants.LEVEL_PATH);
+		File[] backups = new File[5];
+		backups[0] = path;
+		
+		for(int i = 1; i < 5; i++)
+		{
+			backups[i] = new File(Constants.PLUGIN_FOLDER+File.separator+"levelsbackup"+ i +".ext");
+		}
 
-        FileOutputStream fos;
-        ObjectOutputStream oos;
+		try
+		{
+			if(backup)
+			{
+				//If the two files are equal, there's no need for a backup
+				if(!Utils.fileEquals(backups[0], backups[1]))
+				{
+					for(int i = 4; i > 0; i--)
+					{
+						if(backups[i - 1].exists())
+							Files.move(backups[i - 1], backups[i]);
+					}
+				}
+			}
 
-        try {
-            fos = new FileOutputStream(path);
-            oos = new ObjectOutputStream(fos);
+			FileOutputStream fos = new FileOutputStream(path);
+			ObjectOutputStream oos = new ObjectOutputStream(fos);
 
             levelHandler.writeExternal(oos);
 

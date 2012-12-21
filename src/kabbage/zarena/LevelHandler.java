@@ -21,13 +21,12 @@ public class LevelHandler implements Externalizable
 	 */
 	private static int VERSION = 0;
 	
-	private List<ZLevel> levels;
+	private List<ZLevel> levels = new ArrayList<ZLevel>();
 	private transient Random rnd;
 	private String world;
 	
 	public LevelHandler()
 	{
-		levels = new ArrayList<ZLevel>();
 		rnd = new Random();
 		world = ZArena.getInstance().getConfig().getString(Constants.GAME_WORLD);
 	}

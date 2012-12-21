@@ -1,9 +1,13 @@
 package kabbage.zarena.utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import kabbage.zarena.ZArena;
 
 import net.minecraft.server.v1_4_5.MathHelper;
@@ -34,6 +38,44 @@ public class Utils
 		}
 		return args;
 	}
+	
+	/**
+	 * Checks if two text files contain the same contents.
+	 * @param file1	first file being compared
+	 * @param file2	second file being compared
+	 * @return		whether or not the two files contain the same contents
+	 */
+	public static boolean fileEquals(File file1, File file2)
+	{
+		try
+		{
+			new BufferedReader(new InputStreamReader(System.in));
+			String s1 = "";
+			String s2 = "";
+			String y = "", z = "";
+
+			BufferedReader bfr1 = new BufferedReader(new FileReader(file1));
+
+			BufferedReader bfr2 = new BufferedReader(new FileReader(file2));
+
+			while ((y = bfr1.readLine()) != null)
+				s1 += y;
+
+			while ((z = bfr2.readLine()) != null)
+				s2 += z;
+
+			bfr1.close();
+			bfr2.close();
+
+			if (s2.equals(s1))
+				return true;
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	/**
 	 * Gets the armor of the player
 	 * @param player the player who's armor is being gotten

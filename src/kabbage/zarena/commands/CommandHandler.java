@@ -486,7 +486,7 @@ public class CommandHandler
 			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
 			return;
 		}
-		gameHandler.saveLevelHandler();
+		gameHandler.saveLevelHandler(false);
 		senderWrapper.sendMessage(ChatColor.GREEN + "Levels saved successfully.");
 	}
 	

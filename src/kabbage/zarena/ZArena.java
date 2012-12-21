@@ -540,7 +540,7 @@ public class ZArena extends JavaPlugin
 	
 	private void saveFiles()
 	{
-		gameHandler.saveLevelHandler();
+		gameHandler.saveLevelHandler(true);
 		savePlayerOptions();
 	}
 	
