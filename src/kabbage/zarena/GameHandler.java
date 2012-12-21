@@ -336,25 +336,30 @@ public class GameHandler
 		}
 	}
 	
+	public void respawnPlayer(Player player)
+	{
+		if(!getPlayerStats(player).isAlive())
+		{
+			getPlayerStats(player).setAlive(true);
+			player.teleport(level.getInitialSpawn());
+			player.setHealth(20);
+			player.setFoodLevel(20);
+			player.setSaturation(20);
+			for(PotionEffect effect : player.getActivePotionEffects())
+			{
+				player.removePotionEffect(effect.getType());
+			}
+			PlayerInventory pi = player.getInventory();
+			clearInventory(pi);
+			addStartItems(pi);
+		}
+	}
+	
 	public void respawnPlayers()
 	{
 		for(Player player : getPlayers())
 		{
-			if(!getPlayerStats(player).isAlive())
-			{
-				getPlayerStats(player).setAlive(true);
-				player.teleport(level.getInitialSpawn());
-				player.setHealth(20);
-				player.setFoodLevel(20);
-				player.setSaturation(20);
-				for(PotionEffect effect : player.getActivePotionEffects())
-				{
-					player.removePotionEffect(effect.getType());
-				}
-				PlayerInventory pi = player.getInventory();
-				clearInventory(pi);
-				addStartItems(pi);
-			}
+			respawnPlayer(player);
 		}
 	}
 	
