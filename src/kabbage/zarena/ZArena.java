@@ -9,7 +9,9 @@ import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,10 +46,10 @@ import net.minecraft.server.v1_4_5.EntityWolf;
 import net.minecraft.server.v1_4_5.EntityZombie;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -506,9 +508,9 @@ public class ZArena extends JavaPlugin
 			if(!customItem.contains("type")) //The type is a necessary paramater of the custom item. 
 				continue;
 			int type = customItem.getInt("type");
-			int amount = (customItem.contains("amount")) ? customItem.getInt("amount") : 1;
-			short damageValue = (customItem.contains("damage value")) ? (short) customItem.getInt("damage value") : Material.getMaterial(type).getMaxDurability();
-			byte id = (customItem.contains("id")) ? (byte) customItem.getInt("id") : (byte) 0;
+			int amount = customItem.getInt("amount", 1);
+			short damageValue = (short) customItem.getInt("damage value", 0);
+			byte id = (byte) customItem.getInt("id", 0);
 			
 			String[] name = new String[2];
 			String configName = customItem.getName();
@@ -523,7 +525,17 @@ public class ZArena extends JavaPlugin
 				name[0] = configName.substring(0, spaceIndex);
 				name[1] = configName.substring(spaceIndex + 1);
 			}
-			new ZSignCustomItem(name, type, amount, damageValue, id); //Creation of new instances of this object automatically add the instance to a list of them
+			
+			Map<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
+			for(String enchantName : customItem.getStringList("enchantments"))
+			{
+				String[] args = Utils.getConfigArgs(enchantName);
+				Enchantment enchantment = Enchantment.getById(Utils.parseInt(enchantName.split("\\s")[0], -1));
+				int level = Utils.parseInt(args[0], 1);
+				enchantments.put(enchantment, level);
+			}
+			
+			new ZSignCustomItem(name, type, amount, damageValue, id, enchantments); //Creation of new instances of this object automatically add the instance to a list of them
 		}
 	}
 	
