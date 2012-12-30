@@ -47,6 +47,8 @@ public class Utils
 	 */
 	public static boolean fileEquals(File file1, File file2)
 	{
+		if(!file1.exists() || !file2.exists())
+			return false;
 		try
 		{
 			new BufferedReader(new InputStreamReader(System.in));
