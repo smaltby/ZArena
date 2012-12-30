@@ -141,6 +141,8 @@ public class ZLevel implements Externalizable
 	
 	public Location getZombieSpawn(String name)
 	{
+		if(zSpawns.get(name) == null)
+			return null;
 		return LocationSer.convertToBukkitLocation(zSpawns.get(name));
 	}
 	
