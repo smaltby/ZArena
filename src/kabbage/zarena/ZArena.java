@@ -230,6 +230,7 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.QUANTITY_ADJUST, true);
 		cfg.addDefault(Constants.SAVE_ITEMS, true);
 		cfg.addDefault(Constants.VOTING_LENGTH, 30);
+		cfg.addDefault(Constants.XP_BAR_IS_MONEY, false);
 		cfg.addDefault(Constants.BROADCAST_ALL, false);
 		cfg.addDefault(Constants.WAVE_DELAY, 10);
 		cfg.addDefault(Constants.WORLD_EXCLUSIVE, false);

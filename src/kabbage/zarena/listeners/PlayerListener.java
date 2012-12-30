@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerLevelChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.PluginManager;
@@ -137,5 +138,13 @@ public class PlayerListener implements Listener
 			else if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
 				ZSign.attemptCreateSign(gameHandler.getLevel(), player, block);
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onPlayerLevelChange(PlayerLevelChangeEvent event)
+	{
+		if(plugin.getGameHandler().getPlayers().contains(event.getPlayer()))
+			if(plugin.getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
+				event.getPlayer().setLevel(event.getOldLevel());
 	}
 }

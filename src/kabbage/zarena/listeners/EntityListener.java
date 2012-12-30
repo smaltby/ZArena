@@ -79,6 +79,8 @@ public class EntityListener implements Listener
 		}
 		else if(CustomEntityWrapper.instanceOf(ent))
 		{
+			if(plugin.getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
+				event.setDroppedExp(0);
 			CustomEntityWrapper customEnt = CustomEntityWrapper.getCustomEntity(ent);
 			EntityType type = customEnt.getType();
 			

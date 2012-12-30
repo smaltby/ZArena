@@ -330,6 +330,7 @@ public class GameHandler
 			}
 			player.teleport(getPlayersLeaveLocation(player));
 			player.setGameMode(stats.getOldGameMode());
+			player.setLevel(stats.getOldLevel());
 			
 			players.remove(player.getName());
 			playerStats.remove(player.getName());

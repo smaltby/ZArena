@@ -1,5 +1,7 @@
 package kabbage.zarena;
 
+import kabbage.zarena.utils.Constants;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -16,10 +18,11 @@ public class PlayerStats
 	private int wavesSinceDeath;
 	
 	//Saved pre-game info
-	Location oldLocation;
-	ItemStack[] items;
-	ItemStack[] armor;
-	GameMode oldGameMode;
+	private Location oldLocation;
+	private ItemStack[] items;
+	private ItemStack[] armor;
+	private GameMode oldGameMode;
+	private int oldLevel;
 	
 	public PlayerStats(Player player)
 	{
@@ -32,56 +35,14 @@ public class PlayerStats
 		items = player.getInventory().getContents();
 		armor = player.getInventory().getArmorContents();
 		oldGameMode = player.getGameMode();
-	}
-	
-	public Player getPlayer()
-	{
-		return Bukkit.getPlayer(player);
-	}
-	
-	public float getMoney()
-	{
-		return money;
-	}
-	
-	public int getPoints()
-	{
-		return points;
-	}
-	
-	public boolean isAlive()
-	{
-		return alive;
-	}
-	
-	public int getWavesSinceDeath()
-	{
-		return wavesSinceDeath;
-	}
-	
-	public Location getOldLocation()
-	{
-		return oldLocation;
-	}
-	
-	public ItemStack[] getInventoryContents()
-	{
-		return items;
-	}
-	
-	public ItemStack[] getInventoryArmor()
-	{
-		return armor;
-	}
-	
-	public GameMode getOldGameMode()
-	{
-		return oldGameMode;
+		oldLevel = player.getLevel();
 	}
 	
 	public void addMoney(double money)
 	{
 		this.money += money;
+		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
+			getPlayer().setLevel((int) money);
 	}
 	
 	public void addPoints(int points)
@@ -89,26 +50,54 @@ public class PlayerStats
 		this.points += points;
 	}
 	
-	public void subMoney(double money)
+	public ItemStack[] getInventoryArmor()
 	{
-		this.money -= money;
-		if(this.money < 0)
-			this.money = 0;
+		return armor;
 	}
 	
-	public void subPoints(int points)
+	public ItemStack[] getInventoryContents()
 	{
-		this.points -= points;
+		return items;
 	}
 	
-	public void setAlive(boolean alive)
+	public float getMoney()
 	{
-		this.alive = alive;
+		return money;
 	}
 	
-	public void setWavesSinceDeath(int wavesSinceDeath)
+	public GameMode getOldGameMode()
 	{
-		this.wavesSinceDeath = wavesSinceDeath;
+		return oldGameMode;
+	}
+	
+	public int getOldLevel()
+	{
+		return oldLevel;
+	}
+	
+	public Location getOldLocation()
+	{
+		return oldLocation;
+	}
+	
+	public Player getPlayer()
+	{
+		return Bukkit.getPlayer(player);
+	}
+	
+	public int getPoints()
+	{
+		return points;
+	}
+	
+	public int getWavesSinceDeath()
+	{
+		return wavesSinceDeath;
+	}
+	
+	public boolean isAlive()
+	{
+		return alive;
 	}
 	
 	public void messageStats()
@@ -123,4 +112,27 @@ public class PlayerStats
 		wavesSinceDeath = 0;
 	}
 	
+	public void setAlive(boolean alive)
+	{
+		this.alive = alive;
+	}
+	
+	public void setWavesSinceDeath(int wavesSinceDeath)
+	{
+		this.wavesSinceDeath = wavesSinceDeath;
+	}
+	
+	public void subMoney(double money)
+	{
+		this.money -= money;
+		if(this.money < 0)
+			this.money = 0;
+		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
+			getPlayer().setLevel((int) money);
+	}
+	
+	public void subPoints(int points)
+	{
+		this.points -= points;
+	}
 }
