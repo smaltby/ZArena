@@ -42,7 +42,7 @@ public class PlayerStats
 	{
 		this.money += money;
 		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
-			getPlayer().setLevel((int) money);
+			getPlayer().setLevel((int) this.money);
 	}
 	
 	public void addPoints(int points)
@@ -128,7 +128,7 @@ public class PlayerStats
 		if(this.money < 0)
 			this.money = 0;
 		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
-			getPlayer().setLevel((int) money);
+			getPlayer().setLevel((int) this.money);
 	}
 	
 	public void subPoints(int points)
