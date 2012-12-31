@@ -554,9 +554,10 @@ public class ZArena extends JavaPlugin
 	private void saveFiles()
 	{
 		gameHandler.saveLevelHandler(true);
-		savePlayerOptions();
+		//savePlayerOptions();
 	}
 	
+	@SuppressWarnings("unused")
 	private void savePlayerOptions()
 	{
 		File path = new File(Constants.PLUGIN_FOLDER);

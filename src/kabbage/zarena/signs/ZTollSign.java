@@ -87,7 +87,9 @@ public class ZTollSign extends ZSign implements Externalizable
 		{
 			return null;
 		}
-		LocationSer costBlockLocation = getTollableBlock(sign.getLocation());
+		LocationSer costBlockLocation = getTollableBlock(ZSign.getBlockOn(sign).getLocation());
+		if(costBlockLocation == null)
+			costBlockLocation = getTollableBlock(sign.getLocation());
 		if(costBlockLocation == null)
 			return null;
 		
@@ -123,13 +125,13 @@ public class ZTollSign extends ZSign implements Externalizable
 	
 	private static LocationSer getTollableBlock(Location pos)
 	{
-		BlockFace[] firstFaces = new BlockFace[] { BlockFace.SELF, BlockFace.UP, BlockFace.DOWN };
-		BlockFace[] secondFaces = new BlockFace[] { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST, BlockFace.WEST };
-		Block current;
-		for (BlockFace bf : firstFaces)
+		BlockFace[] verticalFaces = new BlockFace[] {BlockFace.UP, BlockFace.SELF, BlockFace.DOWN};
+		BlockFace[] horizontalFaces = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.SELF};
+		
+		for (BlockFace bf : verticalFaces)
 		{
-			current = pos.getBlock().getRelative(bf);
-			for (BlockFace bf2 : secondFaces)
+			Block current = pos.getBlock().getRelative(bf);
+			for (BlockFace bf2 : horizontalFaces)
 			{
 				if (current.getRelative(bf2).getType() == Material.LEVER
 						|| current.getRelative(bf2).getType() == Material.WOODEN_DOOR || current.getRelative(bf2).getType() == Material.TRAP_DOOR
@@ -238,7 +240,9 @@ public class ZTollSign extends ZSign implements Externalizable
 		}
 		if(getCostBlock() == null)
 		{
-			costBlockLocation = getTollableBlock(LocationSer.convertToBukkitLocation(location));
+			costBlockLocation = getTollableBlock(ZSign.getBlockOn(getSign()).getLocation());
+			if(getCostBlock() == null)
+				costBlockLocation = getTollableBlock(getLocation());
 			if(getCostBlock() == null)
 			{
 				ZArena.logger.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to the block it tolls having been removed.");

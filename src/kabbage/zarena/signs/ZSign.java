@@ -8,7 +8,9 @@ import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
@@ -98,6 +100,19 @@ public abstract class ZSign implements Externalizable
 		return LocationSer.convertToBukkitLocation(location);
 	}
 	
+	public Sign getSign()
+	{
+		return (Sign) getLocation().getBlock().getState();
+	}
+	
+	public static Block getBlockOn(Sign sign)
+	{
+		org.bukkit.material.Sign s = (org.bukkit.material.Sign) sign.getLocation().getBlock().getState().getData();
+		if(sign.getType() == Material.WALL_SIGN)
+			return sign.getLocation().getBlock().getRelative(s.getAttachedFace());
+		return sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
+	}
+
 	public int getPrice()
 	{
 		return price;
