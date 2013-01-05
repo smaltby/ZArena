@@ -1,7 +1,7 @@
 name: ZArena
 main: kabbage.zarena.ZArena
 author: kabbage
-version: 0.2
+version: 0.3
 softdepend: [Spout]
 commands:
     zarena:
