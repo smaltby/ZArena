@@ -9,8 +9,10 @@ import java.util.logging.Level;
 import kabbage.zarena.ZArena;
 
 import org.bukkit.Bukkit;
+import org.getspout.spoutapi.gui.Color;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
+import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -20,6 +22,9 @@ public class PlayerOptions implements Externalizable
 	private static final int VERSION = 0;
 	
 	private transient GenericLabel infoScreen;
+	private transient GenericTexture waveCounter;
+	private transient GenericLabel waveCounterWave;		//Label that shows current wave in waveCounter
+	private transient GenericLabel waveCounterZombies;	//Label that shows remaining zombies in waveCounter
 	
 	private String player;
 	//Buttons
@@ -29,7 +34,7 @@ public class PlayerOptions implements Externalizable
 	//Checkmark thingies
 	public boolean waveChecked;
 	public boolean moneyChecked;
-	public boolean killsChecked;
+	public boolean pointsChecked;
 	public boolean remainingZombiesChecked;
 	public boolean aliveCountChecked;
 	public boolean gamemodeChecked;
@@ -40,11 +45,50 @@ public class PlayerOptions implements Externalizable
 	public PlayerOptions()
 	{
 		infoScreen = new GenericLabel();
+		infoScreen.setVisible(false);
+		infoScreen.setAnchor(WidgetAnchor.TOP_CENTER);
+		infoScreen.setAlign(WidgetAnchor.CENTER_CENTER);
+		infoScreen.shiftYPos(5);
+		infoScreen.setHeight(10);
+		infoScreen.setWidth(50);
+		
+		waveCounter = new GenericTexture();
+		waveCounter.setVisible(false);
+		waveCounter.setDrawAlphaChannel(true);
+		waveCounter.setUrl("http://i.imgur.com/t44qB.png");
+		waveCounter.setWidth(125);
+		waveCounter.setHeight(125);
+		waveCounter.setAnchor(WidgetAnchor.TOP_RIGHT);
+		waveCounter.shiftXPos(-85);
+		waveCounter.shiftYPos(-35);
+		
+		waveCounterWave = new GenericLabel();
+		waveCounterWave.setVisible(false);
+		waveCounterWave.setAnchor(WidgetAnchor.TOP_RIGHT);
+		waveCounterWave.setAlign(WidgetAnchor.CENTER_CENTER);
+		waveCounterWave.shiftXPos(-35);
+		waveCounterWave.shiftYPos(37);
+		waveCounterWave.setTextColor(new Color(150, 0, 10));
+		waveCounterWave.setText("Wave: ");
+		waveCounterWave.setHeight(10);
+		waveCounterWave.setWidth(10);
+		
+		waveCounterZombies = new GenericLabel();
+		waveCounterZombies.setVisible(false);
+		waveCounterZombies.setAnchor(WidgetAnchor.TOP_RIGHT);
+		waveCounterZombies.setAlign(WidgetAnchor.CENTER_CENTER);
+		waveCounterZombies.shiftXPos(-35);
+		waveCounterZombies.shiftYPos(20);
+		waveCounterZombies.setTextColor(new Color(150, 0, 10));
+		waveCounterZombies.setScale(2);
+		waveCounterZombies.setText("0");
+		waveCounterZombies.setHeight(20);
+		waveCounterZombies.setWidth(20);
 	}
 	
 	public PlayerOptions(String player)
 	{
-		infoScreen = new GenericLabel();
+		this();
 		
 		this.player = player;
 		
@@ -54,7 +98,7 @@ public class PlayerOptions implements Externalizable
 		
 		waveChecked = true;
 		moneyChecked = true;
-		killsChecked = false;
+		pointsChecked = false;
 		remainingZombiesChecked = true;
 		aliveCountChecked = false;
 		gamemodeChecked = false;
@@ -70,6 +114,21 @@ public class PlayerOptions implements Externalizable
 		return infoScreen;
 	}
 	
+	public GenericTexture getWaveCounter()
+	{
+		return waveCounter;
+	}
+	
+	public GenericLabel getWaveCounterWave()
+	{
+		return waveCounterWave;
+	}
+	
+	public GenericLabel getWaveCounterZombies()
+	{
+		return waveCounterZombies;
+	}
+	
 	public void openOptions()
 	{
 		ZOptionsButton votingScreen = new ZOptionsButton("Voting Popup: "+isEnabled(votingScreenEnabled));
@@ -80,11 +139,11 @@ public class PlayerOptions implements Externalizable
 		zombieTextures.setAnchor(WidgetAnchor.CENTER_CENTER);
 		infoBar.setAnchor(WidgetAnchor.CENTER_CENTER);
 		
-		votingScreen.shiftXPos(-120);
+		votingScreen.shiftXPos(-160);
 		votingScreen.shiftYPos(-80);
-		zombieTextures.shiftXPos(-120);
+		zombieTextures.shiftXPos(-160);
 		zombieTextures.shiftYPos(-30);
-		infoBar.shiftXPos(-120);
+		infoBar.shiftXPos(-160);
 		infoBar.shiftYPos(20);
 		
 		votingScreen.setWidth(150);
@@ -142,12 +201,13 @@ public class PlayerOptions implements Externalizable
 		
 		wave.setChecked(waveChecked);
 		money.setChecked(moneyChecked);
-		points.setChecked(killsChecked);
+		points.setChecked(pointsChecked);
 		remaining.setChecked(remainingZombiesChecked);
 		aliveCount.setChecked(aliveCountChecked);
 		gamemode.setChecked(gamemodeChecked);
 		
 		ZCloseButton close = new ZCloseButton("Close");
+		close.setAlign(WidgetAnchor.CENTER_CENTER);
 		close.setAnchor(WidgetAnchor.CENTER_CENTER);
 		close.shiftXPos(0);
 		close.shiftYPos(70);
@@ -191,7 +251,7 @@ public class PlayerOptions implements Externalizable
 			
 			waveChecked = in.readBoolean();
 			moneyChecked = in.readBoolean();
-			killsChecked = in.readBoolean();
+			pointsChecked = in.readBoolean();
 			remainingZombiesChecked = in.readBoolean();
 			aliveCountChecked = in.readBoolean();
 			gamemodeChecked = in.readBoolean();
@@ -215,7 +275,7 @@ public class PlayerOptions implements Externalizable
 		
 		out.writeBoolean(waveChecked);
 		out.writeBoolean(moneyChecked);
-		out.writeBoolean(killsChecked);
+		out.writeBoolean(pointsChecked);
 		out.writeBoolean(remainingZombiesChecked);
 		out.writeBoolean(aliveCountChecked);
 		out.writeBoolean(gamemodeChecked);

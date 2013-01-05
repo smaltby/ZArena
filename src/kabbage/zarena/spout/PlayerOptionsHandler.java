@@ -17,9 +17,6 @@ public class PlayerOptionsHandler implements Externalizable
 	
 	private List<PlayerOptions> playerOptionsList;
 	
-	/**
-	 * Empty constructor for externalization.
-	 */
 	public PlayerOptionsHandler()
 	{
 		playerOptionsList = new ArrayList<PlayerOptions>();

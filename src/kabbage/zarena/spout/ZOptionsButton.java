@@ -1,6 +1,7 @@
 package kabbage.zarena.spout;
 
 import kabbage.zarena.ZArena;
+import kabbage.zarena.utils.ChatHelper;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.Button;
@@ -18,10 +19,11 @@ public class ZOptionsButton extends GenericButton
 	@Override
 	public void onButtonClick(final ButtonClickEvent event)
 	{
+		ChatHelper.broadcastMessage("check");
 		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(event.getPlayer().getName());
 		Button button = event.getButton();
 		boolean enableDisable = button.getText().endsWith("Enabled") ? false : true;
-		switch(button.getText())
+		switch(button.getText().replaceAll("Enabled", "").replaceAll("Disabled", ""))
 		{
 		case "Voting Popup: ":
 			options.votingScreenEnabled = enableDisable;

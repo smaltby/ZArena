@@ -1,6 +1,7 @@
 package kabbage.zarena.spout;
 
 import kabbage.zarena.ZArena;
+import kabbage.zarena.utils.ChatHelper;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.Button;
@@ -19,6 +20,7 @@ public class ZOptionsCheckBox extends GenericCheckBox
 	@Override
 	public void onButtonClick(ButtonClickEvent event)
 	{
+		ChatHelper.broadcastMessage("check");
 		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(event.getPlayer().getName());
 		Button button = event.getButton();
 		switch(button.getText())
@@ -29,8 +31,8 @@ public class ZOptionsCheckBox extends GenericCheckBox
 		case "Money":
 			options.moneyChecked = !options.moneyChecked;
 			break;
-		case "Kills":
-			options.killsChecked = !options.killsChecked;
+		case "Points":
+			options.pointsChecked = !options.pointsChecked;
 			break;
 		case "Zombies Remaining":
 			options.remainingZombiesChecked = !options.remainingZombiesChecked;

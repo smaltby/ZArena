@@ -34,6 +34,7 @@ public class EntityTypeConfiguration implements EntityType
 	boolean melee;
 	boolean ranged;
 	String rangedType;
+	String skinURL;
 	List<DamageEffect> damageEffects = new ArrayList<DamageEffect>();
 	List<SpecialEffect> specialEffects = new ArrayList<SpecialEffect>();
 	
@@ -55,6 +56,7 @@ public class EntityTypeConfiguration implements EntityType
 		melee = config.getBoolean("Use Melee", true);
 		ranged = config.getBoolean("Use Ranged", false);
 		rangedType = config.getString("Ranged Attack Type", "Arrow");
+		skinURL = config.getString("Skin URL", (type.equalsIgnoreCase("skeleton")) ? "http://i.imgur.com/L2Zy5.png" : (type.equalsIgnoreCase("wolf")) ? "http://i.imgur.com/9Iimp.png" : "http://i.imgur.com/XJuFX.png");
 		if(config.getStringList("Immunities") != null)
 		{
 			for(String damageCauseName : config.getStringList("Immunities"))
@@ -179,6 +181,11 @@ public class EntityTypeConfiguration implements EntityType
 	public int getMinimumSpawnWave()
 	{
 		return minimumSpawnWave;
+	}
+	
+	public String getSkinURL()
+	{
+		return skinURL;
 	}
 	
 	public double getSpawnChance()

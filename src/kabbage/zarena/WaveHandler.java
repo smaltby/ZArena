@@ -329,7 +329,7 @@ public class WaveHandler implements Runnable
 		if(plugin.getConfig().getBoolean(Constants.QUANTITY_ADJUST))
 			toSpawn *= 2/(1 + Math.pow(Math.E, (-1/4d)*(gameHandler.getAliveCount()) + 1.2));
 		
-		zombieSpawnChance = 0.15 / (1 + Math.pow(Math.E, ((double) -1/4 * (modifiedWave))));	//Logistic function
+		zombieSpawnChance = 0.15 / (1 + Math.pow(Math.E, ((double) -1/4 * (modifiedWave / 2))));	//Logistic function
 		
 		if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY) > 0)
 		{
@@ -370,7 +370,7 @@ public class WaveHandler implements Runnable
 		
 		//Modify settings based on gamemode
 		if(gm.isApocalypse())
-			zombieSpawnChance /= 1.5;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
+			zombieSpawnChance /= 2;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
 	}
 	
 	/**

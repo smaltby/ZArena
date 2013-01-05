@@ -6,6 +6,8 @@ import kabbage.zarena.ZLevel;
 import kabbage.zarena.commands.utils.CommandSenderWrapper;
 import kabbage.zarena.signs.ZSign;
 import kabbage.zarena.signs.ZTollSign;
+import kabbage.zarena.spout.PlayerOptions;
+import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.Constants;
 
 import org.bukkit.ChatColor;
@@ -24,6 +26,7 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.PluginManager;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class PlayerListener implements Listener
 {
@@ -60,6 +63,18 @@ public class PlayerListener implements Listener
 					gameHandler.addPlayer(event.getPlayer());
 				}
 			}, 1L);
+		}
+		if(SpoutHandler.isEnabled)
+		{
+			if(event.getPlayer() instanceof SpoutPlayer)
+			{
+				SpoutPlayer sPlayer = (SpoutPlayer) event.getPlayer();
+				PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(sPlayer.getName());
+				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getInfoScreen());
+				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounter());
+				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounterWave());
+				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounterZombies());
+			}
 		}
 	}
 

@@ -61,7 +61,6 @@ public class ZArena extends JavaPlugin
 	
 	private GameHandler gameHandler; //Game handler
 	private PlayerOptionsHandler playerOptionsHandler;
-	private SpoutHandler spoutHandler;
 	
 	//Command executors
 	private final ZACommands zaCommands = new ZACommands();
@@ -75,7 +74,6 @@ public class ZArena extends JavaPlugin
 	private PlayerListener pListener;
 	private WorldListener wListener;
 	private BlockListener bListener;
-	//private SpoutListener sListener;
 	
 	public void onEnable()
 	{
@@ -83,6 +81,11 @@ public class ZArena extends JavaPlugin
 		logger = Bukkit.getServer().getLogger();
 		
 		CustomEntityLibrary.load(this);
+		
+		PluginManager pm = Bukkit.getServer().getPluginManager();
+		Plugin p = pm.getPlugin("Spout");
+		if(p != null)
+			SpoutHandler.onEnable();
 		
 		loadConfiguration();	//Lots of stuff relies on the config, so load it early
 		//Load some stuff the game handler relies on
@@ -113,22 +116,10 @@ public class ZArena extends JavaPlugin
 		pListener = new PlayerListener();
 		wListener = new WorldListener();
 		bListener = new BlockListener();			
-		PluginManager pm = Bukkit.getServer().getPluginManager();
 		eListener.registerEvents(pm, this);
 		pListener.registerEvents(pm, this);
 		wListener.registerEvents(pm, this);
 		bListener.registerEvents(pm, this);
-		
-		try
-		{
-			Plugin p = pm.getPlugin("SpoutPlugin");
-			if(p != null)
-			{
-				//Disabled for the time being, as spout doesn't work
-//				spoutHandler = new SpoutHandler();
-//				spoutHandler.onEnable(sListener);	
-			}
-		} catch(Exception e) {}
 		
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
 		{
@@ -148,6 +139,10 @@ public class ZArena extends JavaPlugin
 		//Save stuff
 		saveConfig();
 		saveFiles();
+		//Reset static stuff
+		instance = null;
+		logger = null;
+		SpoutHandler.isEnabled = false;
 	}
 	
 	public GameHandler getGameHandler()
@@ -163,11 +158,6 @@ public class ZArena extends JavaPlugin
 	public static ZArena getInstance()
 	{
 		return instance;
-	}
-	
-	public SpoutHandler getSpoutHandler()
-	{
-		return spoutHandler;
 	}
 	
 	private void loadConfiguration()
@@ -264,7 +254,7 @@ public class ZArena extends JavaPlugin
 		List<Double> zombieQuantity = new ArrayList<Double>();
 		zombieQuantity.add(3.0);
 		zombieQuantity.add(2.0);
-		zombieQuantity.add(10.0);
+		zombieQuantity.add(18.0);
 		cfg.addDefault(Constants.ZOMBIE_QUANTITY_COEFFICIENTS, zombieQuantity);
 		
 		saveConfig();
@@ -412,18 +402,19 @@ public class ZArena extends JavaPlugin
 	private void loadFiles()
 	{
 		gameHandler.loadLevelHandler();
-		if(spoutHandler != null)
+		if(SpoutHandler.isEnabled)
 			loadPlayerOptions();
 	}
 	
 	private void loadPlayerOptions()
 	{
-		File path = new File(Constants.PLUGIN_FOLDER);
+		File path = new File(Constants.OPTIONS_PATH);
 
         FileInputStream fis;
         ObjectInputStream ois;
 
-        try {
+        try
+        {
             fis = new FileInputStream(path);
             ois = new ObjectInputStream(fis);
 
@@ -433,8 +424,9 @@ public class ZArena extends JavaPlugin
             ois.close();
             fis.close();
 
-        } catch (Exception e)
+        } catch (IOException | ClassNotFoundException e)
         {
+        	e.printStackTrace();
         	ZArena.logger.log(Level.WARNING, "ZArena: Couldn't load the PlayerOptions database. Ignore if this is the first time the plugin has been run.");
         	playerOptionsHandler = new PlayerOptionsHandler();
         }
@@ -545,8 +537,8 @@ public class ZArena extends JavaPlugin
 	{
 		if(tick % 20 == 0)
 		{
-			if(spoutHandler != null)
-				spoutHandler.updatePlayerOptions(gameHandler);
+			if(SpoutHandler.isEnabled)
+				SpoutHandler.updatePlayerOptions();
 		}
 		tick++;
 	}
@@ -554,28 +546,27 @@ public class ZArena extends JavaPlugin
 	private void saveFiles()
 	{
 		gameHandler.saveLevelHandler(true);
-		//savePlayerOptions();
+		if(SpoutHandler.isEnabled)
+			savePlayerOptions();
 	}
 	
-	@SuppressWarnings("unused")
 	private void savePlayerOptions()
 	{
-		File path = new File(Constants.PLUGIN_FOLDER);
-
-        FileOutputStream fos;
-        ObjectOutputStream oos;
-
-        try {
-            fos = new FileOutputStream(path);
-            oos = new ObjectOutputStream(fos);
+		File path = new File(Constants.OPTIONS_PATH);
+        
+        try
+        {
+        	FileOutputStream fos = new FileOutputStream(path);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
 
             playerOptionsHandler.writeExternal(oos);
 
             oos.close();
             fos.close();
-
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
+        	e.printStackTrace();
         	ZArena.logger.log(Level.WARNING, "ZArena: Error saving the PlayerOptions database.");
         }
 	}
