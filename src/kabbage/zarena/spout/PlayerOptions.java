@@ -14,6 +14,7 @@ import kabbage.zarena.ZArena;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.gui.Color;
+import org.getspout.spoutapi.gui.GenericButton;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTexture;
@@ -330,6 +331,23 @@ public class PlayerOptions implements Externalizable
 		}
 		tabMain.clear();
 		tabText.clear();
+	}
+	
+	public void openVotingScreen(String[] options)
+	{
+		GenericPopup voting = new GenericPopup();
+		for(int i = 0; i < 3; i++)
+		{
+			GenericButton button = new ZVotingButton((i+1) + ":" + options[i]);
+			button.setHeight(24);
+			button.setWidth(128);
+			button.setAlign(WidgetAnchor.CENTER_CENTER);
+			button.setAnchor(WidgetAnchor.CENTER_CENTER);
+			button.shiftYPos(-24 + i * 24);
+			button.shiftXPos(button.getWidth() / -2);
+			voting.attachWidget(ZArena.getInstance(), button);
+		}
+		((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().attachPopupScreen(voting);
 	}
 	
 	private String isEnabled(boolean enabled)

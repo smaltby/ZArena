@@ -12,12 +12,15 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.getspout.spout.Spout;
+import org.getspout.spoutapi.player.SpoutPlayer;
 
 import kabbage.zarena.commands.utils.CommandSenderWrapper;
 import kabbage.zarena.events.GameStartCause;
 import kabbage.zarena.events.GameStartEvent;
 import kabbage.zarena.events.LevelChangeCause;
 import kabbage.zarena.events.LevelChangeEvent;
+import kabbage.zarena.spout.PlayerOptions;
 import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Constants;
 
@@ -121,9 +124,39 @@ public class LevelVoter implements Runnable
 		}
 		ChatHelper.broadcastMessage(String.format(ChatHelper.VOTE_ENDS_IN, plugin.getConfig().getInt(Constants.VOTING_LENGTH)), gameHandler.getBroadcastPlayers());
 		
+		//Send vote screens to spout players with the option enabled
+		final String[] optionsArray = new String[3];
+		int index = 0;
+		for(Entry<ZLevel, Gamemode> option : options.entrySet())
+		{
+			optionsArray[index] = option.getKey().getName()+"<"+option.getValue().getName()+">";
+			index++;
+		}
+		for(final SpoutPlayer player : Spout.getInstance().getOnlinePlayers())
+		{
+			if(player.isDead())
+			{
+				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(player.getName());
+						if(options.votingScreenEnabled)
+							options.openVotingScreen(optionsArray);
+					}
+				}, 60L);
+			}
+			else
+			{
+				PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(player.getName());
+				if(options.votingScreenEnabled)
+					options.openVotingScreen(optionsArray);
+			}
+		}
 		gameHandler.voterTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, plugin.getConfig().getInt(Constants.VOTING_LENGTH) * 20);
 	}
-	
+
 	public void resetVoting()
 	{
 		options.clear();
