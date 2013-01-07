@@ -50,7 +50,7 @@ public class PlayerListener implements Listener
 		if(gameHandler.getLevel() != null && plugin.getGameHandler().getPlayerNames().contains(event.getPlayer().getName()))
 			event.setRespawnLocation(gameHandler.getLevel().getDeathSpawn());
 	}
-
+	
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event)
 	{

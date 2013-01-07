@@ -5,7 +5,6 @@ import kabbage.customentitylibrary.CustomEntityWrapper;
 import kabbage.zarena.ZArena;
 import kabbage.zarena.customentities.EntityTypeConfiguration;
 import kabbage.zarena.spout.PlayerOptions;
-
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -40,12 +39,18 @@ public class SpoutListener implements BindingExecutionDelegate, Listener
 			return;
 		if(event.getBinding().getDefaultKey() == Keyboard.KEY_O)
 			plugin.getPlayerOptionsHandler().getOptions(event.getPlayer().getName()).openOptions();
+		if(event.getBinding().getDefaultKey() == Keyboard.KEY_GRAVE)
+			if(plugin.getGameHandler().getPlayers().contains(event.getPlayer()))
+			{
+				plugin.getPlayerOptionsHandler().getOptions(event.getPlayer().getName()).openTabScreen();
+			}
 	}
 
 	@Override
 	public void keyReleased(KeyBindingEvent event)
 	{
-		
+		if(event.getBinding().getDefaultKey() == Keyboard.KEY_GRAVE)
+			plugin.getPlayerOptionsHandler().getOptions(event.getPlayer().getName()).closeTabScreen();
 	}
 	
 	@EventHandler
@@ -61,19 +66,18 @@ public class SpoutListener implements BindingExecutionDelegate, Listener
 			return;
 		CustomEntityWrapper entity = event.getEntity();
 		EntityTypeConfiguration entityType = (EntityTypeConfiguration) entity.getType();
-			for(SpoutPlayer player : Spout.getServer().getOnlinePlayers())
+		for(SpoutPlayer player : Spout.getServer().getOnlinePlayers())
+		{
+			PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
+			if(!options.zombieTexturesEnabled)
+				continue;
+			if(entityType.getType().equalsIgnoreCase("wolf"))
 			{
-				PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
-				if(!options.zombieTexturesEnabled)
-					continue;
-				if(entityType.getType().equalsIgnoreCase("wolf"))
-				{
-					player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.WOLF_ANGRY);
-					player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.WOLF_TAMED);
-				}
-				else
-					player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.DEFAULT);
+				player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.WOLF_ANGRY);
+				player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.WOLF_TAMED);
 			}
+			else
+				player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.DEFAULT);
 		}
-	
+	}
 }

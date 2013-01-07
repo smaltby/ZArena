@@ -103,7 +103,7 @@ public class EntityListener implements Listener
 					//If the gamemode is no buying, there is a chance for the player to get an item drop from the killed zombie
 					if(gameHandler.getGameMode().isScavenger())
 					{
-						double itemChance = type.getWorthModifier() / 15.0;
+						double itemChance = type.getWorthModifier() / 10.0;
 						double weight = type.getWorthModifier();
 
 						if(Utils.getWeaponCount(stats.getPlayer().getInventory()) == 0)

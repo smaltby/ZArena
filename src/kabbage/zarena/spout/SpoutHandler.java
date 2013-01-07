@@ -1,22 +1,17 @@
 package kabbage.zarena.spout;
 
-import kabbage.customentitylibrary.CustomEntityWrapper;
 import kabbage.zarena.GameHandler;
 import kabbage.zarena.PlayerStats;
 import kabbage.zarena.ZArena;
-import kabbage.zarena.customentities.EntityTypeConfiguration;
 import kabbage.zarena.listeners.SpoutListener;
 
 import org.bukkit.Bukkit;
-import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.getspout.spoutapi.Spout;
 import org.getspout.spoutapi.SpoutManager;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.keyboard.Keyboard;
-import org.getspout.spoutapi.player.EntitySkinType;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
 /**
@@ -33,14 +28,7 @@ public class SpoutHandler
 		sListener = new SpoutListener();
 		sListener.registerEvents(Bukkit.getServer().getPluginManager(), ZArena.getInstance());
 		SpoutManager.getKeyBindingManager().registerBinding("ZArena Options", Keyboard.KEY_O, "Opens the ZArena spout options screen.", sListener, ZArena.getInstance());
-		Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(ZArena.getInstance(), new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				onTick();
-			}
-		}, 1L, 1L);
+		SpoutManager.getKeyBindingManager().registerBinding("ZArena Tab Screen", Keyboard.KEY_GRAVE, "Opens the custom ZArena tab screen if in-game.", sListener, ZArena.getInstance());
 	}
 
 	public static void updatePlayerOptions()
@@ -102,34 +90,6 @@ public class SpoutHandler
 			if(!options.votingScreenEnabled)
 				continue;
 			
-		}
-	}
-	
-	public static void onTick()
-	{
-		for(World w : Bukkit.getWorlds())
-		{
-			for(LivingEntity e : w.getLivingEntities())
-			{
-				if(CustomEntityWrapper.instanceOf(e))
-				{
-					CustomEntityWrapper entity = CustomEntityWrapper.getCustomEntity(e);
-					EntityTypeConfiguration type = (EntityTypeConfiguration) entity.getType();
-					for(SpoutPlayer player : Spout.getServer().getOnlinePlayers())
-					{
-						PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
-						if(!options.zombieTexturesEnabled)
-							continue;
-						if(type.getType().equalsIgnoreCase("wolf"))
-						{
-							player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), type.getSkinURL(), EntitySkinType.WOLF_ANGRY);
-							player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), type.getSkinURL(), EntitySkinType.WOLF_TAMED);
-						}
-						else
-							player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), type.getSkinURL(), EntitySkinType.DEFAULT);
-					}
-				}
-			}
 		}
 	}
 }

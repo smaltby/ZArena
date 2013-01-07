@@ -4,15 +4,20 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
+import kabbage.zarena.PlayerStats;
 import kabbage.zarena.ZArena;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.getspout.spoutapi.gui.Color;
 import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.GenericTexture;
+import org.getspout.spoutapi.gui.RenderPriority;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.getspout.spoutapi.player.SpoutPlayer;
 
@@ -55,12 +60,13 @@ public class PlayerOptions implements Externalizable
 		waveCounter = new GenericTexture();
 		waveCounter.setVisible(false);
 		waveCounter.setDrawAlphaChannel(true);
-		waveCounter.setUrl("http://i.imgur.com/t44qB.png");
+		waveCounter.setUrl("http://i.imgur.com/fWiJl.png");
 		waveCounter.setWidth(125);
 		waveCounter.setHeight(125);
 		waveCounter.setAnchor(WidgetAnchor.TOP_RIGHT);
 		waveCounter.shiftXPos(-85);
 		waveCounter.shiftYPos(-35);
+		waveCounter.setPriority(RenderPriority.High);
 		
 		waveCounterWave = new GenericLabel();
 		waveCounterWave.setVisible(false);
@@ -229,6 +235,101 @@ public class PlayerOptions implements Externalizable
 		popup.attachWidget(ZArena.getInstance(), close);
 		
 		((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().attachPopupScreen(popup);
+	}
+	
+	private GenericTexture tabHeader;
+	private List<GenericTexture> tabMain = new ArrayList<GenericTexture>();
+	private List<GenericLabel> tabText = new ArrayList<GenericLabel>();
+	public void openTabScreen()
+	{
+		tabHeader = new GenericTexture("http://i.imgur.com/t8CPF.png");
+		tabHeader.setDrawAlphaChannel(true);
+		tabHeader.setAnchor(WidgetAnchor.CENTER_CENTER);
+		tabHeader.setWidth(212);
+		tabHeader.setHeight(8);
+		tabHeader.shiftYPos(-100);
+		tabHeader.shiftXPos(tabHeader.getWidth() / -2 + 20);
+		
+		int index = 0;
+		for(Player player : ZArena.getInstance().getGameHandler().getPlayers())
+		{
+			GenericTexture part = new GenericTexture("http://i.imgur.com/qvrX8.png");
+			part.setDrawAlphaChannel(true);
+			part.setAnchor(WidgetAnchor.CENTER_CENTER);
+			part.setWidth(255);
+			part.setHeight(15);
+			part.shiftYPos(-90 + index * 15);
+			part.shiftXPos(part.getWidth() / -2);
+			part.setPriority(RenderPriority.Low);
+			tabMain.add(part);
+			
+			PlayerStats stats = ZArena.getInstance().getGameHandler().getPlayerStats(player);
+			
+			GenericLabel name = new GenericLabel(player.getName());
+			name.setAnchor(WidgetAnchor.CENTER_CENTER);
+			name.setAlign(WidgetAnchor.TOP_CENTER);
+			name.setHeight(10);
+			name.setWidth(10);
+			name.shiftYPos(-85 + index * 15);
+			name.shiftXPos(-75);
+			
+			GenericLabel kills = new GenericLabel(stats.getPoints() + "");
+			kills.setAnchor(WidgetAnchor.CENTER_CENTER);
+			kills.setAlign(WidgetAnchor.TOP_CENTER);
+			kills.setHeight(10);
+			kills.setWidth(10);
+			kills.shiftYPos(-85 + index * 15);
+			
+			GenericLabel money = new GenericLabel(stats.getMoney() + "");
+			money.setAnchor(WidgetAnchor.CENTER_CENTER);
+			money.setAlign(WidgetAnchor.TOP_CENTER);
+			money.setHeight(10);
+			money.setWidth(10);
+			money.shiftYPos(-85 + index * 15);
+			money.shiftXPos(50);
+			
+			GenericLabel health = new GenericLabel(player.getHealth() + "");
+			health.setAnchor(WidgetAnchor.CENTER_CENTER);
+			health.setAlign(WidgetAnchor.TOP_CENTER);
+			health.setHeight(10);
+			health.setWidth(10);
+			health.shiftYPos(-85 + index * 15);
+			health.shiftXPos(100);
+			
+			tabText.add(name);
+			tabText.add(money);
+			tabText.add(kills);
+			tabText.add(health);
+			
+			index++;
+		}
+		
+		((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().attachWidget(ZArena.getInstance(), tabHeader);
+		for(GenericTexture part : tabMain)
+		{
+			((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().attachWidget(ZArena.getInstance(), part);
+		}
+		for(GenericLabel text : tabText)
+		{
+			((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().attachWidget(ZArena.getInstance(), text);
+		}
+	}
+	
+	public void closeTabScreen()
+	{
+		if(tabHeader == null)
+			return;
+		((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().removeWidget(tabHeader);
+		for(GenericTexture part : tabMain)
+		{
+			((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().removeWidget(part);
+		}
+		for(GenericLabel text : tabText)
+		{
+			((SpoutPlayer) Bukkit.getPlayer(player)).getMainScreen().removeWidget(text);
+		}
+		tabMain.clear();
+		tabText.clear();
 	}
 	
 	private String isEnabled(boolean enabled)
