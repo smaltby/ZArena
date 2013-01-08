@@ -198,7 +198,7 @@ public class PlayerOptions implements Externalizable
 			money.shiftYPos(-85 + index * 15);
 			money.shiftXPos(50);
 			
-			GenericLabel health = new GenericLabel(player.getHealth() + "");
+			GenericLabel health = new GenericLabel((stats.isAlive()) ? player.getHealth() + "": "0");
 			health.setAnchor(WidgetAnchor.CENTER_CENTER);
 			health.setAlign(WidgetAnchor.TOP_CENTER);
 			health.setHeight(10);
