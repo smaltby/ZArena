@@ -69,14 +69,33 @@ public class SpoutHandler
 		}
 	}
 	
-	public static void openVotingScreens()
+	public static void openVotingScreens(final String[] optionsArray)
 	{
-		for(SpoutPlayer player : Spout.getServer().getOnlinePlayers())
+		for(final SpoutPlayer player : Spout.getServer().getOnlinePlayers())
 		{
 			PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
 			if(!options.votingScreenEnabled)
 				continue;
-			
+			if(player.isDead())
+			{
+				ZArena.getInstance().getServer().getScheduler().scheduleSyncDelayedTask(ZArena.getInstance(), new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
+						if(options.votingScreenEnabled)
+							options.openVotingScreen(optionsArray);
+					}
+				}, 60L);
+			}
+			else
+				options.openVotingScreen(optionsArray);
 		}
+	}
+	
+	public static boolean instanceofSpoutPlayer(Player player)
+	{
+		return player instanceof SpoutPlayer;
 	}
 }

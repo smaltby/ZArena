@@ -158,7 +158,7 @@ public class WaveHandler implements Runnable
 	
 	public int getApocalypseWave()
 	{
-		return (int) Math.ceil((Math.log(Math.pow((tickCount+1), 10)) + ((tickCount+1)/40))/40);	//Logarithmic function
+		return (int) Math.ceil((Math.log(Math.pow((tickCount+1), 10)) + ((tickCount+1)/40))/20);	//Logarithmic function
 	}
 	
 	public SkeletonTypeConfiguration getDefaultSkeletonType()
@@ -370,7 +370,7 @@ public class WaveHandler implements Runnable
 		
 		//Modify settings based on gamemode
 		if(gm.isApocalypse())
-			zombieSpawnChance /= 2;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
+			zombieSpawnChance /= 1.7;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
 	}
 	
 	/**

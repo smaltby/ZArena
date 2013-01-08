@@ -12,6 +12,7 @@ import org.bukkit.plugin.PluginManager;
 import org.getspout.spoutapi.Spout;
 import org.getspout.spoutapi.event.input.KeyBindingEvent;
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
+import org.getspout.spoutapi.event.spout.SpoutCraftEnableEvent;
 import org.getspout.spoutapi.gui.ScreenType;
 import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 import org.getspout.spoutapi.keyboard.Keyboard;
@@ -79,5 +80,15 @@ public class SpoutListener implements BindingExecutionDelegate, Listener
 			else
 				player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.DEFAULT);
 		}
+	}
+	
+	@EventHandler
+	public void setPlayerWidgets(SpoutCraftEnableEvent event)
+	{
+		SpoutPlayer sPlayer = event.getPlayer();
+		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(sPlayer.getName());
+		sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounter());
+		sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounterWave());
+		sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounterZombies());
 	}
 }

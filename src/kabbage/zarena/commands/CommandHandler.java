@@ -21,6 +21,7 @@ import kabbage.zarena.events.LevelChangeCause;
 import kabbage.zarena.events.LevelChangeEvent;
 import kabbage.zarena.signs.ZTollSign;
 import kabbage.zarena.spout.PlayerOptions;
+import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Constants;
 import kabbage.zarena.utils.LocationSer;
@@ -31,7 +32,6 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 public class CommandHandler
 {
@@ -383,7 +383,7 @@ public class CommandHandler
 			senderWrapper.sendMessage(ChatColor.RED+"Spout not enabled on this server.");
 			return;
 		}
-		if(!(senderWrapper.getPlayer() instanceof SpoutPlayer))
+		if(!SpoutHandler.instanceofSpoutPlayer(senderWrapper.getPlayer()))
 		{
 			senderWrapper.sendMessage(ChatColor.RED+"You must have the spout client to use this.");
 			return;

@@ -12,15 +12,13 @@ import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.getspout.spout.Spout;
-import org.getspout.spoutapi.player.SpoutPlayer;
 
 import kabbage.zarena.commands.utils.CommandSenderWrapper;
 import kabbage.zarena.events.GameStartCause;
 import kabbage.zarena.events.GameStartEvent;
 import kabbage.zarena.events.LevelChangeCause;
 import kabbage.zarena.events.LevelChangeEvent;
-import kabbage.zarena.spout.PlayerOptions;
+import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Constants;
 
@@ -132,28 +130,8 @@ public class LevelVoter implements Runnable
 			optionsArray[index] = option.getKey().getName()+"<"+option.getValue().getName()+">";
 			index++;
 		}
-		for(final SpoutPlayer player : Spout.getInstance().getOnlinePlayers())
-		{
-			if(player.isDead())
-			{
-				plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()
-				{
-					@Override
-					public void run()
-					{
-						PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(player.getName());
-						if(options.votingScreenEnabled)
-							options.openVotingScreen(optionsArray);
-					}
-				}, 60L);
-			}
-			else
-			{
-				PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(player.getName());
-				if(options.votingScreenEnabled)
-					options.openVotingScreen(optionsArray);
-			}
-		}
+		if(plugin.isSpoutEnabled())
+			SpoutHandler.openVotingScreens(optionsArray);
 		gameHandler.voterTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, plugin.getConfig().getInt(Constants.VOTING_LENGTH) * 20);
 	}
 
