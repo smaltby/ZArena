@@ -75,6 +75,8 @@ public class ZArena extends JavaPlugin
 	private WorldListener wListener;
 	private BlockListener bListener;
 	
+	private boolean spoutEnabled;
+	
 	public void onEnable()
 	{
 		instance = this;
@@ -142,7 +144,7 @@ public class ZArena extends JavaPlugin
 		//Reset static stuff
 		instance = null;
 		logger = null;
-		SpoutHandler.isEnabled = false;
+		spoutEnabled = false;
 	}
 	
 	public GameHandler getGameHandler()
@@ -158,6 +160,11 @@ public class ZArena extends JavaPlugin
 	public static ZArena getInstance()
 	{
 		return instance;
+	}
+	
+	public boolean isSpoutEnabled()
+	{
+		return spoutEnabled;
 	}
 	
 	private void loadConfiguration()
@@ -402,7 +409,7 @@ public class ZArena extends JavaPlugin
 	private void loadFiles()
 	{
 		gameHandler.loadLevelHandler();
-		if(SpoutHandler.isEnabled)
+		if(spoutEnabled)
 			loadPlayerOptions();
 	}
 	
@@ -537,7 +544,7 @@ public class ZArena extends JavaPlugin
 	{
 		if(tick % 20 == 0)
 		{
-			if(SpoutHandler.isEnabled)
+			if(spoutEnabled)
 				SpoutHandler.updatePlayerOptions();
 		}
 		tick++;
@@ -546,7 +553,7 @@ public class ZArena extends JavaPlugin
 	private void saveFiles()
 	{
 		gameHandler.saveLevelHandler(true);
-		if(SpoutHandler.isEnabled)
+		if(spoutEnabled)
 			savePlayerOptions();
 	}
 	

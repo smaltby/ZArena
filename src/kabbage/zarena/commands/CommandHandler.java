@@ -21,7 +21,6 @@ import kabbage.zarena.events.LevelChangeCause;
 import kabbage.zarena.events.LevelChangeEvent;
 import kabbage.zarena.signs.ZTollSign;
 import kabbage.zarena.spout.PlayerOptions;
-import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Constants;
 import kabbage.zarena.utils.LocationSer;
@@ -379,7 +378,7 @@ public class CommandHandler
 	
 	public void openOptions()
 	{
-		if(!SpoutHandler.isEnabled)
+		if(plugin.isSpoutEnabled())
 		{
 			senderWrapper.sendMessage(ChatColor.RED+"Spout not enabled on this server.");
 			return;

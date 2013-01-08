@@ -7,7 +7,6 @@ import kabbage.zarena.commands.utils.CommandSenderWrapper;
 import kabbage.zarena.signs.ZSign;
 import kabbage.zarena.signs.ZTollSign;
 import kabbage.zarena.spout.PlayerOptions;
-import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.Constants;
 
 import org.bukkit.ChatColor;
@@ -64,7 +63,7 @@ public class PlayerListener implements Listener
 				}
 			}, 1L);
 		}
-		if(SpoutHandler.isEnabled)
+		if(plugin.isSpoutEnabled())
 		{
 			if(event.getPlayer() instanceof SpoutPlayer)
 			{

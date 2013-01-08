@@ -19,12 +19,10 @@ import org.getspout.spoutapi.player.SpoutPlayer;
  */
 public class SpoutHandler
 {
-	public static boolean isEnabled = false;
 	private static SpoutListener sListener = new SpoutListener();
 	
 	public static void onEnable()
 	{
-		isEnabled = true;
 		sListener = new SpoutListener();
 		sListener.registerEvents(Bukkit.getServer().getPluginManager(), ZArena.getInstance());
 		SpoutManager.getKeyBindingManager().registerBinding("ZArena Options", Keyboard.KEY_O, "Opens the ZArena spout options screen.", sListener, ZArena.getInstance());
