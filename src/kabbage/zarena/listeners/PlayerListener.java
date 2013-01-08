@@ -70,7 +70,6 @@ public class PlayerListener implements Listener
 			{
 				SpoutPlayer sPlayer = (SpoutPlayer) event.getPlayer();
 				PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(sPlayer.getName());
-				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getInfoScreen());
 				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounter());
 				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounterWave());
 				sPlayer.getMainScreen().attachWidget(ZArena.getInstance(), options.getWaveCounterZombies());

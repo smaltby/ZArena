@@ -43,38 +43,27 @@ public class SpoutHandler
 			PlayerStats stats = handler.getPlayerStats(player);
 			if(stats == null)
 				continue;
-			GenericLabel infoLabel = options.getInfoScreen();
 			GenericTexture waveCounter = options.getWaveCounter();
 			GenericLabel wcWave = options.getWaveCounterWave();
 			GenericLabel wcZombies = options.getWaveCounterZombies();
-			if(options.infoBarEnabled)
+			if(options.waveCounterEnabled)
 			{
-				infoLabel.setVisible(true);
 				waveCounter.setVisible(true);
 				wcWave.setVisible(true);
 				wcZombies.setVisible(true);
 				if(handler.isRunning())
 				{
-					String wave = (options.waveChecked) ? "Wave: "+handler.getWaveHandler().getWave()+" | ":"";
-					String money = (options.moneyChecked) ? "Money: "+stats.getMoney()+" | ":"";
-					String kills = (options.pointsChecked) ? "Points: "+stats.getPoints()+" | ":"";
-					String remaining = (options.remainingZombiesChecked) ? "Remainging Enemies: "+handler.getWaveHandler().getRemainingZombies()+" | ":"";
-					String alive= (options.aliveCountChecked) ? "Alive Count: "+handler.getAliveCount()+" | ":"";
-					String gamemode = "";
-					gamemode = (options.gamemodeChecked) ? "GameMode: "+handler.getGameMode().toString()+" | ":"";
-					infoLabel.setText(" | "+wave+money+kills+remaining+alive+gamemode);
 					wcWave.setText("Wave: "+handler.getWaveHandler().getWave());
 					wcZombies.setText(""+handler.getWaveHandler().getRemainingZombies());
 				}
-				else if(handler.isVoting())
-					infoLabel.setText("Voting is currently taking place.");
 				else
-					infoLabel.setText("Game currently not running. Please contact an administator to resume gameplay.");
-				
+				{
+					wcWave.setText("Wave: 0");
+					wcZombies.setText("0");
+				}
 			}
 			else
 			{
-				infoLabel.setVisible(false);
 				waveCounter.setVisible(false);
 				wcWave.setVisible(false);
 				wcZombies.setVisible(false);

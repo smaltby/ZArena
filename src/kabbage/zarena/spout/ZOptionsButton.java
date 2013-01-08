@@ -31,8 +31,8 @@ public class ZOptionsButton extends GenericButton
 		case "Zombie Textures: ":
 			options.zombieTexturesEnabled = enableDisable;
 			break;
-		case "Info Bar: ":
-			options.infoBarEnabled = enableDisable;
+		case "Wave Counter: ":
+			options.waveCounterEnabled = enableDisable;
 			break;
 		default:
 			return;
