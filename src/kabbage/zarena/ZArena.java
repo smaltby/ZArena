@@ -75,7 +75,7 @@ public class ZArena extends JavaPlugin
 	private WorldListener wListener;
 	private BlockListener bListener;
 	
-	private boolean spoutEnabled;
+	private boolean spoutEnabled = false;
 	
 	public void onEnable()
 	{
@@ -87,7 +87,10 @@ public class ZArena extends JavaPlugin
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		Plugin p = pm.getPlugin("Spout");
 		if(p != null)
+		{
+			spoutEnabled = true;
 			SpoutHandler.onEnable();
+		}
 		
 		loadConfiguration();	//Lots of stuff relies on the config, so load it early
 		//Load some stuff the game handler relies on
