@@ -262,6 +262,11 @@ public class GameHandler
 		return playerStats;
 	}
 	
+	public synchronized PlayerStats getPlayerStats(String player)
+	{
+		return playerStats.get(player);
+	}
+	
 	public synchronized PlayerStats getPlayerStats(Player player)
 	{
 		return playerStats.get(player.getName());
@@ -306,6 +311,31 @@ public class GameHandler
         	ZArena.logger.log(Level.WARNING, "ZArena: Couldn't load the LevelHandler database. Ignore if this is the first time the plugin has been run.");
             levelHandler = new LevelHandler();
         }
+	}
+	
+	public void removePlayer(String player)
+	{
+		if(players.contains(player))
+		{
+			PlayerStats stats = getPlayerStats(player);
+			clearInventory(player.getInventory());
+			if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
+			{
+				PlayerInventory pi = player.getInventory();
+				ItemStack[] contents = stats.getInventoryContents();
+				if(contents != null)
+					pi.setContents(contents);
+				ItemStack[] armorContents = stats.getInventoryArmor();
+				if(armorContents != null)
+					pi.setArmorContents(armorContents);
+			}
+			player.teleport(getPlayersLeaveLocation(player));
+			player.setGameMode(stats.getOldGameMode());
+			player.setLevel(stats.getOldLevel());
+			
+			players.remove(player);
+			playerStats.remove(player);
+		}
 	}
 	
 	/**

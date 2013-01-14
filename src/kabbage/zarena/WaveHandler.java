@@ -254,10 +254,11 @@ public class WaveHandler implements Runnable
 					if(checkNextWave())
 						incrementWave();
 					//Sometimes, players escape the server without setting off any listeners...
-					for(Player p : gameHandler.getPlayers())
+					for(String pName : gameHandler.getPlayerNames())
 					{
+						Player p = Bukkit.getPlayer(pName);
 						if(p == null || !p.isOnline())
-							gameHandler.removePlayer(p);
+							gameHandler.removePlayer(pName);
 					}
 				}
 				if(tickCount % 100 == 0)

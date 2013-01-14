@@ -170,7 +170,7 @@ public class PlayerOptions implements Externalizable
 			part.setHeight(15);
 			part.shiftYPos(-90 + index * 15);
 			part.shiftXPos(part.getWidth() / -2);
-			part.setPriority(RenderPriority.Low);
+			part.setPriority(RenderPriority.Lowest);
 			tabMain.add(part);
 			
 			PlayerStats stats = ZArena.getInstance().getGameHandler().getPlayerStats(player);
@@ -182,6 +182,7 @@ public class PlayerOptions implements Externalizable
 			name.setWidth(10);
 			name.shiftYPos(-85 + index * 15);
 			name.shiftXPos(-75);
+			name.setPriority(RenderPriority.Low);
 			
 			GenericLabel kills = new GenericLabel(stats.getPoints() + "");
 			kills.setAnchor(WidgetAnchor.CENTER_CENTER);
@@ -189,6 +190,7 @@ public class PlayerOptions implements Externalizable
 			kills.setHeight(10);
 			kills.setWidth(10);
 			kills.shiftYPos(-85 + index * 15);
+			kills.setPriority(RenderPriority.Low);
 			
 			GenericLabel money = new GenericLabel(stats.getMoney() + "");
 			money.setAnchor(WidgetAnchor.CENTER_CENTER);
@@ -197,6 +199,7 @@ public class PlayerOptions implements Externalizable
 			money.setWidth(10);
 			money.shiftYPos(-85 + index * 15);
 			money.shiftXPos(50);
+			money.setPriority(RenderPriority.Low);
 			
 			GenericLabel health = new GenericLabel((stats.isAlive()) ? player.getHealth() + "": "0");
 			health.setAnchor(WidgetAnchor.CENTER_CENTER);
@@ -205,6 +208,7 @@ public class PlayerOptions implements Externalizable
 			health.setWidth(10);
 			health.shiftYPos(-85 + index * 15);
 			health.shiftXPos(100);
+			health.setPriority(RenderPriority.Low);
 			
 			tabText.add(name);
 			tabText.add(money);
