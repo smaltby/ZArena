@@ -313,26 +313,15 @@ public class GameHandler
         }
 	}
 	
+	/**
+	 * Removes a player from the game. DOES NOT RESTORE PLAYER'S PRE JOIN STATUS. Only use when the player managed to get off the server without being detected.
+	 * @param player name of player to remove
+	 * TODO: Make it so that the player has his status returned to him the next time he joins the server. 
+	 */
 	public void removePlayer(String player)
 	{
 		if(players.contains(player))
 		{
-			PlayerStats stats = getPlayerStats(player);
-			clearInventory(player.getInventory());
-			if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
-			{
-				PlayerInventory pi = player.getInventory();
-				ItemStack[] contents = stats.getInventoryContents();
-				if(contents != null)
-					pi.setContents(contents);
-				ItemStack[] armorContents = stats.getInventoryArmor();
-				if(armorContents != null)
-					pi.setArmorContents(armorContents);
-			}
-			player.teleport(getPlayersLeaveLocation(player));
-			player.setGameMode(stats.getOldGameMode());
-			player.setLevel(stats.getOldLevel());
-			
 			players.remove(player);
 			playerStats.remove(player);
 		}
