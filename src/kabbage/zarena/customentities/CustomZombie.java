@@ -10,27 +10,27 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-import net.minecraft.server.v1_4_6.Enchantment;
-import net.minecraft.server.v1_4_6.EnchantmentManager;
-import net.minecraft.server.v1_4_6.EntityArrow;
-import net.minecraft.server.v1_4_6.EntityHuman;
-import net.minecraft.server.v1_4_6.EntityLiving;
-import net.minecraft.server.v1_4_6.EntityZombie;
-import net.minecraft.server.v1_4_6.IRangedEntity;
-import net.minecraft.server.v1_4_6.ItemStack;
-import net.minecraft.server.v1_4_6.PathfinderGoalBreakDoor;
-import net.minecraft.server.v1_4_6.PathfinderGoalFloat;
-import net.minecraft.server.v1_4_6.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_4_6.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_4_6.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_4_6.PathfinderGoalMoveTowardsRestriction;
-import net.minecraft.server.v1_4_6.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_4_6.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_4_6.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_4_6.PathfinderGoalSelector;
+import net.minecraft.server.v1_4_R1.Enchantment;
+import net.minecraft.server.v1_4_R1.EnchantmentManager;
+import net.minecraft.server.v1_4_R1.EntityArrow;
+import net.minecraft.server.v1_4_R1.EntityHuman;
+import net.minecraft.server.v1_4_R1.EntityLiving;
+import net.minecraft.server.v1_4_R1.IRangedEntity;
+import net.minecraft.server.v1_4_R1.ItemStack;
+import net.minecraft.server.v1_4_R1.PathfinderGoalBreakDoor;
+import net.minecraft.server.v1_4_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_4_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_4_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_4_R1.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_4_R1.PathfinderGoalMoveTowardsRestriction;
+import net.minecraft.server.v1_4_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_4_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_4_R1.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_4_R1.EntityZombie;
 
-import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_6.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
 
 public class CustomZombie extends EntityZombie implements IRangedEntity
 {

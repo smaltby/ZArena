@@ -9,25 +9,25 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-import net.minecraft.server.v1_4_6.DamageSource;
-import net.minecraft.server.v1_4_6.Entity;
-import net.minecraft.server.v1_4_6.EntityAgeable;
-import net.minecraft.server.v1_4_6.EntityAnimal;
-import net.minecraft.server.v1_4_6.EntityHuman;
-import net.minecraft.server.v1_4_6.EntityWolf;
-import net.minecraft.server.v1_4_6.ItemStack;
-import net.minecraft.server.v1_4_6.PathfinderGoalFloat;
-import net.minecraft.server.v1_4_6.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_4_6.PathfinderGoalLeapAtTarget;
-import net.minecraft.server.v1_4_6.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_4_6.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_4_6.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_4_6.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_4_6.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_4_6.PathfinderGoalSelector;
+import net.minecraft.server.v1_4_R1.DamageSource;
+import net.minecraft.server.v1_4_R1.Entity;
+import net.minecraft.server.v1_4_R1.EntityAgeable;
+import net.minecraft.server.v1_4_R1.EntityAnimal;
+import net.minecraft.server.v1_4_R1.EntityHuman;
+import net.minecraft.server.v1_4_R1.EntityWolf;
+import net.minecraft.server.v1_4_R1.ItemStack;
+import net.minecraft.server.v1_4_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_4_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_4_R1.PathfinderGoalLeapAtTarget;
+import net.minecraft.server.v1_4_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_4_R1.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_4_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_4_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_4_R1.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
 
-import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_6.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
 
 public class CustomWolf extends EntityWolf
 {

@@ -10,22 +10,22 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-import net.minecraft.server.v1_4_6.EntityHuman;
-import net.minecraft.server.v1_4_6.EntitySkeleton;
-import net.minecraft.server.v1_4_6.NBTTagCompound;
-import net.minecraft.server.v1_4_6.PathfinderGoalFleeSun;
-import net.minecraft.server.v1_4_6.PathfinderGoalFloat;
-import net.minecraft.server.v1_4_6.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_4_6.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_4_6.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_4_6.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_4_6.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_4_6.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_4_6.PathfinderGoalRestrictSun;
-import net.minecraft.server.v1_4_6.PathfinderGoalSelector;
+import net.minecraft.server.v1_4_R1.EntityHuman;
+import net.minecraft.server.v1_4_R1.EntitySkeleton;
+import net.minecraft.server.v1_4_R1.NBTTagCompound;
+import net.minecraft.server.v1_4_R1.PathfinderGoalFleeSun;
+import net.minecraft.server.v1_4_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_4_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_4_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_4_R1.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_4_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_4_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_4_R1.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_4_R1.PathfinderGoalRestrictSun;
+import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
 
-import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_6.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
 
 public class CustomSkeleton extends EntitySkeleton
 {

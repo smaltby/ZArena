@@ -1,15 +1,15 @@
 package kabbage.zarena.customentities;
 
-import net.minecraft.server.v1_4_6.Entity;
-import net.minecraft.server.v1_4_6.EntityArrow;
-import net.minecraft.server.v1_4_6.EntityLiving;
-import net.minecraft.server.v1_4_6.EntitySnowball;
-import net.minecraft.server.v1_4_6.IRangedEntity;
-import net.minecraft.server.v1_4_6.MathHelper;
-import net.minecraft.server.v1_4_6.PathfinderGoal;
-import net.minecraft.server.v1_4_6.Vec3D;
+import net.minecraft.server.v1_4_R1.Entity;
+import net.minecraft.server.v1_4_R1.EntityArrow;
+import net.minecraft.server.v1_4_R1.EntityLiving;
+import net.minecraft.server.v1_4_R1.EntitySnowball;
+import net.minecraft.server.v1_4_R1.IRangedEntity;
+import net.minecraft.server.v1_4_R1.MathHelper;
+import net.minecraft.server.v1_4_R1.PathfinderGoal;
+import net.minecraft.server.v1_4_R1.Vec3D;
 
-import org.bukkit.craftbukkit.v1_4_6.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_4_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityTargetEvent;
 
 /**
@@ -43,7 +43,7 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
 	 * Should this task execute?
 	 */
     public boolean a() {
-        EntityLiving entityliving = this.a.aG();
+        EntityLiving entityliving = this.a.getGoalTarget();
 
         if (entityliving == null) {
             return false;

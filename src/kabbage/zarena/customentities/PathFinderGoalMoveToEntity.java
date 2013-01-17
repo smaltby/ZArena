@@ -1,14 +1,14 @@
 package kabbage.zarena.customentities;
 
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
 
-import net.minecraft.server.v1_4_6.Entity;
-import net.minecraft.server.v1_4_6.EntityCreature;
-import net.minecraft.server.v1_4_6.EntityPlayer;
-import net.minecraft.server.v1_4_6.PathEntity;
-import net.minecraft.server.v1_4_6.PathfinderGoal;
-import net.minecraft.server.v1_4_6.RandomPositionGenerator;
-import net.minecraft.server.v1_4_6.Vec3D;
+import net.minecraft.server.v1_4_R1.Entity;
+import net.minecraft.server.v1_4_R1.EntityCreature;
+import net.minecraft.server.v1_4_R1.EntityPlayer;
+import net.minecraft.server.v1_4_R1.PathEntity;
+import net.minecraft.server.v1_4_R1.PathfinderGoal;
+import net.minecraft.server.v1_4_R1.RandomPositionGenerator;
+import net.minecraft.server.v1_4_R1.Vec3D;
 import kabbage.zarena.GameHandler;
 import kabbage.zarena.PlayerStats;
 import kabbage.zarena.ZArena;
