@@ -1,7 +1,6 @@
 package kabbage.zarena.spout;
 
 import kabbage.zarena.GameHandler;
-import kabbage.zarena.PlayerStats;
 import kabbage.zarena.ZArena;
 import kabbage.zarena.listeners.SpoutListener;
 
@@ -38,13 +37,10 @@ public class SpoutHandler
 			if(!(player instanceof SpoutPlayer))
 				continue;
 			PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
-			PlayerStats stats = handler.getPlayerStats(player);
-			if(stats == null)
-				continue;
 			GenericTexture waveCounter = options.getWaveCounter();
 			GenericLabel wcWave = options.getWaveCounterWave();
 			GenericLabel wcZombies = options.getWaveCounterZombies();
-			if(options.waveCounterEnabled)
+			if(options.waveCounterEnabled || handler.getPlayerStats(player) == null)
 			{
 				waveCounter.setVisible(true);
 				wcWave.setVisible(true);
