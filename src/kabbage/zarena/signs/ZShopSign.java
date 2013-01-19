@@ -4,12 +4,16 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
@@ -22,12 +26,13 @@ import kabbage.zarena.utils.LocationSer;
 public class ZShopSign extends ZSign implements Externalizable
 {
 	private static final long serialVersionUID = "ZSHOPSIGN".hashCode(); // DO NOT CHANGE
-	private static final int VERSION = 0;
+	private static final int VERSION = 1;
 	
 	private int type;
 	private int amount;
 	private short damage;
 	private byte id;
+	private Map<Integer, Integer> enchantments = new HashMap<Integer, Integer>();
 	
 	/**
 	 * Empty constructor for externalization.
@@ -38,18 +43,19 @@ public class ZShopSign extends ZSign implements Externalizable
 	
 	public ZShopSign(ZLevel level, Location location, ItemStack item, int price)
 	{
-		this(level, location, item.getType().getId(), item.getAmount(), item.getDurability(), item.getData().getData(), price);
-	}
-	
-	public ZShopSign(ZLevel level, Location location, int type, int amount, short damage, byte id, int price)
-	{
 		super(level, LocationSer.convertFromBukkitLocation(location), price);
-		this.type = type;
-		this.amount = amount;
-		this.damage = damage;
-		this.id = id;
+		this.type = item.getType().getId();
+		this.amount = item.getAmount();
+		this.damage = item.getDurability();
+		this.id = item.getData().getData();
+		for(Entry<Enchantment, Integer> e : item.getEnchantments().entrySet())
+		{
+			if(e.getKey() != null)
+				enchantments.put(e.getKey().getId(), e.getValue());
+		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static ZShopSign attemptCreateSign(ZLevel level, Sign sign)
 	{
 		String[] lines = sign.getLines();
@@ -73,7 +79,7 @@ public class ZShopSign extends ZSign implements Externalizable
 		if(material == null)
 			return null;
 		
-		return new ZShopSign(level, sign.getLocation(), material.getId(), 1, (short) 0, (byte) 0, price);
+		return new ZShopSign(level, sign.getLocation(), new ItemStack(material, 1, (short) 0, (byte) 0), price);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -89,7 +95,11 @@ public class ZShopSign extends ZSign implements Externalizable
 		}
 		else
 			stack = new ItemStack(type, amount, damage, id);
-			stack.setDurability(damage);
+		stack.setDurability(damage);
+		for(Entry<Integer, Integer> e : enchantments.entrySet())
+		{
+			stack.addUnsafeEnchantment(Enchantment.getById(e.getKey()), e.getValue());
+		}
 		return stack;
 	}
 	
@@ -139,9 +149,15 @@ public class ZShopSign extends ZSign implements Externalizable
 			damage = item.getDurability();
 			amount = item.getAmount();
 			id = item.getData().getData();
+			enchantments.clear();
+			for(Entry<Enchantment, Integer> e : item.getEnchantments().entrySet())
+			{
+				enchantments.put(e.getKey().getId(), e.getValue());
+			}
 		}
 	}
 	
+	@SuppressWarnings({ "unchecked" })
 	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
@@ -154,6 +170,15 @@ public class ZShopSign extends ZSign implements Externalizable
 			amount = in.readInt();
 			damage = in.readShort();
 			id = in.readByte();
+			enchantments = new HashMap<Integer, Integer>();
+		}
+		else if(ver == 1)
+		{
+			type = in.readInt();
+			amount = in.readInt();
+			damage = in.readShort();
+			id = in.readByte();
+			enchantments = (Map<Integer, Integer>) in.readObject();
 		}
 		else
 		{
@@ -172,5 +197,6 @@ public class ZShopSign extends ZSign implements Externalizable
 		out.writeInt(amount);
 		out.writeShort(damage);
 		out.writeByte(id);
+		out.writeObject(enchantments);
 	}
 }

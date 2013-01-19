@@ -534,7 +534,7 @@ public class ZArena extends JavaPlugin
 			{
 				String[] args = Utils.getConfigArgs(enchantName);
 				Enchantment enchantment = Enchantment.getById(Utils.parseInt(enchantName.split("\\s")[0], -1));
-				int level = Utils.parseInt(args[0], 1);
+				int level = (args.length > 0) ? Utils.parseInt(args[0], 1) : 1;
 				enchantments.put(enchantment, level);
 			}
 			
