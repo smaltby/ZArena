@@ -9,7 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-public class PlayerStats
+public class PlayerStats implements Comparable<PlayerStats>
 {
 	private String player;
 	private float money;
@@ -134,5 +134,33 @@ public class PlayerStats
 	public void subPoints(int points)
 	{
 		this.points -= points;
+	}
+
+	@Override
+	public int compareTo(PlayerStats stats)
+	{
+		if(stats.getPoints() > this.getPoints())
+			return 1;
+		else if(stats.getPoints() == this.getPoints())
+		{
+			if(stats.getMoney() > this.getMoney())
+				return 1;
+			else if(stats.getMoney() == this.getMoney())
+			{
+				if(this.getPlayer() == null && stats.getPlayer() == null)
+					return 0;
+				if(this.getPlayer() == null)
+					return 1;
+				if(stats.getPlayer() == null)
+					return -1;
+				if(stats.getPlayer().getHealth() > this.getPlayer().getHealth())
+					return 1;
+				else if(stats.getPlayer().getHealth() == this.getPlayer().getHealth())
+					return 0;
+				return -1;
+			}
+			return -1;
+		}
+		return -1;
 	}
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -160,8 +161,12 @@ public class PlayerOptions implements Externalizable
 		tabHeader.shiftYPos(-100);
 		tabHeader.shiftXPos(tabHeader.getWidth() / -2 + 20);
 		
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		List<PlayerStats> sortedStats = new ArrayList(ZArena.getInstance().getGameHandler().getPlayerStats().values());
+		Collections.sort(sortedStats);
+		
 		int index = 0;
-		for(Player player : ZArena.getInstance().getGameHandler().getPlayers())
+		for(PlayerStats stats : sortedStats)
 		{
 			GenericTexture part = new GenericTexture("http://i.imgur.com/qvrX8.png");
 			part.setDrawAlphaChannel(true);
@@ -173,7 +178,7 @@ public class PlayerOptions implements Externalizable
 			part.setPriority(RenderPriority.Lowest);
 			tabMain.add(part);
 			
-			PlayerStats stats = ZArena.getInstance().getGameHandler().getPlayerStats(player);
+			Player player = stats.getPlayer();
 			
 			GenericLabel name = new GenericLabel(player.getName());
 			name.setAnchor(WidgetAnchor.CENTER_CENTER);
