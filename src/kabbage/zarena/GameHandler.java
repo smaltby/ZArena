@@ -65,7 +65,6 @@ public class GameHandler
 		isVoting = false;
 		isWaiting = plugin.getConfig().getBoolean(Constants.AUTOSTART);
 		waveHandler = new WaveHandler(this);
-		levelHandler = new LevelHandler();
 		levelVoter = new LevelVoter(this);
 		players = new ArrayList<String>();
 		playerStats = new HashMap<String, PlayerStats>();
@@ -296,7 +295,8 @@ public class GameHandler
 	{
 		File path = new File(Constants.LEVEL_PATH);
 
-        try {
+        try
+        {
         	FileInputStream fis = new FileInputStream(path);
         	ObjectInputStream ois = new ObjectInputStream(fis);
 

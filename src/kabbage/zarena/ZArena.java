@@ -436,7 +436,6 @@ public class ZArena extends JavaPlugin
 
         } catch (IOException | ClassNotFoundException e)
         {
-        	e.printStackTrace();
         	ZArena.logger.log(Level.WARNING, "ZArena: Couldn't load the PlayerOptions database. Ignore if this is the first time the plugin has been run.");
         	playerOptionsHandler = new PlayerOptionsHandler();
         }
