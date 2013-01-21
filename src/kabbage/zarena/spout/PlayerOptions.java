@@ -175,7 +175,7 @@ public class PlayerOptions implements Externalizable
 			part.setHeight(15);
 			part.shiftYPos(-90 + index * 15);
 			part.shiftXPos(part.getWidth() / -2);
-			part.setPriority(RenderPriority.Lowest);
+			part.setPriority(RenderPriority.Low);
 			tabMain.add(part);
 			
 			Player player = stats.getPlayer();
@@ -183,37 +183,35 @@ public class PlayerOptions implements Externalizable
 			GenericLabel name = new GenericLabel(player.getName());
 			name.setAnchor(WidgetAnchor.CENTER_CENTER);
 			name.setAlign(WidgetAnchor.TOP_CENTER);
-			name.setHeight(10);
+			name.setHeight(11);
 			name.setWidth(10);
-			name.shiftYPos(-85 + index * 15);
+			name.shiftYPos(-86 + index * 15);
 			name.shiftXPos(-75);
-			name.setPriority(RenderPriority.Low);
 			
 			GenericLabel kills = new GenericLabel(stats.getPoints() + "");
 			kills.setAnchor(WidgetAnchor.CENTER_CENTER);
 			kills.setAlign(WidgetAnchor.TOP_CENTER);
-			kills.setHeight(10);
+			kills.setHeight(11);
 			kills.setWidth(10);
-			kills.shiftYPos(-85 + index * 15);
-			kills.setPriority(RenderPriority.Low);
+			kills.shiftYPos(-86 + index * 15);
 			
-			GenericLabel money = new GenericLabel(stats.getMoney() + "");
+			GenericLabel money = new GenericLabel("$"+stats.getMoney());
 			money.setAnchor(WidgetAnchor.CENTER_CENTER);
 			money.setAlign(WidgetAnchor.TOP_CENTER);
-			money.setHeight(10);
+			money.setHeight(11);
 			money.setWidth(10);
-			money.shiftYPos(-85 + index * 15);
+			money.shiftYPos(-86 + index * 15);
 			money.shiftXPos(50);
-			money.setPriority(RenderPriority.Low);
 			
-			GenericLabel health = new GenericLabel((stats.isAlive()) ? player.getHealth() + "": "0");
+			GenericLabel health = new GenericLabel((stats.isAlive()) ? player.getHealth() + "": "DEAD");
+			health.setTextColor((!stats.isAlive()) ? new Color(150, 0, 0) : (player.getHealth() > 15) ? new Color(0, 200, 0) : 
+				(player.getHealth() > 10) ? new Color(255, 255, 0) : (player.getHealth() > 5) ? new Color(255, 140, 0) : new Color(200, 0, 0));
 			health.setAnchor(WidgetAnchor.CENTER_CENTER);
 			health.setAlign(WidgetAnchor.TOP_CENTER);
-			health.setHeight(10);
+			health.setHeight(11);
 			health.setWidth(10);
-			health.shiftYPos(-85 + index * 15);
+			health.shiftYPos(-86 + index * 15);
 			health.shiftXPos(100);
-			health.setPriority(RenderPriority.Low);
 			
 			tabText.add(name);
 			tabText.add(money);
