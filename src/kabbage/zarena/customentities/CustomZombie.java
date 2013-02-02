@@ -30,6 +30,7 @@ import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
 import net.minecraft.server.v1_4_R1.EntityZombie;
 
 import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
 
 public class CustomZombie extends EntityZombie implements IRangedEntity
@@ -46,7 +47,7 @@ public class CustomZombie extends EntityZombie implements IRangedEntity
 	@Override
 	public void move(double d0, double d1, double d2)
 	{
-		CustomEntityMoveEvent event = new CustomEntityMoveEvent(this.getBukkitEntity(), new Location(this.world.getWorld(), lastX, lastY, lastZ), new Location(this.world.getWorld(), locX, locY, locZ));
+		CustomEntityMoveEvent event = new CustomEntityMoveEvent(this.myOwnDamnGetBukkitEntityMethodWithBlackjackAndHookers(), new Location(this.world.getWorld(), lastX, lastY, lastZ), new Location(this.world.getWorld(), locX, locY, locZ));
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		if(event.isCancelled())
 			this.setPosition(lastX, lastY, lastZ);
@@ -129,5 +130,11 @@ public class CustomZombie extends EntityZombie implements IRangedEntity
 
         this.makeSound("random.bow", 1.0F, 1.0F / (this.aB().nextFloat() * 0.4F + 0.8F));
         this.world.addEntity(entityarrow);
+	}
+	
+	//The actual getBukkitEntity method is being a whiny bitch and keeps insisting it doesn't exist...
+	public CraftEntity myOwnDamnGetBukkitEntityMethodWithBlackjackAndHookers()
+	{
+		return CraftEntity.getEntity(this.world.getServer(), this);
 	}
 }
