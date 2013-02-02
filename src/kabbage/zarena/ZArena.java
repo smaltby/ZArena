@@ -35,6 +35,7 @@ import kabbage.zarena.signs.ZSignCustomItem;
 import kabbage.zarena.spout.PlayerOptionsHandler;
 import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.Constants;
+import kabbage.zarena.utils.Metrics;
 import kabbage.zarena.utils.Permissions;
 import kabbage.zarena.utils.Utils;
 
@@ -108,6 +109,14 @@ public class ZArena extends JavaPlugin
 		loadGamemodeTypes();
 		loadEntityTypes();
 		loadFiles();
+		
+		//Load metrics
+		try 
+		{
+		    Metrics metrics = new Metrics(this);
+		    metrics.start();
+		} catch (IOException e) 
+		{/* Failed to submit the stats :-( */}
 		
 		//Register command executors
 		getCommand("zarena").setExecutor(zaCommands);
