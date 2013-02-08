@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +36,7 @@ import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.Constants;
 import kabbage.zarena.utils.Metrics;
 import kabbage.zarena.utils.Permissions;
+import kabbage.zarena.utils.StringEnums;
 import kabbage.zarena.utils.Utils;
 
 import net.minecraft.server.v1_4_R1.EntityGiantZombie;
@@ -210,7 +210,7 @@ public class ZArena extends JavaPlugin
             entityWithoutEggList.invoke(entityWithoutEggList, CustomGiant.class, "Giant", 53);
             entityWithoutEggList.invoke(entityWithoutEggList, EntityGiantZombie.class, "Giant", 53);
         }
-        catch (InvocationTargetException | IllegalAccessException | NoSuchMethodException e)
+        catch (Exception e)
         {
         	e.printStackTrace();
             setEnabled(false);
@@ -401,18 +401,19 @@ public class ZArena extends JavaPlugin
 				}
 				YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 				EntityTypeConfiguration entityConfig = new EntityTypeConfiguration(config);
-				switch(entityConfig.getType())
+				switch(StringEnums.valueOf(entityConfig.getType().toUpperCase()))
 				{
-				case "zombie":
+				case ZOMBIE:
 					gameHandler.getWaveHandler().zombieTypes.add(entityConfig);
 					break;
-				case "skeleton":
+				case SKELETON:
 					entityConfig = new SkeletonTypeConfiguration(config);
 					gameHandler.getWaveHandler().skeletonTypes.add((SkeletonTypeConfiguration) entityConfig);
 					break;
-				case "wolf":
+				case WOLF:
 					gameHandler.getWaveHandler().wolfTypes.add(entityConfig);
 					break;
+				default:
 				}
 			}
 		}
@@ -443,7 +444,7 @@ public class ZArena extends JavaPlugin
             ois.close();
             fis.close();
 
-        } catch (IOException | ClassNotFoundException e)
+        } catch (Exception e)
         {
         	ZArena.logger.log(Level.WARNING, "ZArena: Couldn't load the PlayerOptions database. Ignore if this is the first time the plugin has been run.");
         	playerOptionsHandler = new PlayerOptionsHandler();

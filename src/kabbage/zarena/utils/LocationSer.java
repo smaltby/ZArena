@@ -172,7 +172,7 @@ public class LocationSer implements Externalizable
     }
 
     public List<String> toList() {
-        LinkedList<String> ret = new LinkedList<>();
+        LinkedList<String> ret = new LinkedList<String>();
         ret.add("" + x);
         ret.add("" + y);
         ret.add("" + z);

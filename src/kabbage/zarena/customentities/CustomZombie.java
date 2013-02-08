@@ -79,7 +79,7 @@ public class CustomZombie extends EntityZombie implements IRangedEntity
 			//Now take the instances goals/targets and set them as new lists so they can be rewritten
 			gsa.set(this.goalSelector, new UnsafeList());
 			gsa.set(this.targetSelector, new UnsafeList());
-		} catch (NoSuchFieldException | SecurityException  | IllegalArgumentException | IllegalAccessException e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}

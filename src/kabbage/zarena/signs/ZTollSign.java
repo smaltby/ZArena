@@ -28,6 +28,7 @@ import org.bukkit.entity.Player;
 import kabbage.zarena.ZArena;
 import kabbage.zarena.ZLevel;
 import kabbage.zarena.utils.LocationSer;
+import kabbage.zarena.utils.StringEnums;
 
 public class ZTollSign extends ZSign implements Externalizable
 {
@@ -60,17 +61,18 @@ public class ZTollSign extends ZSign implements Externalizable
 		zSpawns = new ArrayList<LocationSer>();
 		for(String flag : flags)
 		{
-			switch(flag.toLowerCase().replaceAll("-", ""))
+			switch(StringEnums.valueOf(flag.toUpperCase().replaceAll("-", "")))
 			{
-			case "uo": case "usableonce":
+			case UO: case USABLEONCE:
 				setUsableOnce(true);
 				break;
-			case "op": case "opposite":
+			case OP: case OPPOSITE:
 				setOpposite(true);
 				break;
-			case "nr": case "noreset":
+			case NR: case NORESET:
 				setNoReset(true);
 				break;
+			default:
 			}
 		}
 	}

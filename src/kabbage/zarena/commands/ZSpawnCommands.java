@@ -2,6 +2,7 @@ package kabbage.zarena.commands;
 
 import kabbage.zarena.commands.utils.ArgumentCountException;
 import kabbage.zarena.commands.utils.ECommand;
+import kabbage.zarena.utils.StringEnums;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,24 +25,24 @@ public class ZSpawnCommands implements CommandExecutor {
 		boolean hardFailure = false; //If true, return false. (sender gets sent the usage)
 		try
 		{
-			switch(command.get(1).toLowerCase())
+			switch(StringEnums.valueOf(command.get(1).toUpperCase()))
 			{
-			case "set": case "add":
+			case SET: case ADD:
 				helpMessage = "/zspawn set <spawner-name>";
 				handler.setZSpawn(command.get(2));
 				break;
-			case "remove": case "delete":
+			case REMOVE: case DELETE:
 				helpMessage = "/zspawn remove <spawner-name | %nearest%>";
 				handler.removeZSpawn(command.get(2));
 				break;
-			case "jump":
+			case JUMP:
 				helpMessage = "/zspawn jump <spawner-name | %nearest%>";
 				handler.jumpToZSpawn(command.get(2));
 				break;
-			case "list":
+			case LIST:
 				handler.listZSpawns();
 				break;
-			case "markboss":
+			case MARKBOSS:
 				helpMessage = "/zspawn markboss <spawner-name>";
 				handler.markBossSpawn(command.get(2));
 				break;

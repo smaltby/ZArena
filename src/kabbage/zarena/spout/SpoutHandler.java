@@ -80,7 +80,7 @@ public class SpoutHandler
 					public void run()
 					{
 						PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
-						if(options.votingScreenEnabled)
+						if(options.votingScreenEnabled && Bukkit.getPlayer(player.getName()) != null)
 							options.openVotingScreen(optionsArray);
 					}
 				}, 60L);

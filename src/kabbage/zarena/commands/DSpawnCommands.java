@@ -2,6 +2,7 @@ package kabbage.zarena.commands;
 
 import kabbage.zarena.commands.utils.ArgumentCountException;
 import kabbage.zarena.commands.utils.ECommand;
+import kabbage.zarena.utils.StringEnums;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,12 +25,12 @@ public class DSpawnCommands implements CommandExecutor {
 		boolean hardFailure = false; //If true, return false. (sender gets sent the usage)
 		try
 		{
-			switch(command.get(1))
+			switch(StringEnums.valueOf(command.get(1).toUpperCase()))
 			{
-			case "set":
+			case SET:
 				handler.setDSpawn();
 				break;
-			case "jump":
+			case JUMP:
 				handler.jumpToDSpawn();
 				break;
 			default:

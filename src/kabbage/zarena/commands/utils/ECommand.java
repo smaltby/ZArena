@@ -20,8 +20,8 @@ public class ECommand
      */
     public ECommand(String label, String[] args)
     {
-        this.args = new ArrayList<>();
-        this.flags = new ArrayList<>();
+        this.args = new ArrayList<String>();
+        this.flags = new ArrayList<String>();
 
         this.args.add(label);
 
@@ -39,8 +39,8 @@ public class ECommand
      */
     public ECommand(String slashCommand)
     {
-        this.args = new ArrayList<>();
-        this.flags = new ArrayList<>();
+        this.args = new ArrayList<String>();
+        this.flags = new ArrayList<String>();
 
         slashCommand = slashCommand.substring(1); //take off the leading /
 
@@ -64,8 +64,8 @@ public class ECommand
      */
     public ECommand(String[] args, String[] flags)
     {
-        this.args = new ArrayList<>();
-        this.flags = new ArrayList<>();
+        this.args = new ArrayList<String>();
+        this.flags = new ArrayList<String>();
 
         this.args.addAll(Arrays.asList(args));
         for(int i = 0; i < flags.length; i++)

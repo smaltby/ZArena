@@ -23,6 +23,7 @@ import kabbage.zarena.events.GameStopEvent;
 import kabbage.zarena.events.WaveChangeEvent;
 import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Constants;
+import kabbage.zarena.utils.StringEnums;
 
 public class WaveHandler implements Runnable
 {
@@ -95,13 +96,13 @@ public class WaveHandler implements Runnable
 		}
 		if(type == null)
 			type = "Quadratic";
-		switch(type.toLowerCase())
+		switch(StringEnums.valueOf(type.toUpperCase()))
 		{
-		case "quadratic":
+		case QUADRATIC:
 			return calcQuadratic(x, coefficients);
-		case "logistic":
+		case LOGISTIC:
 			return calcLogistic(x, limit, coefficients);
-		case "logarithmic":
+		case LOGARITHMIC:
 			return calcLogarithmic(x, coefficients);
 		default:
 			return calcQuadratic(x, coefficients);

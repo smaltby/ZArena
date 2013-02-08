@@ -1,6 +1,7 @@
 package kabbage.zarena.spout;
 
 import kabbage.zarena.ZArena;
+import kabbage.zarena.utils.StringEnums;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.Button;
@@ -21,15 +22,15 @@ public class ZOptionsButton extends GenericButton
 		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(event.getPlayer().getName());
 		Button button = event.getButton();
 		boolean enableDisable = button.getText().endsWith("Enabled") ? false : true;
-		switch(button.getText().replaceAll("Enabled", "").replaceAll("Disabled", ""))
+		switch(StringEnums.valueOf(button.getText().trim().replaceAll(" ", "_").replaceAll("(Enabled|Disabled|\\W)", "").toUpperCase()))
 		{
-		case "Voting Popup: ":
+		case VOTING_POPUP:
 			options.votingScreenEnabled = enableDisable;
 			break;
-		case "Zombie Textures: ":
+		case ZOMBIE_TEXTURES:
 			options.zombieTexturesEnabled = enableDisable;
 			break;
-		case "Wave Counter: ":
+		case WAVE_COUNTER:
 			options.waveCounterEnabled = enableDisable;
 			break;
 		default:

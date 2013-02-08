@@ -1,5 +1,6 @@
 package kabbage.zarena.customentities;
 
+import kabbage.zarena.utils.StringEnums;
 import kabbage.zarena.utils.Utils;
 
 import org.bukkit.Bukkit;
@@ -33,7 +34,7 @@ public class DamageEffect
 	public void dealEffect(Player player, Location source)
 	{
 		Location playerLoc = player.getLocation();
-		switch(name.toLowerCase().replaceAll(" ", ""))
+		switch(StringEnums.valueOf(name.toUpperCase().replaceAll(" ", "")))
 		{
 		case POTION:
 			PotionEffectType potionType = PotionEffectType.getByName(args[0].toUpperCase().replaceAll(" ", "_"));
@@ -46,7 +47,7 @@ public class DamageEffect
 		case KNOCKBACK:
 			Utils.knockBack(player, source, Utils.parseDouble(args[0], 1.0), Utils.parseDouble(args[1], 1.0));
 			break;
-		case FORCE_EQUIP:
+		case FORCEEQUIP:
 			ItemStack item = new ItemStack(Material.getMaterial(args[0]));
 			if(item != null)
 			{
@@ -76,14 +77,14 @@ public class DamageEffect
 			player.teleport(new Location(world, Utils.parseDouble(args[1], playerLoc.getX()), Utils.parseDouble(args[2], playerLoc.getY()), 
 					Utils.parseDouble(args[3], playerLoc.getZ())));
 			break;
-		case TELEPORT_RELATIVE:
+		case TELEPORTRELATIVE:
 			double prevX = playerLoc.getX();
 			double prevY = playerLoc.getY();
 			double prevZ = playerLoc.getZ();
 			player.teleport(new Location(playerLoc.getWorld(), prevX + Utils.parseDouble(args[0], 0), prevY + Utils.parseDouble(args[1], 0), 
 					prevZ + Utils.parseDouble(args[2], 0)));
 			break;
-		case DAMAGE_HUNGER:
+		case DAMAGEHUNGER:
 			player.setFoodLevel(player.getFoodLevel() - Utils.parseInt(args[0], 1));
 			player.setSaturation(player.getSaturation() - Utils.parseInt(args[0], 1));
 			break;

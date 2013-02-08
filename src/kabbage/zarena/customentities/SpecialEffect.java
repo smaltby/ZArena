@@ -3,6 +3,7 @@ package kabbage.zarena.customentities;
 import java.util.ConcurrentModificationException;
 
 import kabbage.customentitylibrary.CustomEntityWrapper;
+import kabbage.zarena.utils.StringEnums;
 import kabbage.zarena.utils.Utils;
 
 import org.bukkit.ChatColor;
@@ -35,14 +36,14 @@ public class SpecialEffect
 	{
 		Location source = entity.getLocation();
 		PotionEffectType potionType = null;
-		switch(name.toLowerCase().replaceAll(" ", ""))
+		switch(StringEnums.valueOf(name.toUpperCase().replaceAll(" ", "")))
 		{
 		case POTION:
 			potionType = PotionEffectType.getByName(args[0].toUpperCase().replaceAll(" ", "_"));
 			if(potionType != null)
 				entity.addPotionEffect(new PotionEffect(potionType, Utils.parseInt(args[1], 100), Utils.parseInt(args[2], 1)));
 			break;
-		case POTION_RADIUS:
+		case POTIONRADIUS:
 			potionType = PotionEffectType.getByName(args[1].toUpperCase().replaceAll(" ", "_"));
 			PotionEffect effect = null;
 			if(potionType != null)
@@ -63,7 +64,7 @@ public class SpecialEffect
 		case FIRE:
 			entity.setFireTicks(Utils.parseInt(args[0], 60));
 			break;
-		case ENDER_SIGNAL:
+		case ENDERSIGNAL:
 			for(int i = 0; i <= Utils.parseInt(args[0], 1); i++)
 			{
 				try
@@ -73,7 +74,7 @@ public class SpecialEffect
 				{}	//which is gotten rid of with this catch
 			}
 			break;
-		case SPAWNER_FLAMES:
+		case SPAWNERFLAMES:
 			for(int i = 0; i < Utils.parseInt(args[0], 1); i++)
 			{
 				try

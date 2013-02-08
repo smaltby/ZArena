@@ -2,6 +2,7 @@ package kabbage.zarena.commands;
 
 import kabbage.zarena.commands.utils.ArgumentCountException;
 import kabbage.zarena.commands.utils.ECommand;
+import kabbage.zarena.utils.StringEnums;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,81 +26,81 @@ public class ZACommands implements CommandExecutor
 		boolean hardFailure = false; //If true, return false. (sender gets sent the usage)
 		try
 		{
-			switch(command.get(1))
+			switch(StringEnums.valueOf(command.get(1).toUpperCase()))
 			{
-			case "enter": case "join":
+			case ENTER: case JOIN:
 				handler.joinGame();
 				break;
-			case "leave":
+			case LEAVE:
 				handler.leaveGame();
 				break;
-			case "reload":
+			case RELOAD:
 				handler.reloadConfig();
 				break;
-			case "stats":
+			case STATS:
 				handler.showGameStats();
 				break;
-			case "vote":
+			case VOTE:
 				helpMessage = "/zarena vote <level num>";
 				handler.vote(command.get(2));
 				break;
-			case "list":
+			case LIST:
 				handler.listLevels();
 				break;
-			case "new": case "create":
+			case NEW: case CREATE:
 				helpMessage = "/zarena create <level name>";
 				handler.createLevel(command.get(2));
 				break;
-			case "delete": case "remove":
+			case DELETE: case REMOVE:
 				helpMessage = "/zarena remove <level name>";
 				handler.removeLevel(command.get(2));
 				break;
-			case "save":
+			case SAVE:
 				handler.saveLevels();
 				break;
-			case "load":
+			case LOAD:
 				helpMessage = "/zarena load <level name>";
 				handler.loadLevel(command.get(2));
 				break;
-			case "gamemode":
+			case GAMEMODE:
 				if(command.hasArgAtIndex(2))
 					handler.setGameMode(command.get(2));
 				handler.getGameMode();	//No else statement, so it still sends the player the new gamemode after setting it
 				break;
-			case "alive":
+			case ALIVE:
 				handler.listAlive();
 				break;
-			case "setalive":
+			case SETALIVE:
 				helpMessage = "/zarena setalive <player> <true|false>";
 				handler.setAlive(command.get(2), command.get(3));
 				break;
-			case "setleavelocation": case "setleaveloc":
+			case SETLEAVELOCATION: case SETLEAVELOC:
 				handler.setLeaveLocation();
 				break;
-			case "options":
+			case OPTIONS:
 				helpMessage = "zarena options";
 				handler.openOptions();
 				break;
-			case "session":
+			case SESSION:
 				handler.listSession();
 				break;
-			case "start":
+			case START:
 				handler.startGame();
 				break;
-			case "stop":
+			case STOP:
 				handler.stopGame();
 				break;
-			case "setwave":
+			case SETWAVE:
 				helpMessage = "/zarena setwave <wave>";
 				handler.setWave(command.get(2));
 				break;
-			case "info":
+			case INFO:
 				handler.sendInfo("general");
 				break;
-			case "wave":
+			case WAVE:
 				handler.sendInfo("wave");
 				break;
-			case "dia": case "diagnostic":
+			case DIA: case DIAGNOSTIC:
 				helpMessage = "/zarena dia <general|healthperwave|zombiesperwave|wave|spawnchance|checknextwave>";
 				handler.sendInfo(command.get(2));
 				break;

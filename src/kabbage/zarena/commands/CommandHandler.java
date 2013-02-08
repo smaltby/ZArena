@@ -25,6 +25,7 @@ import kabbage.zarena.spout.SpoutHandler;
 import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Constants;
 import kabbage.zarena.utils.LocationSer;
+import kabbage.zarena.utils.StringEnums;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -301,9 +302,9 @@ public class CommandHandler
 		}
 		for(String flag : flagArguments)
 		{
-			switch(flag.toLowerCase())
+			switch(StringEnums.valueOf(flag.toUpperCase()))
 			{
-			case "uo": case "usableonce":
+			case UO: case USABLEONCE:
 				if(sign.isUsableOnce())
 				{
 					sign.setUsableOnce(false);
@@ -313,7 +314,7 @@ public class CommandHandler
 				sign.setUsableOnce(true);
 				senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully marked as usable once.");
 				break;
-			case "op": case "opposite":
+			case OP: case OPPOSITE:
 				if(sign.isOpposite())
 				{
 					sign.setOpposite(false);
@@ -322,7 +323,7 @@ public class CommandHandler
 				}
 				sign.setOpposite(true);
 				senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully marked as opposite.");
-			case "nr": case "noreset":
+			case NR: case NORESET:
 				if(sign.isNoReset())
 				{
 					sign.setNoReset(false);
@@ -505,9 +506,9 @@ public class CommandHandler
 		}
 		WaveHandler waveHandler = gameHandler.getWaveHandler();
 		int wave = (gameHandler.getGameMode().isApocalypse()) ? waveHandler.getApocalypseWave() : waveHandler.getWave();
-		switch(info.toLowerCase())
+		switch(StringEnums.valueOf(info.toUpperCase()))
 		{
-		case "general":
+		case GENERAL:
 			senderWrapper.sendMessage(ChatColor.GOLD+"Wave: "+wave);
 			senderWrapper.sendMessage(ChatColor.GOLD+"Alive Count: "+gameHandler.getAliveCount());
 			senderWrapper.sendMessage(ChatColor.GOLD+"Remaining Zombies: "+waveHandler.getRemainingZombies());
@@ -515,7 +516,7 @@ public class CommandHandler
 			senderWrapper.sendMessage(ChatColor.GOLD+"Gamemode: "+gameHandler.getGameMode());
 			senderWrapper.sendMessage(ChatColor.GOLD+"Giants Enabled: "+(gameHandler.getLevel().getRandomBossSpawn() != null));
 			break;
-		case "zombiesperwave":
+		case ZOMBIESPERWAVE:
 			senderWrapper.sendMessage(ChatColor.GOLD+"Health of normal zombies on the first 20 waves:");
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
@@ -524,7 +525,7 @@ public class CommandHandler
 				senderWrapper.sendMessage(ChatColor.BLUE +"Wave "+checkWave+": "+ChatColor.RED+toSpawn);
 			}
 			break;
-		case "healthperwave":
+		case HEALTHPERWAVE:
 			senderWrapper.sendMessage(ChatColor.GOLD+"Zombie amounts on the first 20 waves:");
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
@@ -533,13 +534,13 @@ public class CommandHandler
 				senderWrapper.sendMessage(ChatColor.BLUE +"Health "+checkWave+": "+ChatColor.RED+health);
 			}
 			break;
-		case "wave":
+		case WAVE:
 			senderWrapper.sendMessage(ChatColor.GOLD+"Wave: "+wave);
 			break;
-		case "spawnchance":
+		case SPAWNCHANCE:
 			senderWrapper.sendMessage(ChatColor.GOLD+"Spawn Chance: "+waveHandler.getSpawnChance());
 			break;
-		case "checknextwave":
+		case CHECKNEXTWAVE:
 			senderWrapper.sendMessage(ChatColor.GOLD+"To Spawn: "+(waveHandler.getRemainingZombies() - waveHandler.getEntites().size()));
 			senderWrapper.sendMessage(ChatColor.GOLD+"Alive: "+waveHandler.getEntites().size());
 			senderWrapper.sendMessage(ChatColor.GOLD+"");

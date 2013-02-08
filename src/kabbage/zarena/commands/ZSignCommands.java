@@ -2,6 +2,7 @@ package kabbage.zarena.commands;
 
 import kabbage.zarena.commands.utils.ArgumentCountException;
 import kabbage.zarena.commands.utils.ECommand;
+import kabbage.zarena.utils.StringEnums;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -25,17 +26,17 @@ public class ZSignCommands implements CommandExecutor
 		boolean hardFailure = false; //If true, return false. (sender gets sent the usage)
 		try
 		{
-			switch(command.get(1))
+			switch(StringEnums.valueOf(command.get(1).toUpperCase()))
 			{
-			case "markzspawn":
+			case MARKZSPAWN:
 				helpMessage ="/zsign markzspawn <sign-name> <spawner-name>";
 				handler.markZSpawnToSign(command.get(2), command.get(3));
 				break;
-			case "mark":
+			case MARK:
 				helpMessage ="/zsign mark <sign-name> <-flag[s]>";
 				handler.markSign(command.get(2), command.getFlags());
 				break;
-			case "reload":
+			case RELOAD:
 				handler.reloadSigns();
 				break;
 			default:
