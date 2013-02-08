@@ -9,7 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-public class ZSpawnCommands implements CommandExecutor {
+public class ZSpawnCommands implements CommandExecutor
+{
 	public ZSpawnCommands()
 	{
 	}
