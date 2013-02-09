@@ -1,15 +1,19 @@
 package kabbage.killcounter;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 
 import kabbage.zarena.ZArena;
+import kabbage.zarena.utils.Constants;
 
 public class KillCounter
 {
@@ -18,91 +22,131 @@ public class KillCounter
 	private final KCCommands kcCommands = new KCCommands();
 	private KCListener kcListener;
 	
-	private TreeMap<String, Integer> killsMap;
-	private HashMap<String, Integer> baseKillsMap;
+	// Needs to be two arraylists as opposed to a map to allow for random access and mutable value sorting
+	private ArrayList<String> killsPlayers;
+	private ArrayList<Integer> killsAmounts;
 	
 	public void enable()
 	{
 		instance = this;
 		
+		killsPlayers = new ArrayList<String>();
+		killsAmounts = new ArrayList<Integer>();
+		
+		loadKills();
+		
 		kcListener = new KCListener();			
 		kcListener.registerEvents(Bukkit.getServer().getPluginManager());
 		
 		ZArena.getInstance().getCommand("killcounter").setExecutor(kcCommands);
-		baseKillsMap = new HashMap<String, Integer>();
-		ValueComparator<String, Integer> vc = new ValueComparator<String, Integer>(baseKillsMap);
-		killsMap = new TreeMap<String, Integer>(vc);
 	}
 	
 	public void disable()
 	{
-		
+		saveKills();
 	}
 	
 	public void addKill(String playerName)
 	{
-		int kills = baseKillsMap.containsKey(playerName) ? baseKillsMap.get(playerName) + 1 : 1;
+		int kills = killsPlayers.contains(playerName) ? killsAmounts.get(killsPlayers.indexOf(playerName)) + 1 : 1;
 		setKills(playerName, kills);
 	}
 	
-	public void setKills(String playerName, int kills)
+	public void setKills(String playerName, Integer kills)
 	{
-		baseKillsMap.remove(playerName);
-		killsMap.remove(playerName);
-		baseKillsMap.put(playerName, kills);
-		killsMap.put(playerName, kills);
+		// If the player has more kills than he had before, we try to raise him in the ranks, if he has less, we lower him in them
+		int upDown = (killsPlayers.contains(playerName)) ? kills.compareTo(killsAmounts.get(killsPlayers.indexOf(playerName))) : 1;
+		// If he has the same, then we don't need to change anything
+		if(upDown == 0)
+			return;
+		int previousIndex = killsPlayers.indexOf(playerName);
+		if(previousIndex == -1)
+			previousIndex = killsPlayers.size();
+		// The player currently being compared to our player
+		String other;
+		// The offset from the players previous rank. previousIndex + deltaIndex will be his new rank
+		int deltaIndex = 0;
+		do
+		{
+			deltaIndex -= upDown;
+			if(killsPlayers.size() > previousIndex + deltaIndex && previousIndex + deltaIndex >= 0)
+				other = killsPlayers.get(previousIndex + deltaIndex);
+			else
+				break;
+		} while(kills.compareTo(getKills(other)) == upDown);
+		deltaIndex += upDown;	// The player just failed against the last person tested against, so go back a step
+		// Remove the player from both lists, assuming he was there in the first place
+		if(killsPlayers.contains(playerName))
+		{
+			killsAmounts.remove(previousIndex);
+			killsPlayers.remove(playerName);
+		}
+		// Now readd him with his new rank
+		if(previousIndex == -1)
+			previousIndex++;
+		killsAmounts.add(previousIndex + deltaIndex, kills);
+		killsPlayers.add(previousIndex + deltaIndex, playerName);
 	}
 	
 	public Integer getKills(String playerName)
 	{
-		return killsMap.get(playerName);
+		return killsAmounts.get(killsPlayers.indexOf(playerName));
 	}
 	
 	public Entry<String, Integer> getEntry(int index)
 	{
-		Iterator<Entry<String, Integer>> iter = killsMap.entrySet().iterator();
-		int i = 0;
-		while(++i < index && iter.hasNext()) iter.next();
-		return iter.next();
+		if(killsPlayers.size() <= index) return null;
+		return new AbstractMap.SimpleEntry<String, Integer>(killsPlayers.get(index), killsAmounts.get(index));
 	}
 	
 	public int indexOf(String playerName)
 	{
-		if(!killsMap.containsKey(playerName))
+		if(!killsPlayers.contains(playerName))
 			return -1;
-		int index = 0;
-		Iterator<String> iter = killsMap.keySet().iterator();
-		String currentKey;
-		do
-		{
-			index++;
-			currentKey = iter.next();
-		} while(!currentKey.equals(playerName));
-		return index;
+		return killsPlayers.indexOf(playerName);	// Shitty conversions galore
 	}
 	
 	public int mapSize()
 	{
-		return killsMap.size();
+		return killsPlayers.size();
 	}
 	
-	class ValueComparator<K, V extends Comparable<V>> implements Comparator<K>
+	private void saveKills()
 	{
-	    Map<K, V> base;
-	    public ValueComparator(Map<K, V> base)
-	    {
-	        this.base = base;
-	    }
-
-		@Override
-		public int compare(K a, K b)
+		File file = new File(Constants.KILLS_PATH);
+		ObjectOutputStream out;
+		try
 		{
-			if (base.get(a).compareTo(base.get(b)) == 1)
-			{
-	            return -1;
-	        } else {
-	            return 1;
-	        } // Don't return 0, as that would end up combining the keys, which we don't want
+			file.createNewFile();
+			out = new ObjectOutputStream(new FileOutputStream(Constants.KILLS_PATH, false));
+			
+			out.writeObject(killsPlayers);
+			out.writeObject(killsAmounts);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	private void loadKills()
+	{
+		File file = new File(Constants.KILLS_PATH);
+		if(!file.exists())
+			return;
+		ObjectInputStream in;
+		try
+		{
+			in = new ObjectInputStream(new FileInputStream(Constants.KILLS_PATH));
+			
+			killsPlayers = (ArrayList<String>) in.readObject();
+			killsAmounts = (ArrayList<Integer>) in.readObject();
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		} catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
 		}
 	}
 }

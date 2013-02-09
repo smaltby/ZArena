@@ -61,4 +61,5 @@ public class Constants
 	public static final String GAMEMODES_FOLDER = PLUGIN_FOLDER+File.separator+"gamemodes";
 	public static final String LEVEL_PATH = PLUGIN_FOLDER+File.separator+"levels.ext";
 	public static final String OPTIONS_PATH =  PLUGIN_FOLDER+File.separator+"options.ext";
+	public static final String KILLS_PATH = PLUGIN_FOLDER+File.separator+"kills.ext";
 }

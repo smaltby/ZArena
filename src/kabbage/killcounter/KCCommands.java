@@ -30,23 +30,26 @@ public class KCCommands implements CommandExecutor
 				return true;
 			case SET:
 				helpMessage = "/kc set <player> <kills>";
-				handler.setKills(command.get(1), command.get(2));
+				handler.setKills(command.get(2), command.get(3));
 				return true;
 			default:
-				hardFailure = true;
+				handler.sendPlayer(((Player) sender).getName());
+				return true;
 			}
 		} catch(IllegalArgumentException exx)
 		{
 			if(command.getArgAtIndex(1).startsWith("@")) 
-				handler.sendPlayer(command.getArgAtIndex(1));
+				handler.sendPlayer(command.getArgAtIndex(1).replace("@", ""));
 			else 
 				handler.sendPlayer(((Player) sender).getName());
 			return true;
 		} catch(ArgumentCountException ex) //If the sender does not use an adequate amount of arguments
 		{
 			if (ex.getErrorIndex() == 1)
-				hardFailure = true;
-			else
+			{
+				handler.sendPlayer(((Player) sender).getName());
+				return true;
+			}else
 				softFailure = true;
 		} catch(ClassCastException e) //If the command tries to get a Player from the sender, but the sender is the console
 		{

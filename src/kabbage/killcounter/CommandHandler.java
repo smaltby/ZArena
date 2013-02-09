@@ -37,7 +37,7 @@ public class CommandHandler
 
 	public void setKills(String name, String amountString)
 	{
-		int amount = Utils.parseInt(name, -1);
+		int amount = Utils.parseInt(amountString, -1);
 		if(amount < 0)
 			senderWrapper.sendMessage(ChatColor.RED+"The amount to set kills to must be a valid integer greater than 0.");
 		kc.setKills(name, amount);
@@ -53,7 +53,7 @@ public class CommandHandler
 			senderWrapper.sendMessage(ChatColor.RED+"Player could not be found.");
 			return;
 		}
-		int rank = kc.indexOf(name);
+		int rank = kc.indexOf(name) + 1;
 		senderWrapper.sendMessage(ChatColor.BLUE+"Player: "+ChatColor.WHITE+name);
 		senderWrapper.sendMessage(ChatColor.RED+"Total Kills: "+ChatColor.WHITE+kills);
 		senderWrapper.sendMessage(ChatColor.RED+"Rank: "+ChatColor.WHITE+rank+"/"+kc.mapSize());
