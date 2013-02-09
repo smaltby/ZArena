@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import kabbage.customentitylibrary.CustomEntityLibrary;
+import kabbage.killcounter.KillCounter;
 import kabbage.zarena.commands.DSpawnCommands;
 import kabbage.zarena.commands.ISpawnCommands;
 import kabbage.zarena.commands.ZACommands;
@@ -60,6 +61,8 @@ public class ZArena extends JavaPlugin
 	private static ZArena instance;
 	public static Logger logger;
 	
+	private KillCounter kc;
+	
 	private GameHandler gameHandler; //Game handler
 	private PlayerOptionsHandler playerOptionsHandler;
 	
@@ -84,6 +87,8 @@ public class ZArena extends JavaPlugin
 		logger = Bukkit.getServer().getLogger();
 		
 		CustomEntityLibrary.load(this);
+		kc = new KillCounter();
+		getServer().getPluginManager().enablePlugin(kc);
 		
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		Plugin p = pm.getPlugin("Spout");
@@ -150,6 +155,7 @@ public class ZArena extends JavaPlugin
 		GameStopEvent event = new GameStopEvent(GameStopCause.SERVER_STOP);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		gameHandler.stop();
+		getServer().getPluginManager().disablePlugin(kc);
 		//Save stuff
 		saveConfig();
 		saveFiles();
