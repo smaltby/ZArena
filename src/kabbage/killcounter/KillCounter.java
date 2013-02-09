@@ -7,9 +7,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.Bukkit;
 
-public class KillCounter extends JavaPlugin
+import kabbage.zarena.ZArena;
+
+public class KillCounter
 {
 	public static KillCounter instance;
 	
@@ -19,22 +21,22 @@ public class KillCounter extends JavaPlugin
 	private TreeMap<String, Integer> killsMap;
 	private HashMap<String, Integer> baseKillsMap;
 	
-	@Override
-	public void onEnable()
+	public void enable()
 	{
 		instance = this;
 		
-		getCommand("killcounter").setExecutor(kcCommands);
+		kcListener = new KCListener();			
+		kcListener.registerEvents(Bukkit.getServer().getPluginManager());
+		
+		ZArena.getInstance().getCommand("killcounter").setExecutor(kcCommands);
 		baseKillsMap = new HashMap<String, Integer>();
 		ValueComparator<String, Integer> vc = new ValueComparator<String, Integer>(baseKillsMap);
 		killsMap = new TreeMap<String, Integer>(vc);
 	}
 	
-	@Override
-	public void onDisable()
+	public void disable()
 	{
-		kcListener = new KCListener();			
-		kcListener.registerEvents(getServer().getPluginManager());
+		
 	}
 	
 	public void addKill(String playerName)
@@ -45,11 +47,13 @@ public class KillCounter extends JavaPlugin
 	
 	public void setKills(String playerName, int kills)
 	{
+		baseKillsMap.remove(playerName);
+		killsMap.remove(playerName);
 		baseKillsMap.put(playerName, kills);
 		killsMap.put(playerName, kills);
 	}
 	
-	public int getKills(String playerName)
+	public Integer getKills(String playerName)
 	{
 		return killsMap.get(playerName);
 	}
@@ -93,7 +97,7 @@ public class KillCounter extends JavaPlugin
 		@Override
 		public int compare(K a, K b)
 		{
-			if (base.get(a).compareTo(base.get(b)) == -1)
+			if (base.get(a).compareTo(base.get(b)) == 1)
 			{
 	            return -1;
 	        } else {

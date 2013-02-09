@@ -29,14 +29,20 @@ public class KCCommands implements CommandExecutor
 				handler.sendTopPlayers();
 				return true;
 			case SET:
+				helpMessage = "/kc set <player> <kills>";
 				handler.setKills(command.get(1), command.get(2));
+				return true;
 			default:
-				if(command.get(1).startsWith("@")) 
-					handler.sendPlayer(command.get(1));
-				else 
-					handler.sendPlayer(((Player) sender).getName());
+				hardFailure = true;
 			}
-		} catch (ArgumentCountException ex) //If the sender does not use an adequate amount of arguments
+		} catch(IllegalArgumentException exx)
+		{
+			if(command.getArgAtIndex(1).startsWith("@")) 
+				handler.sendPlayer(command.getArgAtIndex(1));
+			else 
+				handler.sendPlayer(((Player) sender).getName());
+			return true;
+		} catch(ArgumentCountException ex) //If the sender does not use an adequate amount of arguments
 		{
 			if (ex.getErrorIndex() == 1)
 				hardFailure = true;

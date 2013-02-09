@@ -1,6 +1,7 @@
 package kabbage.killcounter;
 
 import kabbage.customentitylibrary.CustomEntityWrapper;
+import kabbage.zarena.ZArena;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -11,12 +12,12 @@ import org.bukkit.plugin.PluginManager;
 
 public class KCListener implements Listener
 {
-	private KillCounter plugin;
+	private KillCounter kc;
 	
 	public void registerEvents(PluginManager pm)
 	{
-		plugin = KillCounter.instance;
-		pm.registerEvents(this, plugin);
+		kc = KillCounter.instance;
+		pm.registerEvents(this, ZArena.getInstance());
 	}
 	
 	@EventHandler
@@ -28,7 +29,7 @@ public class KCListener implements Listener
 			CustomEntityWrapper customEnt = CustomEntityWrapper.getCustomEntity(entity);
 			Player player = customEnt.getBestAttacker();
 			if(player != null)
-				plugin.addKill(player.getName());
+				kc.addKill(player.getName());
 		}
 	}
 }

@@ -24,3 +24,7 @@ commands:
         description: ZArena sign manipulation
         usage: /zsign mark | markzspawn
         aliases:
+    killcounter:
+        description: ZArena Kill Counter base command
+        usage: /kc @player | set | top
+        aliases: [kc]

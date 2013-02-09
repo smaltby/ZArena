@@ -88,7 +88,8 @@ public class ZArena extends JavaPlugin
 		
 		CustomEntityLibrary.load(this);
 		kc = new KillCounter();
-		getServer().getPluginManager().enablePlugin(kc);
+		kc.enable();
+		
 		
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		Plugin p = pm.getPlugin("Spout");
@@ -155,7 +156,7 @@ public class ZArena extends JavaPlugin
 		GameStopEvent event = new GameStopEvent(GameStopCause.SERVER_STOP);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		gameHandler.stop();
-		getServer().getPluginManager().disablePlugin(kc);
+		kc.disable();
 		//Save stuff
 		saveConfig();
 		saveFiles();

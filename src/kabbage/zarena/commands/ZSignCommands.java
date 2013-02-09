@@ -42,6 +42,9 @@ public class ZSignCommands implements CommandExecutor
 			default:
 				hardFailure = true;
 			}
+		} catch(IllegalArgumentException exx)
+		{
+			hardFailure = true;
 		} catch (ArgumentCountException ex) //If the sender does not use an adequate amount of arguments
 		{
 			if (ex.getErrorIndex() == 1)
