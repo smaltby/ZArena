@@ -9,9 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map.Entry;
-
 import org.bukkit.Bukkit;
-
 import kabbage.zarena.ZArena;
 import kabbage.zarena.utils.Constants;
 
@@ -100,6 +98,8 @@ public class KillCounter
 	
 	public Integer getKills(String playerName)
 	{
+		if(!killsPlayers.contains(playerName))
+			return null;
 		return killsAmounts.get(killsPlayers.indexOf(playerName));
 	}
 	

@@ -26,6 +26,8 @@ public class CommandHandler
 	public void sendTopPlayers()
 	{
 		int playersToShow = Utils.parseInt(command.getArgAtIndex(2), 5);
+		if(playersToShow > 30)
+			playersToShow = 30;
 		senderWrapper.sendMessage(ChatColor.BLUE+"Top killers:");
 		for(int i = 0; i < playersToShow; i++)
 		{
