@@ -39,6 +39,16 @@ public class KillCounter
 		kcListener.registerEvents(Bukkit.getServer().getPluginManager());
 		
 		ZArena.getInstance().getCommand("killcounter").setExecutor(kcCommands);
+		
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(ZArena.getInstance(), new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				saveKills();
+			}
+		
+		}, 1200L, 1200L);
 	}
 	
 	public void disable()
