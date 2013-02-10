@@ -21,6 +21,10 @@ public enum Permissions
      */
     GAME_CONTROL,
     /**
+     * Allows player to set the kills of other players
+     */
+    KILLCOUNTER_CONTROL,
+    /**
      * Lets player enter and leave game at will
      */
     ENTER_LEAVE,
@@ -43,6 +47,8 @@ public enum Permissions
                 return "zarena.leveleditor";
             case GAME_CONTROL:
                 return "zarena.gamecontrol";
+            case KILLCOUNTER_CONTROL:
+            	return "zarena.killcountercontrol";
             case ENTER_LEAVE:
                 return "zarena.enterleave";
             case VOTER:

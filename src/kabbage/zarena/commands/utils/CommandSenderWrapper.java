@@ -67,6 +67,11 @@ public class CommandSenderWrapper
     	return hasExternalPermissions(Permissions.GAME_CONTROL.toString(), true) || isAdmin();
     }
     
+    public boolean canControlKillCounter()
+    {
+    	return hasExternalPermissions(Permissions.GAME_CONTROL.toString(), true) || isAdmin();
+    }
+    
     public boolean canEnterLeaveGames()
     {
     	return hasExternalPermissions(Permissions.ENTER_LEAVE.toString(), true) || canControlGames() || canCreateLevels() || isAdmin();

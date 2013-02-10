@@ -4,6 +4,7 @@ import java.util.Map.Entry;
 
 import kabbage.zarena.commands.utils.CommandSenderWrapper;
 import kabbage.zarena.commands.utils.ECommand;
+import kabbage.zarena.utils.ChatHelper;
 import kabbage.zarena.utils.Utils;
 
 import org.bukkit.ChatColor;
@@ -39,6 +40,11 @@ public class CommandHandler
 
 	public void setKills(String name, String amountString)
 	{
+		if(!senderWrapper.canControlKillCounter())
+		{
+			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			return;
+		}
 		int amount = Utils.parseInt(amountString, -1);
 		if(amount < 0)
 			senderWrapper.sendMessage(ChatColor.RED+"The amount to set kills to must be a valid integer greater than 0.");

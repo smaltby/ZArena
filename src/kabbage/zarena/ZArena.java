@@ -87,9 +87,6 @@ public class ZArena extends JavaPlugin
 		logger = Bukkit.getServer().getLogger();
 		
 		CustomEntityLibrary.load(this);
-		kc = new KillCounter();
-		kc.enable();
-		
 		
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		Plugin p = pm.getPlugin("Spout");
@@ -104,6 +101,11 @@ public class ZArena extends JavaPlugin
 		loadDefaults();
 		if(getConfig().getBoolean(Constants.FIRST_TIME))
 			loadPluginFirstTime();
+		if(getConfig().getBoolean(Constants.ENABLE_KILLCOUNTER))
+		{
+			kc = new KillCounter();
+			kc.enable();
+		}
 		saveConfig();
 		loadDonatorInfo();
 		loadZSignCustomItems();
@@ -156,7 +158,8 @@ public class ZArena extends JavaPlugin
 		GameStopEvent event = new GameStopEvent(GameStopCause.SERVER_STOP);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		gameHandler.stop();
-		kc.disable();
+		if(getConfig().getBoolean(Constants.ENABLE_KILLCOUNTER))
+			kc.disable();
 		//Save stuff
 		saveConfig();
 		saveFiles();
@@ -253,6 +256,7 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.DISABLE_HUNGER, true);
 		cfg.addDefault(Constants.DISABLE_JOIN_WITH_INV, false);
 		cfg.addDefault(Constants.DISABLE_NON_ZA, false);
+		cfg.addDefault(Constants.ENABLE_KILLCOUNTER, true);
 		cfg.addDefault(Constants.RESPAWN_EVERY, 3);
 		cfg.addDefault(Constants.SHOP_HEADER, "ZBuy");
 		cfg.addDefault(Constants.TOLL_HEADER, "ZPay");
