@@ -80,7 +80,7 @@ public class PlayerListener implements Listener
 	{
 		if(plugin.getConfig().getBoolean(Constants.DISABLE_NON_ZA) && plugin.getGameHandler().getPlayers().contains(event.getPlayer()))
 		{
-			if(!event.getMessage().equalsIgnoreCase("zarena") && !event.getMessage().equalsIgnoreCase("za"))
+			if(!event.getMessage().matches("zarena.*") && !event.getMessage().matches("za.*"))
 			{
 				event.setCancelled(true);
 			}
