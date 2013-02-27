@@ -78,10 +78,7 @@ public class CustomSkeleton extends EntitySkeleton
 	{
 		CustomEntityMoveEvent event = new CustomEntityMoveEvent(this.getBukkitEntity(), new Location(this.world.getWorld(), lastX, lastY, lastZ), new Location(this.world.getWorld(), locX, locY, locZ));
 		Bukkit.getServer().getPluginManager().callEvent(event);
-		if(event.isCancelled())
-			this.setPosition(lastX, lastY, lastZ);
-		else
-			super.move(d0, d1, d2);
+		super.move(d0, d1, d2);
 	}
 	
 	@Override

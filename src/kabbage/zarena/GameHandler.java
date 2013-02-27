@@ -26,7 +26,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -454,13 +453,6 @@ public class GameHandler
 				addToGame(stats);
 			}
 
-			for(LivingEntity entity : plugin.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).getLivingEntities())
-			{
-				if(CustomEntityWrapper.instanceOf(entity))
-					entity.setHealth(0);
-				else if(!(entity instanceof Player) && plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE))
-					entity.setHealth(0);
-			}
 			isRunning = true;
 			waveHandler.resetWave();
 			waveTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, waveHandler, 1L, 1L);
@@ -489,14 +481,12 @@ public class GameHandler
 			level.resetSigns();
 			level.resetInactiveZSpawns();
 		}
-		for(Entity entity : plugin.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).getEntities())
+		for(LivingEntity entity : plugin.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).getLivingEntities())
 		{
-			if(entity instanceof Player)
-				continue;
-			if(entity instanceof LivingEntity)
-				((LivingEntity) entity).setHealth(0);
-			else
-				entity.remove();
+			if(CustomEntityWrapper.instanceOf(entity))
+				entity.setHealth(0);
+			else if(!(entity instanceof Player) && plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE))
+				entity.setHealth(0);
 		}
 		for(PlayerStats stats : playerStats.values())
 		{

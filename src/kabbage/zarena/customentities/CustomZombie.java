@@ -49,10 +49,7 @@ public class CustomZombie extends EntityZombie implements IRangedEntity
 	{
 		CustomEntityMoveEvent event = new CustomEntityMoveEvent(this.myOwnDamnGetBukkitEntityMethodWithBlackjackAndHookers(), new Location(this.world.getWorld(), lastX, lastY, lastZ), new Location(this.world.getWorld(), locX, locY, locZ));
 		Bukkit.getServer().getPluginManager().callEvent(event);
-		if(event.isCancelled())
-			this.setPosition(lastX, lastY, lastZ);
-		else
-			super.move(d0, d1, d2);
+		super.move(d0, d1, d2);
 	}
 
     //Do not drop loot
