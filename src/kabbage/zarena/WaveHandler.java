@@ -332,18 +332,6 @@ public class WaveHandler implements Runnable
 			toSpawn *= 2/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-4 + 1.2));
 		
 		zombieSpawnChance = 0.15 / (1 + Math.pow(Math.E, ((double) -1/4 * (modifiedWave / 2))));	//Logistic function
-		
-		if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY) > 0)
-		{
-			for(PlayerStats stats : gameHandler.getPlayerStats().values())
-			{
-				if(!stats.isAlive())
-				{
-					if(stats.getWavesSinceDeath() + 1 >= plugin.getConfig().getInt(Constants.RESPAWN_EVERY))
-						gameHandler.respawnPlayer(stats.getPlayer());
-				}
-			}
-		}
 
 		if(!gm.isApocalypse() && newWave)
 		{
@@ -366,6 +354,17 @@ public class WaveHandler implements Runnable
 					skeletonWave = true;
 					lastSkeletonWave = 0;
 					ChatHelper.broadcastMessage(ChatColor.RED+"Skeleton Wave Approaching!", gameHandler.getBroadcastPlayers());
+				}
+			}
+			if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY) > 0)
+			{
+				for(PlayerStats stats : gameHandler.getPlayerStats().values())
+				{
+					if(!stats.isAlive())
+					{
+						if(stats.getWavesSinceDeath() + 1 >= plugin.getConfig().getInt(Constants.RESPAWN_EVERY))
+							gameHandler.respawnPlayer(stats.getPlayer());
+					}
 				}
 			}
 		}
