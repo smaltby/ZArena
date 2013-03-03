@@ -282,9 +282,9 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.ZOMBIE_QUANTITY_LIMIT, 60);
 		
 		List<Double> zombieQuantity = new ArrayList<Double>();
-		zombieQuantity.add(3.0);
-		zombieQuantity.add(2.0);
-		zombieQuantity.add(18.0);
+		zombieQuantity.add(1.5);
+		zombieQuantity.add(4.0);
+		zombieQuantity.add(9.0);
 		cfg.addDefault(Constants.ZOMBIE_QUANTITY_COEFFICIENTS, zombieQuantity);
 		
 		saveConfig();

@@ -5,7 +5,7 @@ HealthModifier: 5
 Range: 256
 Speed: 0.25
 WorthModifier: 2
-MinimumSpawnWave: 2
+MinimumSpawnWave: 3
 SpawnChance: .05
 Armor:
 - air

@@ -87,7 +87,8 @@ public class CustomWolf extends EntityWolf
 	public void move(double d0, double d1, double d2)
 	{
 		CustomEntityMoveEvent event = new CustomEntityMoveEvent(this.getBukkitEntity(), new Location(this.world.getWorld(), lastX, lastY, lastZ), new Location(this.world.getWorld(), locX, locY, locZ));
-		Bukkit.getServer().getPluginManager().callEvent(event);
+		if(event != null)
+			Bukkit.getServer().getPluginManager().callEvent(event);
 		super.move(d0, d1, d2);
 	}
 	

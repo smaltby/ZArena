@@ -329,7 +329,7 @@ public class WaveHandler implements Runnable
 		health *= gm.getHealthModifier();
 		toSpawn *= gm.getZombieAmountModifier();
 		if(plugin.getConfig().getBoolean(Constants.QUANTITY_ADJUST))
-			toSpawn *= 2/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-4 + 1.2));
+			toSpawn *= 1.5/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-3) + .25);
 		
 		zombieSpawnChance = 0.15 / (1 + Math.pow(Math.E, ((double) -1/4 * (modifiedWave / 2))));	//Logistic function
 
