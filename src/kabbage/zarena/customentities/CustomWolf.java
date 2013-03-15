@@ -9,25 +9,25 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-import net.minecraft.server.v1_4_R1.DamageSource;
-import net.minecraft.server.v1_4_R1.Entity;
-import net.minecraft.server.v1_4_R1.EntityAgeable;
-import net.minecraft.server.v1_4_R1.EntityAnimal;
-import net.minecraft.server.v1_4_R1.EntityHuman;
-import net.minecraft.server.v1_4_R1.EntityWolf;
-import net.minecraft.server.v1_4_R1.ItemStack;
-import net.minecraft.server.v1_4_R1.PathfinderGoalFloat;
-import net.minecraft.server.v1_4_R1.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalLeapAtTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_4_R1.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_4_R1.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_5_R1.DamageSource;
+import net.minecraft.server.v1_5_R1.Entity;
+import net.minecraft.server.v1_5_R1.EntityAgeable;
+import net.minecraft.server.v1_5_R1.EntityAnimal;
+import net.minecraft.server.v1_5_R1.EntityHuman;
+import net.minecraft.server.v1_5_R1.EntityWolf;
+import net.minecraft.server.v1_5_R1.ItemStack;
+import net.minecraft.server.v1_5_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_5_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalLeapAtTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_5_R1.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_5_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_5_R1.PathfinderGoalSelector;
 
-import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R1.util.UnsafeList;
 
 public class CustomWolf extends EntityWolf
 {
@@ -48,7 +48,7 @@ public class CustomWolf extends EntityWolf
     }
 
     @Override
-    public boolean a(EntityHuman entityhuman)
+    public boolean a_(EntityHuman entityhuman)
     {
         return false;	//No feeding/taming this wolf
     }
@@ -112,9 +112,9 @@ public class CustomWolf extends EntityWolf
         this.goalSelector.a(1, new PathfinderGoalFloat(this));
         this.goalSelector.a(2, this.d);
         this.goalSelector.a(3, new PathfinderGoalLeapAtTarget(this, 0.4F));
-        this.goalSelector.a(4, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bG, false));
-        this.goalSelector.a(5, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bG, type.getRange()));
-        this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, this.bG));
+        this.goalSelector.a(4, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bI, false));
+        this.goalSelector.a(5, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bI, type.getRange()));
+        this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, this.bI));
         this.goalSelector.a(9, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
         this.goalSelector.a(9, new PathfinderGoalRandomLookaround(this));
         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));

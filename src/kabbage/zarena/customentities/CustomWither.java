@@ -10,21 +10,21 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-import net.minecraft.server.v1_4_R1.EntityHuman;
-import net.minecraft.server.v1_4_R1.EntityWither;
-import net.minecraft.server.v1_4_R1.IEntitySelector;
-import net.minecraft.server.v1_4_R1.PathfinderGoalArrowAttack;
-import net.minecraft.server.v1_4_R1.PathfinderGoalFloat;
-import net.minecraft.server.v1_4_R1.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_4_R1.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRestrictSun;
-import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_5_R1.EntityHuman;
+import net.minecraft.server.v1_5_R1.EntityWither;
+import net.minecraft.server.v1_5_R1.IEntitySelector;
+import net.minecraft.server.v1_5_R1.PathfinderGoalArrowAttack;
+import net.minecraft.server.v1_5_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_5_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_5_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRestrictSun;
+import net.minecraft.server.v1_5_R1.PathfinderGoalSelector;
 
-import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R1.util.UnsafeList;
 
 public class CustomWither extends EntityWither
 {
@@ -72,9 +72,9 @@ public class CustomWither extends EntityWither
 		
 		this.goalSelector.a(1, new PathfinderGoalFloat(this));
 		this.goalSelector.a(2, new PathfinderGoalRestrictSun(this));
-		this.goalSelector.a(4, new PathfinderGoalArrowAttack(this, this.bG, 40, 20f));
-		this.goalSelector.a(6, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bG, 256f));
-		this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, this.bG));
+		this.goalSelector.a(4, new PathfinderGoalArrowAttack(this, this.bI, 40, 20f));
+		this.goalSelector.a(6, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bI, 256f));
+		this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, this.bI));
 		this.goalSelector.a(8, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
 		this.goalSelector.a(8, new PathfinderGoalRandomLookaround(this));
 		this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));

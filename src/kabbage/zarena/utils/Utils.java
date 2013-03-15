@@ -10,11 +10,11 @@ import java.io.InputStreamReader;
 
 import kabbage.zarena.ZArena;
 
-import net.minecraft.server.v1_4_R1.MathHelper;
+import net.minecraft.server.v1_5_R1.MathHelper;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_4_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_5_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;

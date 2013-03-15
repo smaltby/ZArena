@@ -10,28 +10,28 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 
-import net.minecraft.server.v1_4_R1.Enchantment;
-import net.minecraft.server.v1_4_R1.EnchantmentManager;
-import net.minecraft.server.v1_4_R1.EntityArrow;
-import net.minecraft.server.v1_4_R1.EntityHuman;
-import net.minecraft.server.v1_4_R1.EntityLiving;
-import net.minecraft.server.v1_4_R1.IRangedEntity;
-import net.minecraft.server.v1_4_R1.ItemStack;
-import net.minecraft.server.v1_4_R1.PathfinderGoalBreakDoor;
-import net.minecraft.server.v1_4_R1.PathfinderGoalFloat;
-import net.minecraft.server.v1_4_R1.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_4_R1.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_4_R1.PathfinderGoalMoveTowardsRestriction;
-import net.minecraft.server.v1_4_R1.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
-import net.minecraft.server.v1_4_R1.EntityZombie;
+import net.minecraft.server.v1_5_R1.Enchantment;
+import net.minecraft.server.v1_5_R1.EnchantmentManager;
+import net.minecraft.server.v1_5_R1.EntityArrow;
+import net.minecraft.server.v1_5_R1.EntityHuman;
+import net.minecraft.server.v1_5_R1.EntityLiving;
+import net.minecraft.server.v1_5_R1.IRangedEntity;
+import net.minecraft.server.v1_5_R1.ItemStack;
+import net.minecraft.server.v1_5_R1.PathfinderGoalBreakDoor;
+import net.minecraft.server.v1_5_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_5_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_5_R1.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_5_R1.PathfinderGoalMoveTowardsRestriction;
+import net.minecraft.server.v1_5_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_5_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_5_R1.EntityZombie;
 
-import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_5_R1.util.UnsafeList;
 
 public class CustomZombie extends EntityZombie implements IRangedEntity
 {
@@ -85,12 +85,12 @@ public class CustomZombie extends EntityZombie implements IRangedEntity
 		this.goalSelector.a(0, new PathfinderGoalFloat(this));
 		this.goalSelector.a(1, new PathfinderGoalBreakDoor(this));
 		if(type.useRanged())
-			this.goalSelector.a(2, new PathFinderGoalCustomArrowAttack(this, this.bG, type.getShootDelay(), 1));
+			this.goalSelector.a(2, new PathFinderGoalCustomArrowAttack(this, this.bI, type.getShootDelay(), 1));
 		if(type.useMelee())
-			this.goalSelector.a(3, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bG, false));
-		this.goalSelector.a(4, new PathfinderGoalMoveTowardsRestriction(this, this.bG));
-		this.goalSelector.a(5, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bG, type.getRange()));
-		this.goalSelector.a(6, new PathfinderGoalRandomStroll(this, this.bG));
+			this.goalSelector.a(3, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bI, false));
+		this.goalSelector.a(4, new PathfinderGoalMoveTowardsRestriction(this, this.bI));
+		this.goalSelector.a(5, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bI, type.getRange()));
+		this.goalSelector.a(6, new PathfinderGoalRandomStroll(this, this.bI));
 		this.goalSelector.a(7, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
 		this.goalSelector.a(7, new PathfinderGoalRandomLookaround(this));
 		this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));
@@ -110,12 +110,12 @@ public class CustomZombie extends EntityZombie implements IRangedEntity
 	}
 
 	@Override
-	public void d(EntityLiving arg0)
+	public void a(EntityLiving arg0, float f1)
 	{
 		//Copied from EntitySkeleton class
 		EntityArrow entityarrow = new EntityArrow(this.world, this, arg0, 1.6F, 12.0F);
-        int i = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_DAMAGE.id, this.bD());
-        int j = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK.id, this.bD());
+        int i = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_DAMAGE.id, this.bG());
+        int j = EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_KNOCKBACK.id, this.bG());
 
         if (i > 0)
             entityarrow.b(entityarrow.c() + (double) i * 0.5D + 0.5D);
@@ -123,10 +123,10 @@ public class CustomZombie extends EntityZombie implements IRangedEntity
         if (j > 0)
             entityarrow.a(j);
 
-        if (EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_FIRE.id, this.bD()) > 0)
+        if (EnchantmentManager.getEnchantmentLevel(Enchantment.ARROW_FIRE.id, this.bG()) > 0)
             entityarrow.setOnFire(100);
 
-        this.makeSound("random.bow", 1.0F, 1.0F / (this.aB().nextFloat() * 0.4F + 0.8F));
+        this.makeSound("random.bow", 1.0F, 1.0F / (this.aE().nextFloat() * 0.4F + 0.8F));
         this.world.addEntity(entityarrow);
 	}
 	

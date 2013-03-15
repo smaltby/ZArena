@@ -5,21 +5,21 @@ import java.lang.reflect.Field;
 import kabbage.customentitylibrary.CustomEntityMoveEvent;
 import kabbage.customentitylibrary.CustomEntityWrapper;
 
-import net.minecraft.server.v1_4_R1.EntityGiantZombie;
-import net.minecraft.server.v1_4_R1.EntityHuman;
-import net.minecraft.server.v1_4_R1.PathfinderGoalBreakDoor;
-import net.minecraft.server.v1_4_R1.PathfinderGoalFloat;
-import net.minecraft.server.v1_4_R1.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_4_R1.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_4_R1.PathfinderGoalMoveTowardsRestriction;
-import net.minecraft.server.v1_4_R1.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_4_R1.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_4_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_5_R1.EntityGiantZombie;
+import net.minecraft.server.v1_5_R1.EntityHuman;
+import net.minecraft.server.v1_5_R1.PathfinderGoalBreakDoor;
+import net.minecraft.server.v1_5_R1.PathfinderGoalFloat;
+import net.minecraft.server.v1_5_R1.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_5_R1.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_5_R1.PathfinderGoalMoveTowardsRestriction;
+import net.minecraft.server.v1_5_R1.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_5_R1.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_5_R1.PathfinderGoalSelector;
 
-import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_R1.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R1.util.UnsafeList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -51,7 +51,7 @@ public class CustomGiant extends EntityGiantZombie
 	  * Returns true if the newer Entity AI code should be run
 	  */
 	 @Override
-	 protected boolean be()
+	 protected boolean bh()
 	 {
 		 return true;
 	 }
@@ -75,10 +75,10 @@ public class CustomGiant extends EntityGiantZombie
 
 		 this.goalSelector.a(0, new PathfinderGoalFloat(this));
 		 this.goalSelector.a(1, new PathfinderGoalBreakDoor(this));
-		 this.goalSelector.a(2, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bG, false));
-		 this.goalSelector.a(4, new PathfinderGoalMoveTowardsRestriction(this, this.bG));
-		 this.goalSelector.a(5, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bG, 256f));
-		 this.goalSelector.a(6, new PathfinderGoalRandomStroll(this, this.bG));
+		 this.goalSelector.a(2, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bI, false));
+		 this.goalSelector.a(4, new PathfinderGoalMoveTowardsRestriction(this, this.bI));
+		 this.goalSelector.a(5, new PathFinderGoalMoveToEntity(this, EntityHuman.class, this.bI, 256f));
+		 this.goalSelector.a(6, new PathfinderGoalRandomStroll(this, this.bI));
 		 this.goalSelector.a(7, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
 		 this.goalSelector.a(7, new PathfinderGoalRandomLookaround(this));
 		 this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));

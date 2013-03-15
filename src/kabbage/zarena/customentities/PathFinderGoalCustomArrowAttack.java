@@ -1,15 +1,15 @@
 package kabbage.zarena.customentities;
 
-import net.minecraft.server.v1_4_R1.Entity;
-import net.minecraft.server.v1_4_R1.EntityArrow;
-import net.minecraft.server.v1_4_R1.EntityLiving;
-import net.minecraft.server.v1_4_R1.EntitySnowball;
-import net.minecraft.server.v1_4_R1.IRangedEntity;
-import net.minecraft.server.v1_4_R1.MathHelper;
-import net.minecraft.server.v1_4_R1.PathfinderGoal;
-import net.minecraft.server.v1_4_R1.Vec3D;
+import net.minecraft.server.v1_5_R1.Entity;
+import net.minecraft.server.v1_5_R1.EntityArrow;
+import net.minecraft.server.v1_5_R1.EntityLiving;
+import net.minecraft.server.v1_5_R1.EntitySnowball;
+import net.minecraft.server.v1_5_R1.IRangedEntity;
+import net.minecraft.server.v1_5_R1.MathHelper;
+import net.minecraft.server.v1_5_R1.PathfinderGoal;
+import net.minecraft.server.v1_5_R1.Vec3D;
 
-import org.bukkit.craftbukkit.v1_4_R1.event.CraftEventFactory;
+import org.bukkit.craftbukkit.v1_5_R1.event.CraftEventFactory;
 import org.bukkit.event.entity.EntityTargetEvent;
 
 /**
@@ -83,10 +83,11 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
     /**
 	 * Update task
 	 */
+    @Override
     public void e() {
-    	float range = 200f;
+    	float range = 100f;
         double d0 = this.a.e(this.target.locX, this.target.boundingBox.b, this.target.locZ);
-        boolean canSee = this.a.aA().canSee(this.target);
+        boolean canSee = this.a.aD().canSee(this.target);
 
         if (canSee) {
             ++this.f;
@@ -100,11 +101,16 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
             this.a.getNavigation().a(this.target, this.speed);
         }
 
+        float f1 = MathHelper.sqrt(d0) / 10f;
+        if (f1 > 1.0F) {
+            f1 = 1.0F;
+        }
+        
         this.a.getControllerLook().a(this.target, 30.0F, 30.0F);
         this.rangedAttackTime = Math.max(this.rangedAttackTime - 1, 0);
         if (this.rangedAttackTime <= 0) {
             if (d0 <= (double) range && canSee) {
-                this.b.d(this.target);
+                this.b.a(this.target, f1);
                 this.rangedAttackTime = this.attackSpeed;	//Reset timer to attack speed
             }
         }
@@ -119,7 +125,7 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
         if (this.rangedAttackID == 1)
         {
             EntityArrow var1 = new EntityArrow(a.world, this.a, this.target, 1.6F, 12.0F);
-            a.world.makeSound(this.a, "random.bow", 1.0F, 1.0F / (this.a.aB().nextFloat() * 0.4F + 0.8F));
+            a.world.makeSound(this.a, "random.bow", 1.0F, 1.0F / (this.a.aE().nextFloat() * 0.4F + 0.8F));
             a.world.addEntity(var1);
         }
         else if (this.rangedAttackID == 2)
@@ -130,7 +136,7 @@ public class PathFinderGoalCustomArrowAttack extends PathfinderGoal
             double var6 = this.target.locZ - this.a.locZ;
             float var8 = MathHelper.sqrt(var2 * var2 + var6 * var6) * 0.2F;
             var9.setPositionRotation(var2, var4 + (double)var8, var6, 1.6F, 12.0F);	//Maybe this should be var9.shoot
-            a.world.makeSound(this.a, "random.bow", 1.0F, 1.0F / (this.a.aB().nextFloat() * 0.4F + 0.8F));
+            a.world.makeSound(this.a, "random.bow", 1.0F, 1.0F / (this.a.aE().nextFloat() * 0.4F + 0.8F));
             a.world.addEntity(var9);
         }
     }
