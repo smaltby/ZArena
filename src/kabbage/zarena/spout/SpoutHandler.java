@@ -31,7 +31,6 @@ public class SpoutHandler
 	public static void updatePlayerOptions()
 	{
 		GameHandler handler = ZArena.getInstance().getGameHandler();
-		//TODO Make below code less cluttered
 		for(Player player : handler.getPlayers())
 		{
 			if(!(player instanceof SpoutPlayer))
