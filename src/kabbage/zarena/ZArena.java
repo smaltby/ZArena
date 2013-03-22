@@ -40,12 +40,12 @@ import kabbage.zarena.utils.Permissions;
 import kabbage.zarena.utils.StringEnums;
 import kabbage.zarena.utils.Utils;
 
-import net.minecraft.server.v1_5_R1.EntityGiantZombie;
-import net.minecraft.server.v1_5_R1.EntitySkeleton;
-import net.minecraft.server.v1_5_R1.EntityTypes;
-import net.minecraft.server.v1_5_R1.EntityWither;
-import net.minecraft.server.v1_5_R1.EntityWolf;
-import net.minecraft.server.v1_5_R1.EntityZombie;
+import net.minecraft.server.v1_5_R2.EntityGiantZombie;
+import net.minecraft.server.v1_5_R2.EntitySkeleton;
+import net.minecraft.server.v1_5_R2.EntityTypes;
+import net.minecraft.server.v1_5_R2.EntityWither;
+import net.minecraft.server.v1_5_R2.EntityWolf;
+import net.minecraft.server.v1_5_R2.EntityZombie;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;

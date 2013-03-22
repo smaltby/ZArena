@@ -5,21 +5,21 @@ import java.lang.reflect.Field;
 import kabbage.customentitylibrary.CustomEntityMoveEvent;
 import kabbage.customentitylibrary.CustomEntityWrapper;
 
-import net.minecraft.server.v1_5_R1.EntityGiantZombie;
-import net.minecraft.server.v1_5_R1.EntityHuman;
-import net.minecraft.server.v1_5_R1.PathfinderGoalBreakDoor;
-import net.minecraft.server.v1_5_R1.PathfinderGoalFloat;
-import net.minecraft.server.v1_5_R1.PathfinderGoalHurtByTarget;
-import net.minecraft.server.v1_5_R1.PathfinderGoalLookAtPlayer;
-import net.minecraft.server.v1_5_R1.PathfinderGoalMeleeAttack;
-import net.minecraft.server.v1_5_R1.PathfinderGoalMoveTowardsRestriction;
-import net.minecraft.server.v1_5_R1.PathfinderGoalNearestAttackableTarget;
-import net.minecraft.server.v1_5_R1.PathfinderGoalRandomLookaround;
-import net.minecraft.server.v1_5_R1.PathfinderGoalRandomStroll;
-import net.minecraft.server.v1_5_R1.PathfinderGoalSelector;
+import net.minecraft.server.v1_5_R2.EntityGiantZombie;
+import net.minecraft.server.v1_5_R2.EntityHuman;
+import net.minecraft.server.v1_5_R2.PathfinderGoalBreakDoor;
+import net.minecraft.server.v1_5_R2.PathfinderGoalFloat;
+import net.minecraft.server.v1_5_R2.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_5_R2.PathfinderGoalLookAtPlayer;
+import net.minecraft.server.v1_5_R2.PathfinderGoalMeleeAttack;
+import net.minecraft.server.v1_5_R2.PathfinderGoalMoveTowardsRestriction;
+import net.minecraft.server.v1_5_R2.PathfinderGoalNearestAttackableTarget;
+import net.minecraft.server.v1_5_R2.PathfinderGoalRandomLookaround;
+import net.minecraft.server.v1_5_R2.PathfinderGoalRandomStroll;
+import net.minecraft.server.v1_5_R2.PathfinderGoalSelector;
 
-import org.bukkit.craftbukkit.v1_5_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_5_R1.util.UnsafeList;
+import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_5_R2.util.UnsafeList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
