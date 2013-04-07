@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.spout;
+package com.github.zarena.spout;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
-import main.java.com.github.zarena.ZArena;
+import com.github.zarena.ZArena;
+
 
 
 public class PlayerOptionsHandler implements Externalizable
@@ -52,7 +53,7 @@ public class PlayerOptionsHandler implements Externalizable
 		}
 		else
 		{
-			ZArena.logger.log(Level.SEVERE, "An unsupported version of the PlayerOptionsHandler failed to load.");
+			ZArena.log(Level.SEVERE, "An unsupported version of the PlayerOptionsHandler failed to load.");
 		}
 	}
 

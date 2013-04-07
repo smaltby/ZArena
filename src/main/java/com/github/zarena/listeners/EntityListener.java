@@ -1,17 +1,11 @@
-package main.java.com.github.zarena.listeners;
+package com.github.zarena.listeners;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import main.java.com.github.customentitylibrary.EntityType;
-import main.java.com.github.customentitylibrary.entities.CustomEntityWrapper;
-import main.java.com.github.zarena.GameHandler;
-import main.java.com.github.zarena.PlayerStats;
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.utils.Constants;
-import main.java.com.github.zarena.utils.Utils;
+import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -32,6 +26,13 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.PluginManager;
+
+import com.github.zarena.GameHandler;
+import com.github.zarena.PlayerStats;
+import com.github.zarena.ZArena;
+import com.github.zarena.entities.ZEntityType;
+import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.Utils;
 
 public class EntityListener implements Listener
 {
@@ -82,7 +83,7 @@ public class EntityListener implements Listener
 			if(plugin.getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
 				event.setDroppedExp(0);
 			CustomEntityWrapper customEnt = CustomEntityWrapper.getCustomEntity(ent);
-			EntityType type = customEnt.getType();
+			ZEntityType type = (ZEntityType) customEnt.getType();
 			
 			double moneyModifier = type.getWorthModifier();
 			

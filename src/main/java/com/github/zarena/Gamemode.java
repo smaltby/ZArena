@@ -1,4 +1,4 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import main.java.com.github.zarena.signs.ZSignCustomItem;
-import main.java.com.github.zarena.utils.Constants;
-import main.java.com.github.zarena.utils.Utils;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.zarena.signs.ZSignCustomItem;
+import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.Utils;
 
 public class Gamemode
 {

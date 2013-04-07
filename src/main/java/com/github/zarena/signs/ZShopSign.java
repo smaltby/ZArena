@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.signs;
+package com.github.zarena.signs;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -9,10 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-import main.java.com.github.zarena.Gamemode;
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.ZLevel;
-import main.java.com.github.zarena.utils.LocationSer;
+
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,6 +19,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.Potion;
+
+import com.github.zarena.Gamemode;
+import com.github.zarena.ZArena;
+import com.github.zarena.ZLevel;
+import com.github.zarena.utils.LocationSer;
 
 
 public class ZShopSign extends ZSign implements Externalizable
@@ -57,10 +59,8 @@ public class ZShopSign extends ZSign implements Externalizable
 	}
 	
 	@SuppressWarnings("deprecation")
-	public static ZShopSign attemptCreateSign(ZLevel level, Sign sign)
+	public static ZShopSign attemptCreateSign(ZLevel level, Location location, String[] lines)
 	{
-		String[] lines = sign.getLines();
-		
 		int price;
 		try
 		{
@@ -72,7 +72,7 @@ public class ZShopSign extends ZSign implements Externalizable
 		
 		ZSignCustomItem customItem = ZSignCustomItem.getCustomItem(new String[]{lines[1], lines[2]}); //First, check to see if there's a custom item with the name
 		if(customItem != null)
-			return new ZShopSign(level, sign.getLocation(), customItem.getItem(), price);
+			return new ZShopSign(level, location, customItem.getItem(), price);
 		
 		String name = (!lines[2].isEmpty()) ? lines[1] + "_" + lines[2] : lines[1];
 		Material material = Material.getMaterial(name.toUpperCase()); //Now check if there's a material with the name
@@ -80,7 +80,7 @@ public class ZShopSign extends ZSign implements Externalizable
 		if(material == null)
 			return null;
 		
-		return new ZShopSign(level, sign.getLocation(), new ItemStack(material, 1, (short) 0, (byte) 0), price);
+		return new ZShopSign(level, location, new ItemStack(material, 1, (short) 0, (byte) 0), price);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -136,7 +136,7 @@ public class ZShopSign extends ZSign implements Externalizable
 	{
 		if(!(getLocation().getBlock().getState() instanceof Sign))
 		{
-			ZArena.logger.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to it's sign having been removed;");
+			ZArena.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to it's sign having been removed;");
 			level.removeZSign(this);
 			return;
 		}
@@ -183,8 +183,8 @@ public class ZShopSign extends ZSign implements Externalizable
 		}
 		else
 		{
-			ZArena.logger.log(Level.WARNING, "An unsupported version of a ZShopSign failed to load.");
-			ZArena.logger.log(Level.WARNING, "The ZSign at: "+location.toString()+" may not be operational.");
+			ZArena.log(Level.WARNING, "An unsupported version of a ZShopSign failed to load.");
+			ZArena.log(Level.WARNING, "The ZSign at: "+location.toString()+" may not be operational.");
 		}
 	}
 

@@ -1,14 +1,15 @@
-package main.java.com.github.zarena.killcounter;
+package com.github.zarena.killcounter;
 
-import main.java.com.github.zarena.commands.ArgumentCountException;
-import main.java.com.github.zarena.commands.ECommand;
-import main.java.com.github.zarena.utils.StringEnums;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.github.zarena.commands.ArgumentCountException;
+import com.github.zarena.commands.ECommand;
+import com.github.zarena.utils.StringEnums;
 
 
 public class KCCommands implements CommandExecutor

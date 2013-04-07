@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.spout;
+package com.github.zarena.spout;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -9,8 +9,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import main.java.com.github.zarena.PlayerStats;
-import main.java.com.github.zarena.ZArena;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,6 +20,9 @@ import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.gui.RenderPriority;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.getspout.spoutapi.player.SpoutPlayer;
+
+import com.github.zarena.PlayerStats;
+import com.github.zarena.ZArena;
 
 public class PlayerOptions implements Externalizable
 {
@@ -294,7 +295,7 @@ public class PlayerOptions implements Externalizable
 		}
 		else
 		{
-			ZArena.logger.log(Level.WARNING, "An unsupported version of the PlayerOptions failed to load.");
+			ZArena.log(Level.WARNING, "An unsupported version of the PlayerOptions failed to load.");
 		}
 	}
 

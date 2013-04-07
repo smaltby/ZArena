@@ -1,12 +1,6 @@
-package main.java.com.github.zarena.listeners;
+package com.github.zarena.listeners;
 
-import main.java.com.github.zarena.GameHandler;
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.ZLevel;
-import main.java.com.github.zarena.commands.CommandSenderWrapper;
-import main.java.com.github.zarena.signs.ZSign;
-import main.java.com.github.zarena.signs.ZTollSign;
-import main.java.com.github.zarena.utils.Constants;
+
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -24,6 +18,14 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.plugin.PluginManager;
+
+import com.github.zarena.GameHandler;
+import com.github.zarena.ZArena;
+import com.github.zarena.ZLevel;
+import com.github.zarena.commands.CommandSenderWrapper;
+import com.github.zarena.signs.ZSign;
+import com.github.zarena.signs.ZTollSign;
+import com.github.zarena.utils.Constants;
 
 public class PlayerListener implements Listener
 {
@@ -135,7 +137,11 @@ public class PlayerListener implements Listener
 				player.sendMessage(ChatColor.RED + "ZSign removed.");
 			}
 			else if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
-				ZSign.attemptCreateSign(gameHandler.getLevel(), player, block);
+			{
+				sign = ZSign.attemptCreateSign(gameHandler.getLevel(), block.getLocation(), player, ((Sign)block.getState()).getLines());
+				if(sign != null && sign instanceof ZTollSign)
+					sign.getSign().setLine(2, "");	//Clear the flags
+			}
 		}
 	}
 }

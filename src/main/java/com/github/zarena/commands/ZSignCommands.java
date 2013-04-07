@@ -1,11 +1,12 @@
-package main.java.com.github.zarena.commands;
+package com.github.zarena.commands;
 
-import main.java.com.github.zarena.utils.StringEnums;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import com.github.zarena.utils.StringEnums;
 
 public class ZSignCommands implements CommandExecutor
 {

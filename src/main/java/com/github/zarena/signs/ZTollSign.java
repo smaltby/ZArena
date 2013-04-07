@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.signs;
+package com.github.zarena.signs;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -10,10 +10,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.ZLevel;
-import main.java.com.github.zarena.utils.LocationSer;
-import main.java.com.github.zarena.utils.StringEnums;
+
 import net.minecraft.server.v1_5_R2.BlockDoor;
 import net.minecraft.server.v1_5_R2.BlockTrapdoor;
 import net.minecraft.server.v1_5_R2.EntityPlayer;
@@ -28,6 +25,11 @@ import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_5_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_5_R2.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import com.github.zarena.ZArena;
+import com.github.zarena.ZLevel;
+import com.github.zarena.utils.LocationSer;
+import com.github.zarena.utils.StringEnums;
 
 
 public class ZTollSign extends ZSign implements Externalizable
@@ -77,10 +79,8 @@ public class ZTollSign extends ZSign implements Externalizable
 		}
 	}
 	
-	public static ZTollSign attemptCreateSign(ZLevel level, Sign sign)
+	public static ZTollSign attemptCreateSign(ZLevel level, Location location, String[] lines)
 	{
-		String[] lines = sign.getLines();
-		
 		int price;
 		try
 		{
@@ -89,18 +89,17 @@ public class ZTollSign extends ZSign implements Externalizable
 		{
 			return null;
 		}
-		LocationSer costBlockLocation = getTollableBlock(ZSign.getBlockOn(sign).getLocation());
+		LocationSer costBlockLocation = getTollableBlock(ZSign.getBlockOn(location).getLocation());
 		if(costBlockLocation == null)
-			costBlockLocation = getTollableBlock(sign.getLocation());
+			costBlockLocation = getTollableBlock(location);
 		if(costBlockLocation == null)
 			return null;
 		
 		String[] flags = lines[2].split("\\s");
-		sign.setLine(2, "");
 		
 		if(lines[3] == null)
 			return null;
-		return new ZTollSign(level, sign.getLocation(), costBlockLocation, price, lines[3], flags);
+		return new ZTollSign(level, location, costBlockLocation, price, lines[3], flags);
 	}
 	
 	private boolean canBeUsed()
@@ -236,18 +235,18 @@ public class ZTollSign extends ZSign implements Externalizable
 	{
 		if(!(getLocation().getBlock().getState() instanceof Sign))
 		{
-			ZArena.logger.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to it's sign having been removed;");
+			ZArena.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to it's sign having been removed;");
 			level.removeZSign(this);
 			return;
 		}
 		if(getCostBlock() == null)
 		{
-			costBlockLocation = getTollableBlock(ZSign.getBlockOn(getSign()).getLocation());
+			costBlockLocation = getTollableBlock(ZSign.getBlockOn(getSign().getLocation()).getLocation());
 			if(getCostBlock() == null)
 				costBlockLocation = getTollableBlock(getLocation());
 			if(getCostBlock() == null)
 			{
-				ZArena.logger.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to the block it tolls having been removed.");
+				ZArena.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to the block it tolls having been removed.");
 				level.removeZSign(this);
 			}
 		}
@@ -346,8 +345,8 @@ public class ZTollSign extends ZSign implements Externalizable
 		}
 		else
 		{
-			ZArena.logger.log(Level.WARNING, "An unsupported version of a ZTollSign failed to load.");
-			ZArena.logger.log(Level.WARNING, "The ZSign at: "+location.toString()+" may not be operational.");
+			ZArena.log(Level.WARNING, "An unsupported version of a ZTollSign failed to load.");
+			ZArena.log(Level.WARNING, "The ZSign at: "+location.toString()+" may not be operational.");
 		}
 	}
 

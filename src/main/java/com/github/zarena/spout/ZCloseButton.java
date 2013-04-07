@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.spout;
+package com.github.zarena.spout;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;

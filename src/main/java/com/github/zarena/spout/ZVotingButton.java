@@ -1,9 +1,10 @@
-package main.java.com.github.zarena.spout;
+package com.github.zarena.spout;
 
-import main.java.com.github.zarena.ZArena;
 
 import org.getspout.spoutapi.event.screen.ButtonClickEvent;
 import org.getspout.spoutapi.gui.GenericButton;
+
+import com.github.zarena.ZArena;
 
 public class ZVotingButton extends GenericButton
 {

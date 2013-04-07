@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.events;
+package com.github.zarena.events;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;

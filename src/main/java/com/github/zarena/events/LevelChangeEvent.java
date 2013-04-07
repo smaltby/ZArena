@@ -1,9 +1,12 @@
-package main.java.com.github.zarena.events;
+package com.github.zarena.events;
 
-import main.java.com.github.zarena.ZLevel;
+
 
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import com.github.zarena.ZLevel;
+
 
 public class LevelChangeEvent extends Event
 {

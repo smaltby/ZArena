@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.killcounter;
+package com.github.zarena.killcounter;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,10 +10,11 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map.Entry;
 
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.utils.Constants;
 
 import org.bukkit.Bukkit;
+
+import com.github.zarena.ZArena;
+import com.github.zarena.utils.Constants;
 
 public class KillCounter
 {

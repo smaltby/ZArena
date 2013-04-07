@@ -1,4 +1,4 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -13,12 +13,12 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 
-import main.java.com.github.zarena.signs.ZSign;
-import main.java.com.github.zarena.signs.ZTollSign;
-import main.java.com.github.zarena.utils.LocationSer;
-
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+
+import com.github.zarena.signs.ZSign;
+import com.github.zarena.signs.ZTollSign;
+import com.github.zarena.utils.LocationSer;
 
 
 public class ZLevel implements Externalizable
@@ -303,8 +303,8 @@ public class ZLevel implements Externalizable
 		}
 		else
 		{
-			ZArena.logger.log(Level.WARNING, "An unsupported version of a ZLevel failed to load.");
-			ZArena.logger.log(Level.WARNING, "The ZLevel: "+name+" may not be operational.");
+			ZArena.log(Level.WARNING, "An unsupported version of a ZLevel failed to load.");
+			ZArena.log(Level.WARNING, "The ZLevel: "+name+" may not be operational.");
 		}
 		resetInactiveZSpawns();
 	}

@@ -1,11 +1,9 @@
-package main.java.com.github.zarena.utils;
+package com.github.zarena.utils;
 
 public enum StringEnums
 {
 	// Used in ZOPtionsButton
 	VOTING_POPUP, ZOMBIE_TEXTURES, WAVE_COUNTER,
-	// Used in SpecialEffects & DamageEffects
-	POTION, POTIONRADIUS, FIRE, ENDERSIGNAL, SPAWNERFLAMES, SMOKE, KNOCKBACK, FORCEEQUIP, TELEPORT, TELEPORTRELATIVE, DAMAGEHUNGER,
 	// Used in ZTollSign & CommandHandler
 	UO, USABLEONCE, OP, OPPOSITE, NR, NORESET,
 	// Used in CommandHandler

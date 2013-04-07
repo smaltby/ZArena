@@ -1,4 +1,4 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,23 +7,23 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.logging.Level;
 
-import main.java.com.github.customentitylibrary.entities.CustomEntityWrapper;
-import main.java.com.github.customentitylibrary.entities.CustomSkeleton;
-import main.java.com.github.customentitylibrary.entities.CustomWolf;
-import main.java.com.github.customentitylibrary.entities.CustomZombie;
-import main.java.com.github.zarena.entities.EntityTypeConfiguration;
-import main.java.com.github.zarena.entities.SkeletonTypeConfiguration;
-import main.java.com.github.zarena.events.GameStopCause;
-import main.java.com.github.zarena.events.GameStopEvent;
-import main.java.com.github.zarena.events.WaveChangeEvent;
-import main.java.com.github.zarena.utils.ChatHelper;
-import main.java.com.github.zarena.utils.Constants;
-import main.java.com.github.zarena.utils.StringEnums;
+import com.github.customentitylibrary.entities.CustomEntityWrapper;
+import com.github.customentitylibrary.entities.CustomSkeleton;
+import com.github.customentitylibrary.entities.CustomWolf;
+import com.github.customentitylibrary.entities.CustomZombie;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import com.github.zarena.entities.ZEntityType;
+import com.github.zarena.events.GameStopCause;
+import com.github.zarena.events.GameStopEvent;
+import com.github.zarena.events.WaveChangeEvent;
+import com.github.zarena.utils.ChatHelper;
+import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.StringEnums;
 
 public class WaveHandler implements Runnable
 {
@@ -43,12 +43,12 @@ public class WaveHandler implements Runnable
 	private int lastWolfWave;
 	private int lastSkeletonWave;
 	
-	EntityTypeConfiguration defaultZombieType;
-	SkeletonTypeConfiguration defaultSkeletonType;
-	EntityTypeConfiguration defaultWolfType;
-	List<EntityTypeConfiguration> zombieTypes = new ArrayList<EntityTypeConfiguration>();
-	List<SkeletonTypeConfiguration> skeletonTypes = new ArrayList<SkeletonTypeConfiguration>();
-	List<EntityTypeConfiguration> wolfTypes = new ArrayList<EntityTypeConfiguration>();
+	ZEntityType defaultZombieType;
+	ZEntityType defaultSkeletonType;
+	ZEntityType defaultWolfType;
+	List<ZEntityType> zombieTypes = new ArrayList<ZEntityType>();
+	List<ZEntityType> skeletonTypes = new ArrayList<ZEntityType>();
+	List<ZEntityType> wolfTypes = new ArrayList<ZEntityType>();
 	
 	public WaveHandler(GameHandler instance)
 	{
@@ -87,7 +87,7 @@ public class WaveHandler implements Runnable
 			coefficients = coefficients.subList(0, 3);
 		else if(coefficients.size() < 3)
 		{
-			ZArena.logger.log(Level.WARNING, "Either Zombie Quantity or Zombie Health in the configuration is set incorrectly. Using default values instead until the" +
+			ZArena.log(Level.WARNING, "Either Zombie Quantity or Zombie Health in the configuration is set incorrectly. Using default values instead until the" +
 					"problem is fixed.");
 			coefficients.clear();
 			coefficients.add(.5d);
@@ -159,20 +159,20 @@ public class WaveHandler implements Runnable
 	
 	public int getApocalypseWave()
 	{
-		return (int) Math.ceil((Math.log(Math.pow((tickCount+1), 10)) + ((tickCount+1)/40))/20);	//Logarithmic function
+		return (int) Math.ceil((Math.log(Math.pow((tickCount+1), 10)) + ((tickCount+1)/40))/30);	//Logarithmic function
 	}
 	
-	public SkeletonTypeConfiguration getDefaultSkeletonType()
+	public ZEntityType getDefaultSkeletonType()
 	{
 		return defaultSkeletonType;
 	}
 	
-	public EntityTypeConfiguration getDefaultWolfType()
+	public ZEntityType getDefaultWolfType()
 	{
 		return defaultWolfType;
 	}
 	
-	public EntityTypeConfiguration getDefaultZombieType()
+	public ZEntityType getDefaultZombieType()
 	{
 		return defaultZombieType;
 	}
@@ -197,17 +197,17 @@ public class WaveHandler implements Runnable
 		return zombieSpawnChance;
 	}
 	
-	public List<SkeletonTypeConfiguration> getSkeletonTypes()
+	public List<ZEntityType> getSkeletonTypes()
 	{
 		return skeletonTypes;
 	}
 	
-	public List<EntityTypeConfiguration> getWolfTypes()
+	public List<ZEntityType> getWolfTypes()
 	{
 		return wolfTypes;
 	}
 	
-	public List<EntityTypeConfiguration> getZombieTypes()
+	public List<ZEntityType> getZombieTypes()
 	{
 		return zombieTypes;
 	}
@@ -371,7 +371,7 @@ public class WaveHandler implements Runnable
 		
 		//Modify settings based on gamemode
 		if(gm.isApocalypse())
-			zombieSpawnChance /= 1.7;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
+			zombieSpawnChance /= 2;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
 	}
 	
 	/**
@@ -411,7 +411,7 @@ public class WaveHandler implements Runnable
 		}
 		if(customEnt == null)	//The chunk might not be loaded, or the event might have been cancelled
 			return null;
-		customEnt.setMaxHealth((int) (health * (((EntityTypeConfiguration) customEnt.getType()).getHealthModifier())));
+		customEnt.setMaxHealth((int) (health * (((ZEntityType) customEnt.getType()).getHealthModifier())));
 		customEnt.restoreHealth();
 		toSpawn--;
 		return customEnt;
@@ -424,8 +424,8 @@ public class WaveHandler implements Runnable
 	 */
 	private CustomEntityWrapper spawnSkeleton(int wave)
 	{
-		SkeletonTypeConfiguration type = null;
-		for(SkeletonTypeConfiguration skeletonType : skeletonTypes)
+		ZEntityType type = null;
+		for(ZEntityType skeletonType : skeletonTypes)
 		{
 			if(skeletonType.getMinimumSpawnWave() <= wave)
 			{
@@ -441,10 +441,10 @@ public class WaveHandler implements Runnable
 		}
 		if(type == null)
 		{
-			List<SkeletonTypeConfiguration> potentialEntities = new ArrayList<SkeletonTypeConfiguration>();
-			for(SkeletonTypeConfiguration sType : skeletonTypes)
+			List<ZEntityType> potentialEntities = new ArrayList<ZEntityType>();
+			for(ZEntityType sType : skeletonTypes)
 			{
-				if(gameHandler.getGameMode().getDefaultSkeletons().contains(sType.getName()))
+				if(gameHandler.getGameMode().getDefaultSkeletons().contains(sType.toString()))
 					potentialEntities.add(sType);
 			}
 			if(potentialEntities.size() > 0)
@@ -464,8 +464,8 @@ public class WaveHandler implements Runnable
 	 */
 	private CustomEntityWrapper spawnWolf(int wave)
 	{
-		EntityTypeConfiguration type = null;
-		for(EntityTypeConfiguration wolfType : wolfTypes)
+		ZEntityType type = null;
+		for(ZEntityType wolfType : wolfTypes)
 		{
 			if(wolfType.getMinimumSpawnWave() <= wave)
 			{
@@ -481,10 +481,10 @@ public class WaveHandler implements Runnable
 		}
 		if(type == null)
 		{
-			List<EntityTypeConfiguration> potentialEntities = new ArrayList<EntityTypeConfiguration>();
-			for(EntityTypeConfiguration wType : wolfTypes)
+			List<ZEntityType> potentialEntities = new ArrayList<ZEntityType>();
+			for(ZEntityType wType : wolfTypes)
 			{
-				if(gameHandler.getGameMode().getDefaultWolves().contains(wType.getName()))
+				if(gameHandler.getGameMode().getDefaultWolves().contains(wType.toString()))
 					potentialEntities.add(wType);
 			}
 			if(potentialEntities.size() > 0)
@@ -504,8 +504,8 @@ public class WaveHandler implements Runnable
 	 */
 	private CustomEntityWrapper spawnZombie(int wave)
 	{
-		EntityTypeConfiguration type = null;
-		for(EntityTypeConfiguration zombieType : zombieTypes)
+		ZEntityType type = null;
+		for(ZEntityType zombieType : zombieTypes)
 		{
 			if(zombieType.getMinimumSpawnWave() <= wave)
 			{
@@ -521,10 +521,10 @@ public class WaveHandler implements Runnable
 		}
 		if(type == null)
 		{
-			List<EntityTypeConfiguration> potentialEntities = new ArrayList<EntityTypeConfiguration>();
-			for(EntityTypeConfiguration zType : zombieTypes)
+			List<ZEntityType> potentialEntities = new ArrayList<ZEntityType>();
+			for(ZEntityType zType : zombieTypes)
 			{
-				if(gameHandler.getGameMode().getDefaultZombies().contains(zType.getName()))
+				if(gameHandler.getGameMode().getDefaultZombies().contains(zType.toString()))
 					potentialEntities.add(zType);
 			}
 			if(potentialEntities.size() > 0)

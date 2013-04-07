@@ -1,4 +1,4 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -10,8 +10,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
-import main.java.com.github.zarena.utils.Constants;
-
+import com.github.zarena.utils.Constants;
 
 public class LevelHandler implements Externalizable
 {
@@ -22,7 +21,7 @@ public class LevelHandler implements Externalizable
 	 */
 	private static int VERSION = 0;
 	
-	private List<ZLevel> levels = new ArrayList<ZLevel>();
+	private List<com.github.zarena.ZLevel> levels = new ArrayList<com.github.zarena.ZLevel>();
 	private transient Random rnd;
 	private String world;
 	
@@ -91,8 +90,8 @@ public class LevelHandler implements Externalizable
 		}
 		else
 		{
-			ZArena.logger.log(Level.SEVERE, "An unsupported version of a LevelHandler failed to load.");
-			ZArena.logger.log(Level.SEVERE, "Saved levels may be unplayable!");
+			ZArena.log(Level.SEVERE, "An unsupported version of a LevelHandler failed to load.");
+			ZArena.log(Level.SEVERE, "Saved levels may be unplayable!");
 		}
 	}
 

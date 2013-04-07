@@ -1,28 +1,10 @@
-package main.java.com.github.zarena.commands;
+package com.github.zarena.commands;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 
-import main.java.com.github.zarena.GameHandler;
-import main.java.com.github.zarena.Gamemode;
-import main.java.com.github.zarena.PlayerStats;
-import main.java.com.github.zarena.WaveHandler;
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.ZLevel;
-import main.java.com.github.zarena.events.GameStartCause;
-import main.java.com.github.zarena.events.GameStartEvent;
-import main.java.com.github.zarena.events.GameStopCause;
-import main.java.com.github.zarena.events.GameStopEvent;
-import main.java.com.github.zarena.events.LevelChangeCause;
-import main.java.com.github.zarena.events.LevelChangeEvent;
-import main.java.com.github.zarena.signs.ZTollSign;
-import main.java.com.github.zarena.spout.PlayerOptions;
-import main.java.com.github.zarena.spout.SpoutHandler;
-import main.java.com.github.zarena.utils.ChatHelper;
-import main.java.com.github.zarena.utils.Constants;
-import main.java.com.github.zarena.utils.LocationSer;
-import main.java.com.github.zarena.utils.StringEnums;
+
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -30,6 +12,26 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.zarena.GameHandler;
+import com.github.zarena.Gamemode;
+import com.github.zarena.PlayerStats;
+import com.github.zarena.WaveHandler;
+import com.github.zarena.ZArena;
+import com.github.zarena.ZLevel;
+import com.github.zarena.events.GameStartCause;
+import com.github.zarena.events.GameStartEvent;
+import com.github.zarena.events.GameStopCause;
+import com.github.zarena.events.GameStopEvent;
+import com.github.zarena.events.LevelChangeCause;
+import com.github.zarena.events.LevelChangeEvent;
+import com.github.zarena.signs.ZTollSign;
+import com.github.zarena.spout.PlayerOptions;
+import com.github.zarena.spout.SpoutHandler;
+import com.github.zarena.utils.ChatHelper;
+import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.LocationSer;
+import com.github.zarena.utils.StringEnums;
 
 public class CommandHandler
 {

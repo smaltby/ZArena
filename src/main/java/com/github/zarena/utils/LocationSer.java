@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.utils;
+package com.github.zarena.utils;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -8,9 +8,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
-import main.java.com.github.zarena.ZArena;
 
 import org.bukkit.Bukkit;
+
+import com.github.zarena.ZArena;
 
 /**
  * @author joshua
@@ -211,7 +212,7 @@ public class LocationSer implements Externalizable
 		}
 		else
 		{
-			ZArena.logger.log(Level.WARNING, "An unsupported version of an externalized Location failed to load.");
+			ZArena.log(Level.WARNING, "An unsupported version of an externalized Location failed to load.");
 		}
 	}
 

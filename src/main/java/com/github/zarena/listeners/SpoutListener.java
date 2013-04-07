@@ -1,10 +1,8 @@
-package main.java.com.github.zarena.listeners;
+package com.github.zarena.listeners;
 
-import main.java.com.github.customentitylibrary.CustomEntitySpawnEvent;
-import main.java.com.github.customentitylibrary.entities.CustomEntityWrapper;
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.entities.EntityTypeConfiguration;
-import main.java.com.github.zarena.spout.PlayerOptions;
+import com.github.customentitylibrary.CustomEntitySpawnEvent;
+import com.github.customentitylibrary.entities.CustomEntityWrapper;
+import com.github.customentitylibrary.entities.EntityTypeConfiguration;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
@@ -19,6 +17,9 @@ import org.getspout.spoutapi.keyboard.BindingExecutionDelegate;
 import org.getspout.spoutapi.keyboard.Keyboard;
 import org.getspout.spoutapi.player.EntitySkinType;
 import org.getspout.spoutapi.player.SpoutPlayer;
+
+import com.github.zarena.ZArena;
+import com.github.zarena.spout.PlayerOptions;
 
 public class SpoutListener implements BindingExecutionDelegate, Listener
 {

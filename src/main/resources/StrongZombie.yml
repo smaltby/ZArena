@@ -14,3 +14,4 @@ Armor:
 - iron helmet
 DamageEffects:
 - knockback 7,2
+CanDive: true

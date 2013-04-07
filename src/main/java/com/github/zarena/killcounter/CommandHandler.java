@@ -1,14 +1,15 @@
-package main.java.com.github.zarena.killcounter;
+package com.github.zarena.killcounter;
 
 import java.util.Map.Entry;
 
-import main.java.com.github.zarena.commands.CommandSenderWrapper;
-import main.java.com.github.zarena.commands.ECommand;
-import main.java.com.github.zarena.utils.ChatHelper;
-import main.java.com.github.zarena.utils.Utils;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+
+import com.github.zarena.commands.CommandSenderWrapper;
+import com.github.zarena.commands.ECommand;
+import com.github.zarena.utils.ChatHelper;
+import com.github.zarena.utils.Utils;
 
 public class CommandHandler
 {

@@ -1,7 +1,6 @@
-package main.java.com.github.zarena.killcounter;
+package com.github.zarena.killcounter;
 
-import main.java.com.github.customentitylibrary.entities.CustomEntityWrapper;
-import main.java.com.github.zarena.ZArena;
+import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -9,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.plugin.PluginManager;
+
+import com.github.zarena.ZArena;
 
 public class KCListener implements Listener
 {

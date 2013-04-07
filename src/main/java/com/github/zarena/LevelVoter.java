@@ -1,4 +1,4 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,18 +9,20 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.Random;
 
-import main.java.com.github.zarena.commands.CommandSenderWrapper;
-import main.java.com.github.zarena.events.GameStartCause;
-import main.java.com.github.zarena.events.GameStartEvent;
-import main.java.com.github.zarena.events.LevelChangeCause;
-import main.java.com.github.zarena.events.LevelChangeEvent;
-import main.java.com.github.zarena.spout.SpoutHandler;
-import main.java.com.github.zarena.utils.ChatHelper;
-import main.java.com.github.zarena.utils.Constants;
+
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import com.github.zarena.commands.CommandSenderWrapper;
+import com.github.zarena.events.GameStartCause;
+import com.github.zarena.events.GameStartEvent;
+import com.github.zarena.events.LevelChangeCause;
+import com.github.zarena.events.LevelChangeEvent;
+import com.github.zarena.spout.SpoutHandler;
+import com.github.zarena.utils.ChatHelper;
+import com.github.zarena.utils.Constants;
 
 
 public class LevelVoter implements Runnable
@@ -90,7 +92,7 @@ public class LevelVoter implements Runnable
 		gameHandler.isVoting = true;
 		int maps = gameHandler.getLevelHandler().getLevels().size();
 		if(maps == 0)
-			ZArena.logger.log(Level.WARNING, "The game has attempted to start a vote, but there are no levels to be voted on.");
+			ZArena.log(Level.WARNING, "The game has attempted to start a vote, but there are no levels to be voted on.");
 		if(maps > 3)
 			maps = 3;
 		int normals = rnd.nextInt(2) + 1;

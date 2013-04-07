@@ -1,41 +1,17 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-import main.java.com.github.customentitylibrary.CustomEntityLibrary;
-import main.java.com.github.zarena.commands.DSpawnCommands;
-import main.java.com.github.zarena.commands.ISpawnCommands;
-import main.java.com.github.zarena.commands.ZACommands;
-import main.java.com.github.zarena.commands.ZSignCommands;
-import main.java.com.github.zarena.commands.ZSpawnCommands;
-import main.java.com.github.zarena.entities.EntityTypeConfiguration;
-import main.java.com.github.zarena.entities.SkeletonTypeConfiguration;
-import main.java.com.github.zarena.events.GameStopCause;
-import main.java.com.github.zarena.events.GameStopEvent;
-import main.java.com.github.zarena.killcounter.KillCounter;
-import main.java.com.github.zarena.listeners.BlockListener;
-import main.java.com.github.zarena.listeners.EntityListener;
-import main.java.com.github.zarena.listeners.PlayerListener;
-import main.java.com.github.zarena.listeners.WorldListener;
-import main.java.com.github.zarena.signs.ZSignCustomItem;
-import main.java.com.github.zarena.spout.PlayerOptionsHandler;
-import main.java.com.github.zarena.spout.SpoutHandler;
-import main.java.com.github.zarena.utils.Constants;
-import main.java.com.github.zarena.utils.Metrics;
-import main.java.com.github.zarena.utils.Permissions;
-import main.java.com.github.zarena.utils.StringEnums;
-import main.java.com.github.zarena.utils.Utils;
+import com.github.customentitylibrary.CustomEntityLibrary;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -46,10 +22,32 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.github.zarena.commands.DSpawnCommands;
+import com.github.zarena.commands.ISpawnCommands;
+import com.github.zarena.commands.ZACommands;
+import com.github.zarena.commands.ZSignCommands;
+import com.github.zarena.commands.ZSpawnCommands;
+import com.github.zarena.entities.ZEntityTypeConfiguration;
+import com.github.zarena.events.GameStopCause;
+import com.github.zarena.events.GameStopEvent;
+import com.github.zarena.killcounter.KillCounter;
+import com.github.zarena.listeners.BlockListener;
+import com.github.zarena.listeners.EntityListener;
+import com.github.zarena.listeners.PlayerListener;
+import com.github.zarena.listeners.WorldListener;
+import com.github.zarena.signs.ZSignCustomItem;
+import com.github.zarena.spout.PlayerOptionsHandler;
+import com.github.zarena.spout.SpoutHandler;
+import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.CustomObjectInputStream;
+import com.github.zarena.utils.Metrics;
+import com.github.zarena.utils.Permissions;
+import com.github.zarena.utils.StringEnums;
+import com.github.zarena.utils.Utils;
+
 public class ZArena extends JavaPlugin
 {
 	private static ZArena instance;
-	public static Logger logger;
 	
 	private KillCounter kc;
 	
@@ -74,7 +72,6 @@ public class ZArena extends JavaPlugin
 	public void onEnable()
 	{
 		instance = this;
-		logger = Bukkit.getServer().getLogger();
 		
 		CustomEntityLibrary.load(this);
 		
@@ -154,7 +151,6 @@ public class ZArena extends JavaPlugin
 		saveFiles();
 		//Reset static stuff
 		instance = null;
-		logger = null;
 		spoutEnabled = false;
 	}
 	
@@ -277,7 +273,7 @@ public class ZArena extends JavaPlugin
 		File gamemodeFile = new File(Constants.GAMEMODES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_GAMEMODE));
 		if(!gamemodeFile.exists())
 		{
-			logger.log(Level.WARNING, "ZArena: Default gamemode type file not found. Using default values");
+			log(Level.WARNING, "ZArena: Default gamemode type file not found. Using default values");
 			try
 			{
 				gamemodeFile.createNewFile();
@@ -298,7 +294,7 @@ public class ZArena extends JavaPlugin
 				gamemodeFile = new File(Constants.GAMEMODES_FOLDER+File.separator+fileName);
 				if(!gamemodeFile.exists())
 				{
-					logger.log(Level.WARNING, "ZArena: Gamemode Type file for "+fileName+" not found. This Gamemode will be unusable.");
+					log(Level.WARNING, "ZArena: Gamemode Type file for "+fileName+" not found. This Gamemode will be unusable.");
 					continue;
 				}
 				gamemodeConfig = YamlConfiguration.loadConfiguration(gamemodeFile);
@@ -312,7 +308,7 @@ public class ZArena extends JavaPlugin
 		File zombieFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_ZOMBIE));
 		if(!zombieFile.exists())
 		{
-			logger.log(Level.WARNING, "ZArena: Default zombie type file not found. Using default values");
+			log(Level.WARNING, "ZArena: Default zombie type file not found. Using default values");
 			try
 			{
 				zombieFile.createNewFile();
@@ -322,13 +318,13 @@ public class ZArena extends JavaPlugin
 			}
 		}
 		YamlConfiguration zombieConfig = YamlConfiguration.loadConfiguration(zombieFile);
-		EntityTypeConfiguration zombieType = new EntityTypeConfiguration(zombieConfig);
+		ZEntityTypeConfiguration zombieType = new ZEntityTypeConfiguration(zombieConfig);
 		gameHandler.getWaveHandler().defaultZombieType = zombieType;
 		
 		File skeletonFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_SKELETON));
 		if(!skeletonFile.exists())
 		{
-			logger.log(Level.WARNING, "ZArena: Default skeleton type file not found. Using default values");
+			log(Level.WARNING, "ZArena: Default skeleton type file not found. Using default values");
 			try
 			{
 				skeletonFile.createNewFile();
@@ -338,13 +334,13 @@ public class ZArena extends JavaPlugin
 			}
 		}
 		YamlConfiguration skeletonConfig = YamlConfiguration.loadConfiguration(skeletonFile);
-		SkeletonTypeConfiguration skeletonType = new SkeletonTypeConfiguration(skeletonConfig);
+		ZEntityTypeConfiguration skeletonType = new ZEntityTypeConfiguration(skeletonConfig);
 		gameHandler.getWaveHandler().defaultSkeletonType = skeletonType;
 		
 		File wolfFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_WOLF));
 		if(!wolfFile.exists())
 		{
-			logger.log(Level.WARNING, "ZArena: Default wolf type file not found. Using default values");
+			log(Level.WARNING, "ZArena: Default wolf type file not found. Using default values");
 			try
 			{
 				wolfFile.createNewFile();
@@ -354,7 +350,7 @@ public class ZArena extends JavaPlugin
 			}
 		}
 		YamlConfiguration wolfConfig = YamlConfiguration.loadConfiguration(wolfFile);
-		EntityTypeConfiguration wolfType = new EntityTypeConfiguration(wolfConfig);
+		ZEntityTypeConfiguration wolfType = new ZEntityTypeConfiguration(wolfConfig);
 		gameHandler.getWaveHandler().defaultWolfType = wolfType;
 
 		if(getConfig().getStringList(Constants.ENTITIES) != null)
@@ -364,19 +360,19 @@ public class ZArena extends JavaPlugin
 				File file = new File(Constants.ENTITIES_FOLDER+File.separator+fileName);
 				if(!file.exists())
 				{
-					logger.log(Level.WARNING, "ZArena: Entity Type file for "+fileName+" not found. This Entity Type will not spawn.");
+					log(Level.WARNING, "ZArena: Entity Type file for "+fileName+" not found. This Entity Type will not spawn.");
 					continue;
 				}
 				YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-				EntityTypeConfiguration entityConfig = new EntityTypeConfiguration(config);
+				ZEntityTypeConfiguration entityConfig = new ZEntityTypeConfiguration(config);
 				switch(StringEnums.valueOf(entityConfig.getType().toUpperCase()))
 				{
 				case ZOMBIE:
 					gameHandler.getWaveHandler().zombieTypes.add(entityConfig);
 					break;
 				case SKELETON:
-					entityConfig = new SkeletonTypeConfiguration(config);
-					gameHandler.getWaveHandler().skeletonTypes.add((SkeletonTypeConfiguration) entityConfig);
+					entityConfig = new ZEntityTypeConfiguration(config);
+					gameHandler.getWaveHandler().skeletonTypes.add((ZEntityTypeConfiguration) entityConfig);
 					break;
 				case WOLF:
 					gameHandler.getWaveHandler().wolfTypes.add(entityConfig);
@@ -398,13 +394,10 @@ public class ZArena extends JavaPlugin
 	{
 		File path = new File(Constants.OPTIONS_PATH);
 
-        FileInputStream fis;
-        ObjectInputStream ois;
-
         try
         {
-            fis = new FileInputStream(path);
-            ois = new ObjectInputStream(fis);
+        	FileInputStream fis = new FileInputStream(path);
+            CustomObjectInputStream ois = new CustomObjectInputStream(fis);
 
             playerOptionsHandler = new PlayerOptionsHandler();
             playerOptionsHandler.readExternal(ois);
@@ -414,7 +407,7 @@ public class ZArena extends JavaPlugin
 
         } catch (Exception e)
         {
-        	ZArena.logger.log(Level.WARNING, "ZArena: Couldn't load the PlayerOptions database. Ignore if this is the first time the plugin has been run.");
+        	log(Level.WARNING, "ZArena: Couldn't load the PlayerOptions database. Ignore if this is the first time the plugin has been run.");
         	playerOptionsHandler = new PlayerOptionsHandler();
         }
 	}
@@ -473,7 +466,7 @@ public class ZArena extends JavaPlugin
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "Normal.yml");
 		} catch (IOException e)
 		{
-			logger.log(Level.WARNING, "ZArena: Error loading default files. You can download them manually from the plugins dev.bukkit.org page.");
+			log(Level.WARNING, "ZArena: Error loading default files. You can download them manually from the plugins dev.bukkit.org page.");
 		}
 
 		getConfig().set(Constants.FIRST_TIME, false);
@@ -554,7 +547,17 @@ public class ZArena extends JavaPlugin
         catch (IOException e)
         {
         	e.printStackTrace();
-        	ZArena.logger.log(Level.WARNING, "ZArena: Error saving the PlayerOptions database.");
+        	log(Level.WARNING, "ZArena: Error saving the PlayerOptions database.");
         }
+	}
+	
+	public static void log(Level level, String msg)
+	{
+		getInstance().getLogger().log(level, msg);
+	}
+	
+	public static void log(String msg)
+	{
+		log(Level.INFO, msg);
 	}
 }

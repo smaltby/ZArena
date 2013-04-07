@@ -1,12 +1,13 @@
-package main.java.com.github.zarena.commands;
+package com.github.zarena.commands;
 
 import java.util.Map.Entry;
 
-import main.java.com.github.zarena.utils.Permissions;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.github.zarena.utils.Permissions;
 
 /**
  * @author joshua

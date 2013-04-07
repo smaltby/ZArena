@@ -1,8 +1,5 @@
-package main.java.com.github.zarena.spout;
+package com.github.zarena.spout;
 
-import main.java.com.github.zarena.GameHandler;
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.listeners.SpoutListener;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -12,6 +9,10 @@ import org.getspout.spoutapi.gui.GenericLabel;
 import org.getspout.spoutapi.gui.GenericTexture;
 import org.getspout.spoutapi.keyboard.Keyboard;
 import org.getspout.spoutapi.player.SpoutPlayer;
+
+import com.github.zarena.GameHandler;
+import com.github.zarena.ZArena;
+import com.github.zarena.listeners.SpoutListener;
 
 /**
  * A class to handle spout related features, if spout is enabled

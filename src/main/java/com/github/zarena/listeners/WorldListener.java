@@ -1,12 +1,13 @@
-package main.java.com.github.zarena.listeners;
+package com.github.zarena.listeners;
 
-import main.java.com.github.zarena.PlayerStats;
-import main.java.com.github.zarena.ZArena;
-import main.java.com.github.zarena.events.WaveChangeEvent;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginManager;
+
+import com.github.zarena.PlayerStats;
+import com.github.zarena.ZArena;
+import com.github.zarena.events.WaveChangeEvent;
 
 public class WorldListener implements Listener
 {

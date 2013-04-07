@@ -7,3 +7,4 @@ Speed: 0.25
 WorthModifier: 1
 MinimumSpawnWave: 1
 SpawnChance: 1
+CanDive: true

@@ -1,10 +1,9 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,12 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
-import main.java.com.github.customentitylibrary.entities.CustomEntityWrapper;
-import main.java.com.github.zarena.commands.CommandSenderWrapper;
-import main.java.com.github.zarena.signs.ZSignCustomItem;
-import main.java.com.github.zarena.utils.ChatHelper;
-import main.java.com.github.zarena.utils.Constants;
-import main.java.com.github.zarena.utils.Utils;
+
+import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,6 +27,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 
+import com.github.zarena.commands.CommandSenderWrapper;
+import com.github.zarena.signs.ZSignCustomItem;
+import com.github.zarena.utils.ChatHelper;
+import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.CustomObjectInputStream;
+import com.github.zarena.utils.Utils;
 import com.google.common.io.Files;
 
 public class GameHandler
@@ -297,7 +298,7 @@ public class GameHandler
         try
         {
         	FileInputStream fis = new FileInputStream(path);
-        	ObjectInputStream ois = new ObjectInputStream(fis);
+        	CustomObjectInputStream ois = new CustomObjectInputStream(fis);
 
             levelHandler = new LevelHandler();
             levelHandler.readExternal(ois);
@@ -307,7 +308,8 @@ public class GameHandler
 
         } catch (Exception e)
         {
-        	ZArena.logger.log(Level.WARNING, "ZArena: Couldn't load the LevelHandler database. Ignore if this is the first time the plugin has been run.");
+        	e.printStackTrace();
+        	ZArena.log(Level.WARNING, "ZArena: Couldn't load the LevelHandler database. Ignore if this is the first time the plugin has been run.");
             levelHandler = new LevelHandler();
         }
 	}
@@ -418,7 +420,7 @@ public class GameHandler
 
         } catch (IOException e)
         {
-        	ZArena.logger.log(Level.WARNING, "ZArena: Error saving the LevelHandler database.");
+        	ZArena.log(Level.WARNING, "ZArena: Error saving the LevelHandler database.");
         }
 	}
 	

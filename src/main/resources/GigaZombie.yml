@@ -12,3 +12,4 @@ DamageEffects:
 SpecialEffects:
   - spawnerflames 2
   - potionradius 16,slow,30,1
+CanDive: true

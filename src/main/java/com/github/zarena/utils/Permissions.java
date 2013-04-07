@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.utils;
+package com.github.zarena.utils;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.signs;
+package com.github.zarena.signs;
 
 import java.util.ArrayList;
 import java.util.List;

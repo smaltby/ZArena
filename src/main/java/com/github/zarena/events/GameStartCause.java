@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.events;
+package com.github.zarena.events;
 
 public enum GameStartCause
 {

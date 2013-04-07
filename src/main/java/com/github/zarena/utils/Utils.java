@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.utils;
+package com.github.zarena.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-import main.java.com.github.zarena.ZArena;
 import net.minecraft.server.v1_5_R2.MathHelper;
 
 import org.bukkit.Location;
@@ -21,24 +20,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
+import com.github.zarena.ZArena;
+
 public class Utils
 {
-	/**
-	 * Get arguments from a String gotten from a YAMLConfiguration entry, split by commas.
-	 * @param regex	the String to get the arguments from
-	 * @return		array of arguments
-	 */
-	public static String[] getConfigArgs(String regex)
-	{
-		String[] args = new String[0];
-		if(regex.contains(" "))
-		{
-			String argsNotArray = regex.split("\\s")[1];
-			args = argsNotArray.split(",");
-		}
-		return args;
-	}
-	
 	/**
 	 * Checks if two text files contain the same contents.
 	 * @param file1	first file being compared
@@ -263,7 +248,7 @@ public class Utils
         if (file.exists())	//What we are extracting from the jar file are default files. If the files are already there, we don't want to overwrite them
         	return file;
         
-        InputStream in = ZArena.class.getResourceAsStream("/resources/"+fileName);	//Get inputstream from resources folder
+        InputStream in = ZArena.class.getResourceAsStream(fileName);	//Get inputstream from base folder
         if (in == null)	//If it's null, return null
         	return null;
 
@@ -315,5 +300,21 @@ public class Utils
 		{
 			return defaultValue;
 		}
+	}
+	
+	/**
+	 * Get arguments from a String gotten from a YAMLConfiguration entry, split by commas.
+	 * @param regex	the String to get the arguments from
+	 * @return		array of arguments
+	 */
+	public static String[] getConfigArgs(String regex)
+	{
+		String[] args = new String[0];
+		if(regex.contains(" "))
+		{
+			String argsNotArray = regex.split("\\s")[1];
+			args = argsNotArray.split(",");
+		}
+		return args;
 	}
 }

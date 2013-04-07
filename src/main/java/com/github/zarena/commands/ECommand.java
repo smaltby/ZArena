@@ -1,4 +1,4 @@
-package main.java.com.github.zarena.commands;
+package com.github.zarena.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;

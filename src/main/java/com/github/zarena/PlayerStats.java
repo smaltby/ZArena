@@ -1,6 +1,5 @@
-package main.java.com.github.zarena;
+package com.github.zarena;
 
-import main.java.com.github.zarena.utils.Constants;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -8,6 +7,8 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.zarena.utils.Constants;
 
 public class PlayerStats implements Comparable<PlayerStats>
 {
