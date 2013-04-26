@@ -100,8 +100,8 @@ public class ZArena extends JavaPlugin
 		gameHandler = new GameHandler(); //Create the Game Handler...needs to be done so early because stuff below rely on it
 		
 		//Load more stuff
-		loadGamemodeTypes();
 		loadEntityTypes();
+		loadGamemodeTypes();//Note: Has to be after loadEntityTypes
 		loadFiles();
 		
 		//Load metrics
@@ -204,6 +204,7 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.VOTING_LENGTH, 30);
 		cfg.addDefault(Constants.XP_BAR_IS_MONEY, false);
 		cfg.addDefault(Constants.BROADCAST_ALL, false);
+		cfg.addDefault(Constants.SEPERATE_INVENTORY, true);
 		cfg.addDefault(Constants.WAVE_DELAY, 10);
 		cfg.addDefault(Constants.WORLD_EXCLUSIVE, false);
 		cfg.addDefault(Constants.DISABLE_HUNGER, true);
@@ -270,6 +271,7 @@ public class ZArena extends JavaPlugin
 	
 	private void loadGamemodeTypes()
 	{
+		new File(Constants.GAMEMODES_FOLDER).mkdir();
 		File gamemodeFile = new File(Constants.GAMEMODES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_GAMEMODE));
 		if(!gamemodeFile.exists())
 		{
@@ -305,6 +307,7 @@ public class ZArena extends JavaPlugin
 	
 	private void loadEntityTypes()
 	{
+		new File(Constants.ENTITIES_FOLDER).mkdir();
 		File zombieFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_ZOMBIE));
 		if(!zombieFile.exists())
 		{
@@ -319,6 +322,13 @@ public class ZArena extends JavaPlugin
 		}
 		YamlConfiguration zombieConfig = YamlConfiguration.loadConfiguration(zombieFile);
 		ZEntityTypeConfiguration zombieType = new ZEntityTypeConfiguration(zombieConfig);
+		try
+		{
+			zombieConfig.save(zombieFile);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		gameHandler.getWaveHandler().defaultZombieType = zombieType;
 		
 		File skeletonFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_SKELETON));
@@ -335,6 +345,13 @@ public class ZArena extends JavaPlugin
 		}
 		YamlConfiguration skeletonConfig = YamlConfiguration.loadConfiguration(skeletonFile);
 		ZEntityTypeConfiguration skeletonType = new ZEntityTypeConfiguration(skeletonConfig);
+		try
+		{
+			skeletonConfig.save(skeletonFile);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		gameHandler.getWaveHandler().defaultSkeletonType = skeletonType;
 		
 		File wolfFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_WOLF));
@@ -351,6 +368,13 @@ public class ZArena extends JavaPlugin
 		}
 		YamlConfiguration wolfConfig = YamlConfiguration.loadConfiguration(wolfFile);
 		ZEntityTypeConfiguration wolfType = new ZEntityTypeConfiguration(wolfConfig);
+		try
+		{
+			wolfConfig.save(wolfFile);
+		} catch (IOException e)
+		{
+			e.printStackTrace();
+		}
 		gameHandler.getWaveHandler().defaultWolfType = wolfType;
 
 		if(getConfig().getStringList(Constants.ENTITIES) != null)
@@ -365,9 +389,16 @@ public class ZArena extends JavaPlugin
 				}
 				YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 				ZEntityTypeConfiguration entityConfig = new ZEntityTypeConfiguration(config);
-				switch(StringEnums.valueOf(entityConfig.getType().toUpperCase()))
+				try
 				{
-				case ZOMBIE:
+					config.save(file);
+				} catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+				switch(StringEnums.valueOf(entityConfig.getPreferredType().toUpperCase()))
+				{
+				case ZOMBIE: case ZOMBIEPIGMAN:
 					gameHandler.getWaveHandler().zombieTypes.add(entityConfig);
 					break;
 				case SKELETON:
@@ -393,7 +424,7 @@ public class ZArena extends JavaPlugin
 	private void loadPlayerOptions()
 	{
 		File path = new File(Constants.OPTIONS_PATH);
-
+		
         try
         {
         	FileInputStream fis = new FileInputStream(path);
@@ -441,6 +472,8 @@ public class ZArena extends JavaPlugin
 		entityFileNameList.add("FastSkeleton.yml");
 		entityFileNameList.add("WitherSkeleton.yml");
 		entityFileNameList.add("HellHound.yml");
+		entityFileNameList.add("ZombiePigman.yml");
+		entityFileNameList.add("ZombieVillager.yml");
 		getConfig().set(Constants.ENTITIES, entityFileNameList);
 		
 		List<String> startItems = new ArrayList<String>();
@@ -459,6 +492,8 @@ public class ZArena extends JavaPlugin
 			Utils.extractFromJar(new File(Constants.ENTITIES_FOLDER), "NormalZombie.yml");
 			Utils.extractFromJar(new File(Constants.ENTITIES_FOLDER), "StrongZombie.yml");
 			Utils.extractFromJar(new File(Constants.ENTITIES_FOLDER), "WitherSkeleton.yml");
+			Utils.extractFromJar(new File(Constants.ENTITIES_FOLDER), "ZombiePigman.yml");
+			Utils.extractFromJar(new File(Constants.ENTITIES_FOLDER), "ZombieVillager.yml");
 
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "Apocalypse.yml");
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "Hardcore.yml");

@@ -2,13 +2,12 @@ package com.github.zarena.entities;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Stack;
 
 import net.minecraft.server.v1_5_R2.EntityCreature;
 import net.minecraft.server.v1_5_R2.EntityLiving;
+import net.minecraft.server.v1_5_R2.EntityWolf;
 import net.minecraft.server.v1_5_R2.PathfinderGoal;
-import net.minecraft.server.v1_5_R2.PathfinderGoalFloat;
-
+import net.minecraft.server.v1_5_R2.PathfinderGoalHurtByTarget;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.github.customentitylibrary.entities.EntityType;
@@ -21,7 +20,7 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	double worthModifier;
 	double healthModifier;
 	int minSpawnWave;
-	double spawnChance;
+	int priority;
 	boolean canDive;
 	public ZEntityTypeConfiguration(FileConfiguration config)
 	{
@@ -29,10 +28,30 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 		worthModifier = config.getDouble("WorthModifier", 1.0);
 		healthModifier = config.getDouble("HealthModifier", 1.0);
 		minSpawnWave = config.getInt("MinimumSpawnWave", 1);
-		spawnChance = config.getDouble("SpawnChance", .01);
+		if(config.contains("SpawnChance"))
+		{
+			int convertedPriority = 20;
+			double chance = config.getDouble("SpawnChance");
+			double currChance = .5;
+			for(int i = 1; i <= 20; i++)
+			{
+				double nextChance = currChance / 2;
+				if(chance < currChance && chance > nextChance)
+				{
+					convertedPriority = i;
+					break;
+				} else
+				{
+					currChance = nextChance;
+				}
+			}
+			config.set("SpawnPriority", convertedPriority);
+			config.set("SpawnChance", null);
+		} 
+		priority = config.getInt("SpawnPriority", 5);
 		canDive = config.getBoolean("CanDive", false);
 	}
-
+	
 	@Override
 	public double getWorthModifier()
 	{
@@ -52,26 +71,27 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	}
 	
 	@Override
-	public double getSpawnChance()
+	public int getSpawnPriority()
 	{
-		return spawnChance;
+		return priority;
 	}
 	
 	@Override
 	public Map<Integer, PathfinderGoal> getTargetSelectors(EntityLiving ent, EntityType type)
 	{
 		Map<Integer, PathfinderGoal> targetSelectors = DefaultPathfinders.getTargetSelectors(ent, this);
-		Stack<Integer> toRemove = new Stack<Integer>();
 		for(Entry<Integer, PathfinderGoal> e : targetSelectors.entrySet())
 		{
 			//The default PathfinderTargetSelectors select all humans. We only want them selecting humans in the ZArena game
 			if(e.getValue() instanceof PathfinderTargetSelector)
 				e.setValue(new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange()));
-			//Remove the float pathfinder if the entity can dive down
-			if(canDive && e.getValue() instanceof PathfinderGoalFloat)
-				toRemove.push(e.getKey());
 		}
-		for(Integer priority : toRemove) targetSelectors.remove(priority);
+		//Entity wolves should be designed solely for combat
+		if(ent instanceof EntityWolf)
+		{
+			targetSelectors.put(1, new PathfinderGoalHurtByTarget(ent, true));
+			targetSelectors.put(2, new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange()));
+		}
 		return targetSelectors;
 	}
 	

@@ -1,6 +1,7 @@
 package com.github.zarena;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -8,6 +9,7 @@ import java.util.Stack;
 import java.util.logging.Level;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
+import com.github.customentitylibrary.entities.CustomPigZombie;
 import com.github.customentitylibrary.entities.CustomSkeleton;
 import com.github.customentitylibrary.entities.CustomWolf;
 import com.github.customentitylibrary.entities.CustomZombie;
@@ -63,18 +65,15 @@ public class WaveHandler implements Runnable
 		lastWolfWave = 0;
 	}
 	
-	private void attemptSpawnEntity()
+	private double calcChance(int priority, int wave)
 	{
-		Gamemode gm = gameHandler.getGameMode();
-		if(toSpawn > 0 || (gm.isApocalypse()))
+		double reduce = 2 - .75 / (1 + Math.pow(Math.E, -(wave/3 - 3)));
+		double chance = 1.0;
+		for(int i = 0; i < priority; i++)
 		{
-			if(rnd.nextDouble() < zombieSpawnChance)
-			{
-				CustomEntityWrapper ent = spawnEntity();
-				if(ent != null)
-					entities.add(ent);
-			}
+			chance /= reduce;
 		}
+		return chance;
 	}
 	
 	/**
@@ -157,21 +156,107 @@ public class WaveHandler implements Runnable
 		return toSpawn <= 0 && entities.isEmpty() && timeUntilNextWave <= 0;
 	}
 	
+	private CustomEntityWrapper chooseEntity(int wave, List<ZEntityType> types, List<ZEntityType> defaultTypes)
+	{
+		//This mass of code randomly selects a list of entities to spawn
+		List<ZEntityType> possibleTypes = new ArrayList<ZEntityType>();
+		for(ZEntityType type : types)
+		{
+			if(type.getMinimumSpawnWave() <= wave)
+			{
+				double chance = calcChance(type.getSpawnPriority(), wave);
+				if(rnd.nextDouble() < chance)
+				{
+					possibleTypes.add(type);
+					break;
+				}
+			}
+		}
+		if(possibleTypes.isEmpty())
+			possibleTypes.add(defaultTypes.get(rnd.nextInt(defaultTypes.size())));
+		
+		//Randomly select a type from all of the possible types to be spawned
+		ZEntityType type = possibleTypes.get(rnd.nextInt(possibleTypes.size()));
+
+		//And now spawn it
+		Location spawn = gameHandler.getLevel().getRandomZombieSpawn();
+		if(spawn == null)
+		{
+			ChatHelper.broadcastMessage(ChatColor.RED+"Error: ZArena level has no zombie spawns. Stopping game.");
+			gameHandler.stop();
+			return null;
+		}
+		CustomEntityWrapper customEnt;
+		if(type.getPreferredType().equalsIgnoreCase("zombiepigman"))
+		{
+			CustomPigZombie pig = new CustomPigZombie(spawn.getWorld());
+			pig.angerLevel = 1;
+			customEnt = CustomEntityWrapper.spawnCustomEntity(pig, spawn, type);
+		} else if(type.getPreferredType().equalsIgnoreCase("zombie"))
+		{
+			customEnt = CustomEntityWrapper.spawnCustomEntity(new CustomZombie(spawn.getWorld()), spawn, type);
+		} else if(type.getPreferredType().equalsIgnoreCase("skeleton"))
+		{
+			customEnt = CustomEntityWrapper.spawnCustomEntity(new CustomSkeleton(spawn.getWorld()), spawn, type);
+		} else if(type.getPreferredType().equalsIgnoreCase("wolf"))
+		{
+			CustomWolf wolf = new CustomWolf(spawn.getWorld());
+			wolf.setAngry(true);
+			customEnt = CustomEntityWrapper.spawnCustomEntity(wolf, spawn, type);
+		} else
+		{
+			ZArena.log(Level.WARNING, "The type of the entity configuration called "+type.toString()+" does not correspond to spawnable entity.");
+			return null;
+		}
+		return customEnt;
+	}
+	
+	/**
+	 * Get all entity types, including default types.
+	 * @return	list of ZEntityType instances
+	 */
+	public List<ZEntityType> getAllEntityTypes()
+	{
+		List<ZEntityType> all = new ArrayList<ZEntityType>();
+		//The below methods include default types, so we don't have to do that manually
+		all.addAll(getSkeletonTypes());
+		all.addAll(getWolfTypes());
+		all.addAll(getZombieTypes());
+		return all;
+	}
+	
+	/**
+	 * Get the the special apocalypse wave, which is used to determine the types of zombies that spawn during the
+	 * technically waveless apocalypse mode.
+	 * @return	number representing the internal wave used in calculations during apocalypse mode
+	 */
 	public int getApocalypseWave()
 	{
 		return (int) Math.ceil((Math.log(Math.pow((tickCount+1), 10)) + ((tickCount+1)/40))/30);	//Logarithmic function
 	}
 	
+	/**
+	 * Get the default skeleton type when it is not override by the current gamemode
+	 * @return	type
+	 */
 	public ZEntityType getDefaultSkeletonType()
 	{
 		return defaultSkeletonType;
 	}
 	
+	/**
+	 * Get the default wolf type when it is not override by the current gamemode
+	 * @return	type
+	 */
 	public ZEntityType getDefaultWolfType()
 	{
 		return defaultWolfType;
 	}
 	
+	/**
+	 * Get the default zombie type when it is not override by the current gamemode
+	 * @return	type
+	 */
 	public ZEntityType getDefaultZombieType()
 	{
 		return defaultZombieType;
@@ -197,19 +282,40 @@ public class WaveHandler implements Runnable
 		return zombieSpawnChance;
 	}
 	
+	/**
+	 * Get a list of all skeleton types that may be chosen when a skeleton spawns, assuming the current gamemode doesn't block it.
+	 * Includes default type.
+	 * @return	list of types
+	 */
 	public List<ZEntityType> getSkeletonTypes()
 	{
-		return skeletonTypes;
+		List<ZEntityType> types = new ArrayList<ZEntityType>(skeletonTypes);
+		types.add(defaultSkeletonType);
+		return types;
 	}
 	
+	/**
+	 * Get a list of all wolf types that may be chosen when a wolf spawns, assuming the current gamemode doesn't block it.
+	 * Includes default type.
+	 * @return	list of types
+	 */
 	public List<ZEntityType> getWolfTypes()
 	{
-		return wolfTypes;
+		List<ZEntityType> types = new ArrayList<ZEntityType>(wolfTypes);
+		types.add(defaultWolfType);
+		return types;
 	}
 	
+	/**
+	 * Get a list of all zombie types that may be chosen when a zombie spawns, assuming the current gamemode doesn't block it.
+	 * Includes default type.
+	 * @return	list of types
+	 */
 	public List<ZEntityType> getZombieTypes()
 	{
-		return zombieTypes;
+		List<ZEntityType> types = new ArrayList<ZEntityType>(zombieTypes);
+		types.add(defaultZombieType);
+		return types;
 	}
 	
 	public int getWave()
@@ -238,6 +344,8 @@ public class WaveHandler implements Runnable
 	@Override
 	public void run()
 	{
+		//There is a depressing amount of nested if statements in this method
+		//I don't feel like doing anything about it, though...
 		if(gameHandler.isRunning())
 		{
 			if(timeUntilNextWave > 0)
@@ -248,7 +356,8 @@ public class WaveHandler implements Runnable
 			}
 			else
 			{
-				attemptSpawnEntity();
+				spawnEntity();
+				//Every second, update the player list and entity list, and check if we should start the next wave
 				if(tickCount % 20 == 0)
 				{
 					updateEntityList();
@@ -262,6 +371,8 @@ public class WaveHandler implements Runnable
 							gameHandler.removePlayer(pName);
 					}
 				}
+				//Every five seconds, regenerate players healths if the gamemode says we should, and reset the wave settings if
+				//we're in an apocalypse
 				if(tickCount % 100 == 0)
 				{
 					if(gameHandler.getGameMode().isApocalypse())
@@ -280,10 +391,12 @@ public class WaveHandler implements Runnable
 					}
 				}
 
+				//Ever 4 minutes, set the time to the beginning of night so we never end up in daytime (assuming the config says to do this)
 				if(tickCount % 4800 == 0)
 					Bukkit.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).setTime(38000);
 				tickCount++;
 			}
+			//Is the alive count less than 0? Yes? Well then end the bloody game!
 			if(gameHandler.getAliveCount() <= 0)
 			{
 				GameStopEvent event = new GameStopEvent(GameStopCause.ALL_DEAD);
@@ -295,6 +408,11 @@ public class WaveHandler implements Runnable
 		}
 	}
 	
+	/**
+	 * Sets the wave manually to a specified number. May cause unforseen errors that aren't caused by using the
+	 * internal increment wave method.
+	 * @param wave	wave
+	 */
 	public void setWave(int wave)
 	{
 		WaveChangeEvent event = new WaveChangeEvent(this.wave, wave);
@@ -383,165 +501,50 @@ public class WaveHandler implements Runnable
 	}
 	
 	/**
-	 * Decides which type of entity should be spawned, and uses that entities spawn method to spawn it.
-	 * @return	the spawned entity
+	 * Decides which type of entity should be spawned, and spawns it.
 	 */
-	private CustomEntityWrapper spawnEntity()
+	private void spawnEntity()
 	{
+		//Decide of we should be spawning an entity
 		Gamemode gm = gameHandler.getGameMode();
+		if(toSpawn <= 0 && !gm.isApocalypse())
+			return;
+		if(rnd.nextDouble() > zombieSpawnChance)
+			return;
 		
+		//Get the modified wave, based on gamemode
 		int modifiedWave = wave;
 		if(gm.isApocalypse())
 			modifiedWave = getApocalypseWave();
 		modifiedWave *= gm.getDifficultyModifier();
-			
+		
+		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
+		List<ZEntityType> defaultSkeletons = (gm.getDefaultSkeletons().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultSkeletonType)) : gm.getDefaultSkeletons();
+		List<ZEntityType> defaultWolves = (gm.getDefaultWolves().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultWolfType)) : gm.getDefaultWolves();
+		List<ZEntityType> defaultZombies = (gm.getDefaultZombies().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultZombieType)) : gm.getDefaultZombies();
 		CustomEntityWrapper customEnt = null;
 		if(wolfWave && rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_WAVE_PERCENT_SPAWN))
-			customEnt = spawnWolf(modifiedWave);
+			customEnt = chooseEntity(modifiedWave, wolfTypes, defaultWolves);
 		else if(skeletonWave && rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_WAVE_PERCENT_SPAWN))
-			customEnt = spawnSkeleton(modifiedWave);
+			customEnt = chooseEntity(modifiedWave, skeletonTypes, defaultSkeletons);
 		else
 		{
 			if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_PERCENT_SPAWN) && (wave > 1 || gm.isApocalypse()))
-				customEnt = spawnWolf(modifiedWave);
+				customEnt = chooseEntity(modifiedWave, wolfTypes, defaultWolves);
 			else if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_PERCENT_SPAWN) && (wave > 1 || gm.isApocalypse()))
-				customEnt = spawnSkeleton(modifiedWave);
+				customEnt = chooseEntity(modifiedWave, skeletonTypes, defaultSkeletons);
 			else
-				customEnt = spawnZombie(modifiedWave);
+				customEnt = chooseEntity(modifiedWave, zombieTypes, defaultZombies);
 		}
+		
 		if(customEnt == null)	//The chunk might not be loaded, or the event might have been cancelled
-			return null;
+			return;
+		//Set the entities health, decrement the toSpawn count, and add the entity to the list of entities.
+		//Note that the entity was already spawned in one of the chooseEntity methods above.
 		customEnt.setMaxHealth((int) (health * (((ZEntityType) customEnt.getType()).getHealthModifier())));
 		customEnt.restoreHealth();
 		toSpawn--;
-		return customEnt;
-	}
-	
-	/**
-	 * Spawn a skeleton based on the wave and gamemode.
-	 * @param wave	current wave, modified if the gamemode is particularly difficult
-	 * @return	the spawned entity
-	 */
-	private CustomEntityWrapper spawnSkeleton(int wave)
-	{
-		ZEntityType type = null;
-		for(ZEntityType skeletonType : skeletonTypes)
-		{
-			if(skeletonType.getMinimumSpawnWave() <= wave)
-			{
-				double chance = skeletonType.getSpawnChance() * wave;
-				if(chance > .2)
-					chance = .2;
-				if(chance > rnd.nextDouble())
-				{
-					type = skeletonType;
-					break;
-				}
-			}
-		}
-		if(type == null)
-		{
-			List<ZEntityType> potentialEntities = new ArrayList<ZEntityType>();
-			for(ZEntityType sType : skeletonTypes)
-			{
-				if(gameHandler.getGameMode().getDefaultSkeletons().contains(sType.toString()))
-					potentialEntities.add(sType);
-			}
-			if(potentialEntities.size() > 0)
-				type = potentialEntities.get(rnd.nextInt(potentialEntities.size()));
-		}
-		if(type == null)
-			type = defaultSkeletonType;
-		Location spawn = gameHandler.getLevel().getRandomZombieSpawn();
-		CustomEntityWrapper customEnt = CustomEntityWrapper.spawnCustomEntity(new CustomSkeleton(spawn.getWorld()), spawn, type);
-		return customEnt;
-	}
-	
-	/**
-	 * Spawn a wolf based on the wave and gamemode.
-	 * @param wave	current wave, modified if the gamemode is particularly difficult
-	 * @return	the spawned entity
-	 */
-	private CustomEntityWrapper spawnWolf(int wave)
-	{
-		ZEntityType type = null;
-		for(ZEntityType wolfType : wolfTypes)
-		{
-			if(wolfType.getMinimumSpawnWave() <= wave)
-			{
-				double chance = wolfType.getSpawnChance() * wave;
-				if(chance > .2)
-					chance = .2;
-				if(chance > rnd.nextDouble())
-				{
-					type = wolfType;
-					break;
-				}
-			}
-		}
-		if(type == null)
-		{
-			List<ZEntityType> potentialEntities = new ArrayList<ZEntityType>();
-			for(ZEntityType wType : wolfTypes)
-			{
-				if(gameHandler.getGameMode().getDefaultWolves().contains(wType.toString()))
-					potentialEntities.add(wType);
-			}
-			if(potentialEntities.size() > 0)
-				type = potentialEntities.get(rnd.nextInt(potentialEntities.size()));
-		}
-		if(type == null)
-			type = defaultWolfType;
-		Location spawn = gameHandler.getLevel().getRandomZombieSpawn();
-		CustomEntityWrapper customEnt = CustomEntityWrapper.spawnCustomEntity(new CustomWolf(spawn.getWorld()), spawn, type);
-		return customEnt;
-	}
-	
-	/**
-	 * Spawn a zombie based on the wave and gamemode.
-	 * @param wave	current wave, modified if the gamemode is particularly difficult
-	 * @return	the spawned entity
-	 */
-	private CustomEntityWrapper spawnZombie(int wave)
-	{
-		ZEntityType type = null;
-		for(ZEntityType zombieType : zombieTypes)
-		{
-			if(zombieType.getMinimumSpawnWave() <= wave)
-			{
-				double chance = zombieType.getSpawnChance() * wave;
-				if(chance > .2)
-					chance = .2;
-				if(chance > rnd.nextDouble())
-				{
-					type = zombieType;
-					break;
-				}
-			}
-		}
-		if(type == null)
-		{
-			List<ZEntityType> potentialEntities = new ArrayList<ZEntityType>();
-			for(ZEntityType zType : zombieTypes)
-			{
-				if(gameHandler.getGameMode().getDefaultZombies().contains(zType.toString()))
-					potentialEntities.add(zType);
-			}
-			if(potentialEntities.size() > 0)
-				type = potentialEntities.get(rnd.nextInt(potentialEntities.size()));
-		}
-		if(type == null)
-			type = defaultZombieType;
-
-		Location spawn = gameHandler.getLevel().getRandomZombieSpawn();
-		if(spawn == null)
-		{
-			ChatHelper.broadcastMessage(ChatColor.RED+"Error: ZArena level has no zombie spawns. Stopping game.");
-			gameHandler.stop();
-			return null;
-		}
-		CustomEntityWrapper customEnt = CustomEntityWrapper.spawnCustomEntity(new CustomZombie(spawn.getWorld()), spawn, type);
-		return customEnt;
+		entities.add(customEnt);
 	}
 
 	/**

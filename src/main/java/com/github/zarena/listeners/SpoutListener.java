@@ -74,7 +74,7 @@ public class SpoutListener implements BindingExecutionDelegate, Listener
 			PlayerOptions options = ZArena.getInstance().getPlayerOptionsHandler().getOptions(player.getName());
 			if(!options.zombieTexturesEnabled)
 				continue;
-			if(entityType.getType().equalsIgnoreCase("wolf"))
+			if(entityType.getPreferredType().equalsIgnoreCase("wolf"))
 			{
 				player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.WOLF_ANGRY);
 				player.setEntitySkin((LivingEntity) entity.getEntity().getBukkitEntity(), entityType.getSkinURL(), EntitySkinType.WOLF_TAMED);

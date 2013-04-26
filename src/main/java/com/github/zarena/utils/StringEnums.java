@@ -20,7 +20,7 @@ public enum StringEnums
 	// Used in WaveHandler
 	QUADRATIC, LOGISTIC, LOGARITHMIC,
 	// Used in ZArena
-	ZOMBIE, SKELETON, WOLF,
+	ZOMBIE, SKELETON, WOLF, ZOMBIEPIGMAN,
 	// Used in KCCommands
 	TOP, /*SET,*/ SUB /*ADD*/;
 }

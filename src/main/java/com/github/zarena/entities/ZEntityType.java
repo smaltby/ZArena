@@ -10,7 +10,7 @@ public interface ZEntityType extends EntityType
 	
 	public int getMinimumSpawnWave();
 	
-	public double getSpawnChance();
+	public int getSpawnPriority();
 	
 	public boolean canDive();
 }

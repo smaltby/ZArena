@@ -6,4 +6,4 @@ Range: 256
 Speed: 0.3
 WorthModifier: 1
 MinimumSpawnWave: 1
-SpawnChance: 1
+SpawnPriority: 0

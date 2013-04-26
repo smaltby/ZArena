@@ -21,6 +21,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -88,7 +89,9 @@ public class GameHandler
 		PlayerStats stats = new PlayerStats(player);
 		playerStats.put(player.getName(), stats);
 		
-		clearInventory(player.getInventory());
+		if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+			clearInventory(player.getInventory());
+		
 		player.setGameMode(org.bukkit.GameMode.ADVENTURE);
 		
 		int wave = waveHandler.getWave();
@@ -193,7 +196,7 @@ public class GameHandler
 	
 	public List<Player> getBroadcastPlayers()
 	{
-		List<Player> toBroadcast = getPlayers();
+		List<Player> toBroadcast = new ArrayList<Player>();
 		if(plugin.getConfig().getBoolean(Constants.BROADCAST_ALL, false))
 			toBroadcast = Arrays.asList(Bukkit.getOnlinePlayers());
 		else if(plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE, false))
@@ -203,7 +206,8 @@ public class GameHandler
 				if(p.getWorld().getName().equals(plugin.getConfig().getString(Constants.GAME_WORLD)))
 					toBroadcast.add(p);
 			}
-		}
+		} else
+			toBroadcast = getPlayers();
 		return toBroadcast;
 	}
 	
@@ -337,16 +341,19 @@ public class GameHandler
 		if(players.contains(player.getName()))
 		{
 			PlayerStats stats = getPlayerStats(player);
-			clearInventory(player.getInventory());
-			if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
+			if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
 			{
-				PlayerInventory pi = player.getInventory();
-				ItemStack[] contents = stats.getInventoryContents();
-				if(contents != null)
-					pi.setContents(contents);
-				ItemStack[] armorContents = stats.getInventoryArmor();
-				if(armorContents != null)
-					pi.setArmorContents(armorContents);
+				clearInventory(player.getInventory());
+				if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
+				{
+					PlayerInventory pi = player.getInventory();
+					ItemStack[] contents = stats.getInventoryContents();
+					if(contents != null)
+						pi.setContents(contents);
+					ItemStack[] armorContents = stats.getInventoryArmor();
+					if(armorContents != null)
+						pi.setArmorContents(armorContents);
+				}
 			}
 			player.teleport(getPlayersLeaveLocation(player));
 			player.setGameMode(stats.getOldGameMode());
@@ -483,12 +490,12 @@ public class GameHandler
 			level.resetSigns();
 			level.resetInactiveZSpawns();
 		}
-		for(LivingEntity entity : plugin.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).getLivingEntities())
+		for(Entity entity : plugin.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).getEntities())
 		{
 			if(CustomEntityWrapper.instanceOf(entity))
-				entity.setHealth(0);
+				((LivingEntity) entity).setHealth(0);
 			else if(!(entity instanceof Player) && plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE))
-				entity.setHealth(0);
+				entity.remove();
 		}
 		for(PlayerStats stats : playerStats.values())
 		{

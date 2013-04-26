@@ -2,6 +2,7 @@ package com.github.zarena.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -248,9 +249,9 @@ public class Utils
         if (file.exists())	//What we are extracting from the jar file are default files. If the files are already there, we don't want to overwrite them
         	return file;
         
-        InputStream in = ZArena.class.getResourceAsStream(fileName);	//Get inputstream from base folder
-        if (in == null)	//If it's null, return null
-        	return null;
+        InputStream in = ZArena.class.getResourceAsStream("/"+fileName);	//Get inputstream from base folder
+        if (in == null)
+        	throw new FileNotFoundException(fileName+" could not be found from the base folder.");
 
         FileOutputStream out = new FileOutputStream(file);
         byte[] buffer = new byte[1024];	//Create a buffer

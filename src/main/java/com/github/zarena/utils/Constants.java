@@ -23,6 +23,7 @@ public class Constants
 	public static final String WAVE_DELAY = "Options.Wave Start Delay";
 	public static final String VOTING_LENGTH = "Options.Voting Length";
 	public static final String BROADCAST_ALL = "Options.Broadcast To All";
+	public static final String SEPERATE_INVENTORY = "Options.Seperate Inventory";
 	public static final String GAME_WORLD = "Options.Game World";
 	public static final String GAME_LEAVE_WORLD = "Options.Game Leave World";
 	public static final String GAME_LEAVE_LOCATION = "Options.Game Leave Location";

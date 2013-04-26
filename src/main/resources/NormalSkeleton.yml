@@ -6,7 +6,7 @@ Range: 256
 Speed: 0.25
 WorthModifier: 1
 MinimumSpawnWave: 1
-SpawnChance: 1
-Wither: false
-ShootDelay: 60
+SpawnPriority: 0
+IsWither: false
+ShootDelay: 120
 Weapon: bow

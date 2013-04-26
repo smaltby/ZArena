@@ -1,12 +1,13 @@
 Type: Zombie
 Name: Strong Zombie
-Damage: 4
+Damage: 3
+ArmorPiercing: 2
 HealthModifier: 5
 Range: 256
 Speed: 0.25
 WorthModifier: 2
-MinimumSpawnWave: 3
-SpawnChance: .05
+MinimumSpawnWave: 2
+SpawnPriority: 2
 Armor:
 - air
 - air

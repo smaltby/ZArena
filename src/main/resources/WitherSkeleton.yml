@@ -6,7 +6,7 @@ Range: 256
 Speed: 0.3
 WorthModifier: 4
 MinimumSpawnWave: 4
-SpawnChance: .04
-Wither: true
+SpawnPriority: 4
+IsWither: true
 ShootDelay: 60
 Weapon: gold sword

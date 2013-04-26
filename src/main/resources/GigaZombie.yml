@@ -1,12 +1,13 @@
 Type: Zombie
 Name: Giga Zombie
-Damage: 6
-HealthModifier: 12
+Damage: 5
+ArmorPiercing: 5
+HealthModifier: 14
 Range: 256
-Speed: 0.3
+Speed: 0.35
 WorthModifier: 10
 MinimumSpawnWave: 9
-SpawnChance: .005
+SpawnChance: 7
 DamageEffects:
   - knockback 9,3
 SpecialEffects:
