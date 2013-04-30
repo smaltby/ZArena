@@ -31,7 +31,11 @@ public enum Permissions
     /**
      * Lets player vote
      */
-    VOTER;
+    VOTER,
+    /**
+     * Makes it so the player won't be forced to join games if autojoin is set to true in the config
+     */
+    NOAUTOJOIN;
 
     public static Map<String, Integer> startMoneyPermissions = new HashMap<String, Integer>();
     public static Map<String, Integer> extraVotesPermissions = new HashMap<String, Integer>();
@@ -53,6 +57,8 @@ public enum Permissions
                 return "zarena.enterleave";
             case VOTER:
                 return "zarena.voter";
+            case NOAUTOJOIN:
+            	return "zarena.noautojoin";
             default:
             	return null;
         }
@@ -70,6 +76,7 @@ public enum Permissions
             pm.addPermission(new Permission(GAME_CONTROL.toString()));
             pm.addPermission(new Permission(ENTER_LEAVE.toString()));
             pm.addPermission(new Permission(VOTER.toString()));
+            pm.addPermission(new Permission(NOAUTOJOIN.toString()));
         } catch (Exception e)
         {
         }

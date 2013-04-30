@@ -170,7 +170,8 @@ public class GameHandler
 			player.removePotionEffect(effect.getType());
 		}
 		PlayerInventory pi = player.getInventory();
-		clearInventory(pi);
+		if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+			clearInventory(pi);
 		addStartItems(pi);
 	}
 	
@@ -505,7 +506,8 @@ public class GameHandler
 			Player player = stats.getPlayer();
 			if(player != null)
 			{
-				clearInventory(player.getInventory());
+				if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+					clearInventory(player.getInventory());
 				for(PotionEffect effect : player.getActivePotionEffects())
 				{
 					player.removePotionEffect(effect.getType());

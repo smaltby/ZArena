@@ -539,6 +539,7 @@ public class WaveHandler implements Runnable
 		
 		if(customEnt == null)	//The chunk might not be loaded, or the event might have been cancelled
 			return;
+			
 		//Set the entities health, decrement the toSpawn count, and add the entity to the list of entities.
 		//Note that the entity was already spawned in one of the chooseEntity methods above.
 		customEnt.setMaxHealth((int) (health * (((ZEntityType) customEnt.getType()).getHealthModifier())));

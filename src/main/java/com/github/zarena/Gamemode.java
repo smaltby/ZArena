@@ -77,10 +77,11 @@ public class Gamemode
 		{
 			for(String arg : config.getStringList("Start Items"))
 			{
-				if(arg.split("\\s").length > 1 && Utils.parseInt(arg.split("\\s")[1], -1) < 0)	//If the second argument isn't an integer, we can assume it's part of the item
+				//If the second argument isn't an integer, we can assume it's part of the item
+				if(arg.split("\\s").length > 1 && Utils.parseInt(arg.split("\\s")[1], -1) == -1)
 					arg = arg.replaceFirst(" ", "_");
 				int amount = 1;
-				if(Utils.getConfigArgs(arg).length > 1)
+				if(Utils.getConfigArgs(arg).length > 0)
 					amount = Utils.parseInt(Utils.getConfigArgs(arg)[0], 1);
 				ZSignCustomItem customItem = ZSignCustomItem.getCustomItem(arg.split("\\s"));
 				if(customItem != null)

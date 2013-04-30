@@ -59,7 +59,8 @@ public class PlayerListener implements Listener
 			{
 				public void run()
 				{
-					gameHandler.addPlayer(event.getPlayer());
+					if(new CommandSenderWrapper(event.getPlayer()).autoJoin())
+						gameHandler.addPlayer(event.getPlayer());
 				}
 			}, 1L);
 		}

@@ -83,6 +83,11 @@ public class CommandSenderWrapper
     	return hasExternalPermissions(Permissions.VOTER.toString(), true) || canControlGames() || canCreateLevels() || isAdmin();
     }
     
+    public boolean autoJoin()
+    {
+    	return !hasExternalPermissions(Permissions.NOAUTOJOIN.toString(), false);
+    }
+    
     public int startMoney()
     {
     	for(Entry<String, Integer> e : Permissions.startMoneyPermissions.entrySet())

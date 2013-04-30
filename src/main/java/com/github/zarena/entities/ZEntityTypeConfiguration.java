@@ -21,7 +21,6 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	double healthModifier;
 	int minSpawnWave;
 	int priority;
-	boolean canDive;
 	public ZEntityTypeConfiguration(FileConfiguration config)
 	{
 		super(config);
@@ -49,7 +48,6 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 			config.set("SpawnChance", null);
 		} 
 		priority = config.getInt("SpawnPriority", 5);
-		canDive = config.getBoolean("CanDive", false);
 	}
 	
 	@Override
@@ -93,10 +91,5 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 			targetSelectors.put(2, new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange()));
 		}
 		return targetSelectors;
-	}
-	
-	public boolean canDive()
-	{
-		return canDive;
 	}
 }
