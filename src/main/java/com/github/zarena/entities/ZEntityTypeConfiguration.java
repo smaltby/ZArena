@@ -3,11 +3,11 @@ package com.github.zarena.entities;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import net.minecraft.server.v1_5_R2.EntityCreature;
-import net.minecraft.server.v1_5_R2.EntityLiving;
-import net.minecraft.server.v1_5_R2.EntityWolf;
-import net.minecraft.server.v1_5_R2.PathfinderGoal;
-import net.minecraft.server.v1_5_R2.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_5_R3.EntityCreature;
+import net.minecraft.server.v1_5_R3.EntityLiving;
+import net.minecraft.server.v1_5_R3.EntityWolf;
+import net.minecraft.server.v1_5_R3.PathfinderGoal;
+import net.minecraft.server.v1_5_R3.PathfinderGoalHurtByTarget;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.github.customentitylibrary.entities.EntityType;

@@ -1,7 +1,6 @@
 package com.github.zarena;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -519,22 +518,22 @@ public class WaveHandler implements Runnable
 		modifiedWave *= gm.getDifficultyModifier();
 		
 		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
-		List<ZEntityType> defaultSkeletons = (gm.getDefaultSkeletons().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultSkeletonType)) : gm.getDefaultSkeletons();
-		List<ZEntityType> defaultWolves = (gm.getDefaultWolves().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultWolfType)) : gm.getDefaultWolves();
-		List<ZEntityType> defaultZombies = (gm.getDefaultZombies().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultZombieType)) : gm.getDefaultZombies();
+//		List<ZEntityType> defaultSkeletons = (gm.getDefaultSkeletons().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultSkeletonType)) : gm.getDefaultSkeletons();
+//		List<ZEntityType> defaultWolves = (gm.getDefaultWolves().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultWolfType)) : gm.getDefaultWolves();
+//		List<ZEntityType> defaultZombies = (gm.getDefaultZombies().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultZombieType)) : gm.getDefaultZombies();
 		CustomEntityWrapper customEnt = null;
 		if(wolfWave && rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_WAVE_PERCENT_SPAWN))
-			customEnt = chooseEntity(modifiedWave, wolfTypes, defaultWolves);
+			customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
 		else if(skeletonWave && rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_WAVE_PERCENT_SPAWN))
-			customEnt = chooseEntity(modifiedWave, skeletonTypes, defaultSkeletons);
+			customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
 		else
 		{
 			if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_PERCENT_SPAWN) && (wave > 1 || gm.isApocalypse()))
-				customEnt = chooseEntity(modifiedWave, wolfTypes, defaultWolves);
+				customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
 			else if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_PERCENT_SPAWN) && (wave > 1 || gm.isApocalypse()))
-				customEnt = chooseEntity(modifiedWave, skeletonTypes, defaultSkeletons);
+				customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
 			else
-				customEnt = chooseEntity(modifiedWave, zombieTypes, defaultZombies);
+				customEnt = chooseEntity(modifiedWave, zombieTypes, gm.getDefaultZombies());
 		}
 		
 		if(customEnt == null)	//The chunk might not be loaded, or the event might have been cancelled
