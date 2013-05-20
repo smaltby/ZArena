@@ -54,6 +54,7 @@ public class Constants
 	public static final String GAMEMODES = "Gamemodes.Gamemode File Name List";
 	public static final String KILL_MONEY = "Stats.Money on Kill";
 	public static final String MONEY_LOST = "Stats.Money Percent Lost on Death";
+	public static final String USE_VAULT = "Stats.Use Vault Economy";
 	public static final String CUSTOM_ITEMS = "SignCustomItems";
 	public static final String START_MONEY = "Donator.Start Money";
 	public static final String EXTRA_VOTES = "Donator.Extra Votes";

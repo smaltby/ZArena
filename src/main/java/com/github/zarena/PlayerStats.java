@@ -1,6 +1,8 @@
 package com.github.zarena;
 
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -41,9 +43,12 @@ public class PlayerStats implements Comparable<PlayerStats>
 	
 	public void addMoney(double money)
 	{
-		this.money += money;
+		if(usingVault())
+			getEconomy().depositPlayer(player, money);
+		else
+			this.money += money;
 		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
-			getPlayer().setLevel((int) this.money);
+			getPlayer().setLevel((int) getMoney());
 	}
 	
 	public void addPoints(int points)
@@ -63,7 +68,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 	
 	public float getMoney()
 	{
-		return money;
+		return (float) (usingVault() ? getEconomy().getBalance(player) : money);
 	}
 	
 	public GameMode getOldGameMode()
@@ -103,7 +108,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 	
 	public void messageStats()
 	{
-		getPlayer().sendMessage(ChatColor.DARK_GRAY+"Money: "+ChatColor.GRAY+money+ChatColor.DARK_GRAY+" Points: "+ChatColor.GRAY+points);
+		getPlayer().sendMessage(ChatColor.DARK_GRAY+"Money: "+ChatColor.GRAY+getMoney()+ChatColor.DARK_GRAY+" Points: "+ChatColor.GRAY+getPoints());
 	}
 	
 	public void resetStats()
@@ -125,11 +130,16 @@ public class PlayerStats implements Comparable<PlayerStats>
 	
 	public void subMoney(double money)
 	{
-		this.money -= money;
-		if(this.money < 0)
-			this.money = 0;
+		if(usingVault())
+			getEconomy().withdrawPlayer(player, money);
+		else
+		{
+			this.money -= money;
+			if(this.money < 0)
+				this.money = 0;
+		}
 		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
-			getPlayer().setLevel((int) this.money);
+			getPlayer().setLevel((int) getMoney());
 	}
 	
 	public void subPoints(int points)
@@ -163,5 +173,15 @@ public class PlayerStats implements Comparable<PlayerStats>
 			return -1;
 		}
 		return -1;
+	}
+	
+	private boolean usingVault()
+	{
+		return ZArena.getInstance().getConfig().getBoolean(Constants.USE_VAULT);
+	}
+	
+	private Economy getEconomy()
+	{
+		return ZArena.getInstance().getEconomy();
 	}
 }

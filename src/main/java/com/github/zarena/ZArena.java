@@ -13,6 +13,8 @@ import java.util.logging.Level;
 
 import com.github.customentitylibrary.CustomEntityLibrary;
 
+import net.milkbowl.vault.economy.Economy;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -20,6 +22,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.github.zarena.commands.DSpawnCommands;
@@ -49,6 +52,7 @@ public class ZArena extends JavaPlugin
 {
 	private static ZArena instance;
 	
+	private Economy economy;
 	private KillCounter kc;
 	
 	private GameHandler gameHandler; //Game handler
@@ -111,6 +115,8 @@ public class ZArena extends JavaPlugin
 		    metrics.start();
 		} catch (IOException e) 
 		{/* Failed to submit the stats :-( */}
+		//Load Vault economy
+		setupEconomy();
 		
 		//Register command executors
 		getCommand("zarena").setExecutor(zaCommands);
@@ -152,6 +158,11 @@ public class ZArena extends JavaPlugin
 		//Reset static stuff
 		instance = null;
 		spoutEnabled = false;
+	}
+	
+	public Economy getEconomy()
+	{
+		return economy;
 	}
 	
 	public GameHandler getGameHandler()
@@ -216,6 +227,7 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.TOLL_HEADER, "ZPay");
 		cfg.addDefault(Constants.KILL_MONEY, 15);
 		cfg.addDefault(Constants.MONEY_LOST, .2);
+		cfg.addDefault(Constants.USE_VAULT, false);
 		cfg.addDefault(Constants.WOLF_PERCENT_SPAWN, .05);
 		cfg.addDefault(Constants.SKELETON_PERCENT_SPAWN, .05);
 		cfg.addDefault(Constants.WOLF_WAVE_PERCENT_OCCUR, .3);
@@ -585,6 +597,16 @@ public class ZArena extends JavaPlugin
         	log(Level.WARNING, "ZArena: Error saving the PlayerOptions database.");
         }
 	}
+	
+	private boolean setupEconomy()
+    {
+        RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
+        if (economyProvider != null) {
+            economy = economyProvider.getProvider();
+        }
+
+        return (economy != null);
+    }
 	
 	public static void log(Level level, String msg)
 	{

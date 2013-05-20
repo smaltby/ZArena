@@ -378,9 +378,12 @@ public class GameHandler
 			{
 				player.removePotionEffect(effect.getType());
 			}
-			PlayerInventory pi = player.getInventory();
-			clearInventory(pi);
-			addStartItems(pi);
+			if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+			{
+				PlayerInventory pi = player.getInventory();
+				clearInventory(pi);
+				addStartItems(pi);
+			}
 		}
 	}
 	
