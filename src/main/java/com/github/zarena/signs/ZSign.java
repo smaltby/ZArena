@@ -6,9 +6,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.logging.Level;
 
-
-
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -23,7 +20,7 @@ import com.github.zarena.ZLevel;
 import com.github.zarena.commands.CommandSenderWrapper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.LocationSer;
-
+import com.github.zarena.utils.Message;
 
 public abstract class ZSign implements Externalizable
 {
@@ -57,7 +54,7 @@ public abstract class ZSign implements Externalizable
 		{
 			if(ZArena.getInstance().getGameHandler().getLevel() == null)
 			{
-				player.sendMessage(ChatColor.RED + "A level must be loaded to add ZArena signs.");
+				player.sendMessage(Message.SIGN_PLACE_WITH_NO_LEVEL.formatMessage());
 				return null;
 			}
 
@@ -66,10 +63,10 @@ public abstract class ZSign implements Externalizable
 				ZSign zSign = (firstLine.equals(shopHeader)) ? ZShopSign.attemptCreateSign(level, location, lines) :
 					ZTollSign.attemptCreateSign(level, location, lines);
 				if(zSign == null)
-					player.sendMessage(ChatColor.RED + "ZArena sign creation failed.");
+					player.sendMessage(Message.SIGN_PLACE_FAILURE.formatMessage());
 				else
 				{
-					player.sendMessage(ChatColor.GREEN + "ZArena sign creation succeeded.");
+					player.sendMessage(Message.SIGN_PLACE_SUCCESS.formatMessage());
 					ZArena.getInstance().getGameHandler().getLevel().addZSign(zSign);
 					return zSign;
 				}
@@ -134,7 +131,7 @@ public abstract class ZSign implements Externalizable
 		PlayerStats stats = gameHandler.getPlayerStats().get(player.getName());
 		if(stats.getMoney() < price)
 		{
-			player.sendMessage(ChatColor.RED + "Insufficient funds.");
+			player.sendMessage(Message.INSUFFICIENT_FUNDS.formatMessage());
 			return false;
 		}
 		if(executeClick(player))

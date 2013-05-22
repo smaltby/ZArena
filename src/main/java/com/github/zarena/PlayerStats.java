@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.Message;
 
 public class PlayerStats implements Comparable<PlayerStats>
 {
@@ -108,6 +109,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 	
 	public void messageStats()
 	{
+		Message.SEND_STATS.formatMessage(getMoney(), getPoints());
 		getPlayer().sendMessage(ChatColor.DARK_GRAY+"Money: "+ChatColor.GRAY+getMoney()+ChatColor.DARK_GRAY+" Points: "+ChatColor.GRAY+getPoints());
 	}
 	

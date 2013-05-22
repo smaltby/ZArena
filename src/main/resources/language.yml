@@ -1,0 +1,385 @@
+#This is the language file from which the plugin gets the text it broadcasts and/or
+#sends to players. You can modify this text here. Above each value is a comment that
+#tells you when and where the value is used. Below that, it tells you all of the
+#parameters that value uses. You can use parameters in the text by surrounding them
+#with percentage '%' signs.
+
+#You can use colors by putting the color you want in < >
+#<black>
+#<dark_blue>
+#<dark_green>
+#<dark_aqua>
+#<dark_red>
+#<dark_purple>
+#<gold>
+#<gray>
+#<dark_gray>
+#<blue>
+#<green>
+#<aqua>
+#<red>
+#<light_purple>
+#<yellow>
+#<white>
+
+#You can use new lines by inserting a '/n'
+
+#If you leave a message empty, it disables the message entirely.
+
+#The following values are broadcasts
+#-----------------------------------------------------------------------------------
+
+#Broadcasted when the game ends.
+#WAVE - The wave survived to.
+Game End Message: "<red>You survived to wave %WAVE%!"
+
+#Broadcasted when the game ends in an apocalypse gamemode.
+#TIME - The time survived for.
+Game End Apocalypse Message: "<red>You survived %TIME% seconds!"
+
+#Broadcasted when voting starts.
+Vote Start: "<dark_green>Level vote starting...\nType the command -"
+
+#Broadcasted for each map option that can be voted on, with different parameters
+#for each option.
+#NUM - The option number.
+#MAP - The option's map name.
+#GAMEMODE - The option's gamemode.
+Vote Option: "<red>/za vote %NUM% <dark_green>for map <dark_aqua>%MAP%<gray><<dark_aqua>%GAMEMODE%<gray>>"
+
+#Broadcasted after all of the options have been presented.
+#TIME - Time until voting ends.
+Vote Ends In: "<dark_green>Vote Ends in %TIME% seconds."
+
+#Broadcasted for each map option that was voted on, with different parameters for
+#each option.
+#NUM - The option number.
+#VOTES - Number of votes this option got.
+Votes For Each Map: "<red>Votes for %NUM%: %VOTES%."
+
+#Broadcasted when voting has ended, to announce the map that was chosen.
+#MAP - The option's map name.
+#GAMEMODE - The option's gamemode.
+Map Chosen: "<dark_gray>Level <dark_aqua>%MAP%<gray><<dark_aqua>%GAMEMODE%<gray>> <dark_gray>has been chosen."
+
+#Broadcasted at the start of the preperation time before each wave.
+#WAVE - The next wave.
+#TIME - Time until the preperation time is over, and the next wave begins.
+Wave Start In: "<gray>Starting Wave: <red>%WAVE% $7in <red>%TIME% <gray>Seconds."
+
+#Broadcasted when a wolf wave is coming up.
+Wolf Wave Approaching: "<red>Wolf Wave Approaching!"
+
+#Broadcasted when a skeleton wave is coming up.
+Skeleton Wave Approaching: "<red>Skeleton Wave Approaching!"
+
+#Broadcasted at the start of a wave.
+#WAVE - The current wave.
+#NUM - The number of zombies.
+#HEALTH - The default health of the zombies.
+Wave Start: "<gray>Starting Wave <red>%WAVE%<gray> with <red>%NUM%<gray> Zombies at <red>%HEALTH%<gray> Health."
+
+#Broadcasted when the game ends because there are no zombie spawns in the map.
+No Zombie Spawns: "<red>Error: ZArena level has no zombie spawns. Stopping game."
+
+#The following values are messages sent to individual players
+#-----------------------------------------------------------------------------------
+
+#Sent when a player kills a mob that gives extra money.
+#MODIFIER - The money modifier of this mob.
+#MOB - The mob's name.
+Bonus Money Kill: "<red>You got %MODIFIER%x money from a %MOB%."
+
+#Sent when a player gets an assist on a mob.
+#MODIFIER - The money modifier for the assist.
+#MOB - The mob's name.
+Assist Kill: "<red>You got %MODIFIER%x money from an assist on a %MOB%."
+
+#Sent when a mob drops an item.
+Item Drop: "<dark_purple>The mob drops an item as it dies!"
+
+#Sent when the player removes a ZSign.
+Sign Remove: "<red>ZSign removed."
+
+#Sent when a player tries to buy an item that is disabled in the current gamemode.
+No Buy: "<red>You may not purchase this item in this Gamemode."
+
+#Sent when the player buys an item that costs extra in the current gamemode.
+#MODIFIER - The cost modifier.
+Extra Cost: "<red>Note: The price of this item is multiplied by %MODIFIER%x in this gamemode."
+
+#Sent when the player has insufficient funds to purchase an item.
+Insufficient Funds: "<red>Insufficient Funds."
+
+#Sent when the player successfully makes a purchase.
+Purchase Successful: "<red>Purchase successful!"
+
+#Sent when a player tries to place a ZSign when there is no level loaded.
+Sign Place With No Level: "<red>A level must be loaded to place a ZSign".
+
+#Sent when a player tries to place a ZSign, but fails.
+Sign Place Failure: "<red>ZArena sign creation failed."
+
+#Sent when a player tries to place a ZSign, and succeeds.
+Sign Place Success: "<red>ZArena sign creation succeeded."
+
+#Sent when a player tries to join the game, but it is full.
+Game Full: "<dark_purple>The game is currently full."
+
+#Sent when a player gets his/her stats shown.
+#MONEY - Current money
+#POINTS - Current points
+Send Stats: "<dark_gray>Money: <gray>%MONEY%<dark_gray> Points: <gray>%POINTS%"
+
+#The following values are messages sent in response to commands
+#-----------------------------------------------------------------------------------
+
+#Sent when the player has insufficient permissions to use whatever command he/she tried to use.
+Insufficient Permissions: "<red>You have insufficient permissions to do this."
+
+#Sent when the player uses a command that can only be used while the game isn't running.
+Not Allowed While Running: "<red>You may not do this while the game is running."
+
+#Sent when the player successfully creates a new level.
+#LEVEL - Name of new level
+Created New Level: "<red>Sucessfully created the new level %LEVEL%."
+
+#Sent when the player uses a command that requires a level to be loaded.
+No Level Loaded: "<red>No level currently loaded. A loaded level is required for this command."
+
+#Sent when the player requests the current gamemode.
+#GAMEMODE - Current gamemode.
+Current Gamemode: "<dark_aqua>Current gamemode: %GAMEMODE%."
+
+#Sent when the player tries to join the game with a non-empty inventory, and the config option
+#that requires an empty inventory before you join is set to true.
+Inventory Must Be Clear: "<red>Your inventory must be clear to join the game."
+
+#Sent when the player tries to use a ZSpawn in some way that can't be found.
+ZSpawn Not Found: "<red>ZSpawn could not be found."
+
+#Sent when the player jumps to a ZSpawn.
+#ZSPAWN - The name of the ZSpawn jumped to.
+Jumped To ZSpawn: "<red>Jumped to ZSpawn: %ZSPAWN%."
+
+#The header of the list of levels, sent when the player requests the list.
+Level List Header: "<red>Level List:"
+
+#A single level in the list of levels.
+#LEVEL - Level name.
+Level List Item: "<dark_aqua>%LEVEL%, "
+
+#Sent when the player leaves the game.
+Leave Game: "<red>Successfully left the ZArena game."
+
+#The header of the list of players alive, sent when the player requests the list.
+Players Alive Header: "<red>Players alive:"
+
+#A single player in the list of players alive.
+#PLAYER - Player's name.
+Players Alive Item: "<dark_aqua>%PLAYER%, "
+
+#The header of the list of players in the session, sent when the player requests the list.
+Players In Session Header: "<dark_aqua>Players in game session:"
+
+#A single player in the list of players in the session.
+#PLAYER - Player's name.
+Players In Session Item: "<dark_aqua>%PLAYER%, "
+
+#The header of the list of ZSpawns in the session, sent when the player requests the list.
+ZSpawns List Header: "<red>ZSpawns:"
+
+#A single ZSpawn in the list of ZSpawns in the level.
+#ZSPAWN - ZSpawn's name.
+ZSpawns List Item: "<dark_aqua>%ZSPAWN%, "
+
+#Sent when the player uses a command that contains a level that could not be found.
+Level Not Found: "<red>Level could not be found."
+
+#Sent when a level is successfully loaded.
+#LEVEL - The level's name.
+Level Loaded: "<red>Level <gold>%LEVEL% <red>sucessfully loaded."
+
+#Sent when the player sets a ZSpawn as a boss spawn.
+Boss Spawn Set: "<red>Boss spawn set."
+
+#Sent when the player unsets a ZSpawn as a boss spawn.
+Boss Spawn Unset: "<red>Boss spawn unset."
+
+#Sent when the player tries to set a ZSpawn as a boss spawn, but it could not be found.
+Boss Spawn Not Found: "<red>Spawn could not be found. Boss spawn not set."
+
+#Sent when the player uses a ZSign in a command, but it could not be found.
+Sign Not Found: "<red>Sign could not be found."
+
+#Sent when the player marks a sign as useable once.
+Sign Marked As Useable Once: "<red>Sign successfully marked as opposite."
+
+#Sent when the player unmarks a sign as useable once.
+Sign Unmarked As Useable Once: "<red>Sign successfully unmarked as opposite."
+
+#Sent when the player marks a sign as opposite.
+Sign Marked As Opposite: "<red>Sign successfully marked as opposite."
+
+#Sent when the player unmarks a sign as opposite.
+Sign Unmarked As Opposite: "<red>Sign successfully unmarked as opposite."
+
+#Sent when the player marks a sign as non resetting.
+Sign Marked As Non Resetting: "<red>Sign successfully marked as non resetting."
+
+#Sent when the player unmarks a sign as non resetting.
+Sign Unmarked As Non Resetting: "<red>Sign successfully unmarked as non resetting."
+
+#Sent when the player tries to flag a sign, but the flag uses does not exist.
+#FLAG - Name of flag the player attempted to use.
+Flag Not Found: "<red>Flag by the name of '-%FLAG%' not found. Skipping."
+
+#Sent when the player marks a ZSpawn as active when a sign is active.
+ZSpawn Marked As Active When Sign Active: "<red>ZSpawn successfully marked as only active when this sign is active."
+
+#Sent when the player unmarks a ZSpawn as active when a sign is active.
+ZSpawn Unmarked As Active When Sign Active: "<red>ZSpawn successfully unmarked as only active when this sign is active."
+
+#Sent when the player uses a spout only command on a server without spout.
+Spout Not Enabled: "<red>Spout not enabled on this server."
+
+#Sent when the player uses a spout only command without the spout client.
+Spout Client Required: "<red>Spout not enabled on this server."
+
+#Sent when the player reloads the config.
+Config Reloaded: "<red>ZArena config reloaded."
+
+#Sent when the player sucessfully removes a level.
+#LEVEL - Name of the level being removed.
+Level Removed: "<red>Level <gold>%LEVEL% <red>sucessfuly removed."
+
+#Sent when the player sucessfully removes a ZSpawn.
+ZSpawn Removed: "<red>ZSpawn sucessfuly removed."
+
+#Sent when the player saves the levels.
+Levels Saved: "<red>Levels saved successfully."
+
+#Sent when the player tries to use a command that can only be used while the game is running.
+Game Must Be Running: "<red>The game must be running to do this."
+
+#A single item when info is requested on something about the plugin.
+#NAME - The name of the info being shown.
+#VALUE - The value of the info being shown.
+Info Item: "<gold>%NAME%: <dark_aqua>%VALUE%"
+
+#Sent when the player uses a command that contains a player that could not be found.
+Player Not Found: "<red>Player could not be found."
+
+#Sent when the player uses a command that contains a player that is not in game.
+Player Not In Game: "<red>Player not in game."
+
+#Sent when the player uses the command, '/za setalive <player> <true|false>', and the fourth
+#argument is not either 'true' or 'false'.
+Arg 4 Must Be True Or False: "<red>Argument 4 must be either true or false."
+
+#Sent when the player sucessfully sets a player's alive status.
+Set Players Alive Status: "<red>Successfully set player's alive status."
+
+#Sent when the player sucessfully sets the DSpawn.
+DSpawn Set: "<red>DSpawn set successfully."
+
+#Sent when the player tries to use a gamemode in a command, but the gamemode could not be found.
+Gamemode Not Found: "<red>Could not find a gamemode by that name."
+
+#Sent when the player sucessfully sets the ISpawn.
+ISpawn Set: "<red>ISpawn set successfully."
+
+#Sent when the player sets the leave location for the game.
+#LOCATION - Location set to.
+Leave Location Set: "<red>Leave location set successfully to <dark_aqua>%LOCATION%."
+
+#Sent when the player tries to set the wave, but the wave value isn't an integer.
+Wave Must Be Integer: "<red>Wave must be a valid integer."
+
+#Sent when the player sucessfully sets the wave.
+Wave Set: "<red>Wave successfully set."
+
+#Sent when the player sucessfully sets the ZSpawn;
+#ZSPAWN - Name of the ZSpawn that got set.
+ZSpawn Set: "<red>ZSpawn <dark_aqua>%ZSPAWN%<red> set successfully."
+
+#The header of the game stats list, sent when the player requests the list.
+Game Stats Header: "<gold>Game Stats:"
+
+#A single statistic in the list of game stats in the list.
+#MONEY - Money.
+#POINTS - Points.
+Game Stats Item: "<gold>%PLAYER%: <dark_aqua>%MONEY% money, %POINTS% points, "
+
+#Sent when the player tries to start the game, but it is already running.
+Game Already Running: "<red>Game already running."
+
+#Sent when the player starts the game.
+Game Started: "<red>Game started."
+
+#Sent when the player stops the game.
+Game Stopped: "<red>Game stopped."
+
+#Sent when the player tries to vote, but voting is not taking place.
+Voting Not Taking Place: "<red>Voting not currently taking place."
+
+#Sent when the player tries to vote, but is not ingame.
+Must Be Ingame To Vote: "<red>You must be in game to vote."
+
+#Sent when the player tries to vote, but his/her vote is not a valid integer.
+Vote Must Be Valid Integer: "<red>Vote must be a valid integer."
+
+#Sent when the player tries to vote, but his/her vote is not between 1 and 3.
+Vote Must Range From 1 To 3: "<dark_aqua>Vote must be an integer ranging from 1 to 3."
+
+#Sent when the player sucessfully votes.
+Vote Successful: "<red>Thank you for voting!"
+
+#Called when a player's kills are set, and the argument isn't greater or equal to 0.
+Set Kills Must Be Greater Or Equal To 0: "<red>The amount to set kills to must be a valid 
+integer greater than or equal to 0"
+
+#Called when a player's kills are added to, and the argument isn't greater than 0.
+Add Kills Must Be Greater Than 0: "<red>The amount to add kills to must be a valid integer 
+greater than 0"
+
+#Called when a player's kills are subtracted from, and the argument isn't greater than 0.
+Sub Kills Must Be Greater Than 0: "<red>The amount to sub kills from must be a valid 
+integer greater than 0"
+
+#Called when kills are set, either by directly setting them, adding to them, or
+#subtracting from them.
+#PLAYER - Player who's kills are being set.
+#NUM - The new number of kills the player now has.
+Kills Set: "<dark_green>%PLAYER%'s kills successfully set to %NUM%"
+
+#Called when the player uses '/kc top'.
+Top Killers Header: "<dark_aqua>Top Killers:"
+
+#Called when the player uses '/kc top'.
+#NUM - The rank of the player.
+#PLAYER - The player's name.
+#KILLS - The player's kills.
+Top Killers Item: "<gold>#%NUM%: %PLAYER% - %KILLS% kills"
+
+#Called when a player uses '/kc' or '/kc @<player>'.
+#PLAYER - The player who's kills are being shown.
+#KILLS - The kills of that player.
+#RANK - The rank of that player.
+#TOTAL - The total number of players who are in the rankings.
+Player Kills Info: "<dark_aqua>Player: <white>%PLAYER%\n<red>Total Kills: <white>%KILLS%\n<red>Rank: <white>%RANK%/%TOTAL%"
+
+#The following are names of types of info that are sent when you use '/za info'. They can be translated
+#to another language if necessary. Do not use color codes, new lines, or make the values empty.
+#-----------------------------------------------------------------------------------
+Wave: "Wave"
+Alive Count: "Alive Count"
+Remaining Zombies: "Remaining Zombies"
+Level: "Level"
+Gamemode: "Gamemode"
+Giants Enabled: "Giants Enabled"
+Health of Normal Zombies on the First 20 Waves: "Health of Normal Zombies on the First 20 Waves"
+Zombie Amounts on the First 20 Waves: "Zombie Amounts on the First 20 Waves"
+Spawn Chance: "Spawn Chance"
+To Spawn: "To Spawn"
+Alive: "Alive"

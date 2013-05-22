@@ -1,8 +1,5 @@
 package com.github.zarena.listeners;
 
-
-
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -26,6 +23,7 @@ import com.github.zarena.commands.CommandSenderWrapper;
 import com.github.zarena.signs.ZSign;
 import com.github.zarena.signs.ZTollSign;
 import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.Message;
 
 public class PlayerListener implements Listener
 {
@@ -135,7 +133,7 @@ public class PlayerListener implements Listener
 			if(sign != null)
 			{
 				level.removeZSign(sign);
-				player.sendMessage(ChatColor.RED + "ZSign removed.");
+				player.sendMessage(Message.SIGN_REMOVE.formatMessage());
 			}
 			else if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
 			{

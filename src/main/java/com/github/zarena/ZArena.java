@@ -41,8 +41,10 @@ import com.github.zarena.listeners.WorldListener;
 import com.github.zarena.signs.ZSignCustomItem;
 import com.github.zarena.spout.PlayerOptionsHandler;
 import com.github.zarena.spout.SpoutHandler;
+import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.CustomObjectInputStream;
+import com.github.zarena.utils.Message;
 import com.github.zarena.utils.Metrics;
 import com.github.zarena.utils.Permissions;
 import com.github.zarena.utils.StringEnums;
@@ -107,6 +109,10 @@ public class ZArena extends JavaPlugin
 		loadEntityTypes();
 		loadGamemodeTypes();//Note: Has to be after loadEntityTypes
 		loadFiles();
+		
+		//Load the language file and intialize the messages
+		ChatHelper.loadLanguageFile();
+		Message.setMessages();
 		
 		//Load metrics
 		try 

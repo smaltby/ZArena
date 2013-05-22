@@ -2,8 +2,6 @@ package com.github.zarena.commands;
 
 import java.util.Map.Entry;
 
-
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -14,7 +12,6 @@ import com.github.zarena.utils.Permissions;
  */
 public class CommandSenderWrapper
 {
-    public static final String INSUF_PERM_MSG = "Insufficient permission.";
     protected CommandSender sender;
     protected Player player;
     protected boolean console;
@@ -130,16 +127,7 @@ public class CommandSenderWrapper
     {
         return console;
     }
-
-    /**
-     * Sends the user a message indicating that he does not have sufficent
-     * permission.
-     */
-    public void notifyInsufPermissions()
-    {
-        sender.sendMessage(ChatColor.RED + INSUF_PERM_MSG);
-    }
-
+    
     /**
      * Sends the sender a message.
      *

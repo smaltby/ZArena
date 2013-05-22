@@ -7,7 +7,6 @@ import java.util.Random;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -32,6 +31,7 @@ import com.github.zarena.PlayerStats;
 import com.github.zarena.ZArena;
 import com.github.zarena.entities.ZEntityType;
 import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.Message;
 import com.github.zarena.utils.Utils;
 
 public class EntityListener implements Listener
@@ -99,8 +99,8 @@ public class EntityListener implements Listener
 					stats.addPoints(1);
 					stats.messageStats();
 					if(moneyModifier > 1)
-						stats.getPlayer().sendMessage(ChatColor.RED + "You got "+moneyModifier+"x money from a "+type.toString());
-
+						stats.getPlayer().sendMessage(Message.BONUS_MONEY_KILL.formatMessage(moneyModifier, type.toString()));
+					
 					//If the gamemode is no buying, there is a chance for the player to get an item drop from the killed zombie
 					if(gameHandler.getGameMode().isScavenger())
 					{
@@ -127,10 +127,7 @@ public class EntityListener implements Listener
 				{
 					stats.addMoney(((double) plugin.getConfig().getInt(Constants.KILL_MONEY)) / 2 * moneyModifier);
 					stats.messageStats();
-					if(moneyModifier > 1)
-						stats.getPlayer().sendMessage(ChatColor.RED + "You got "+moneyModifier/2+"x money from an assist on a "+type.toString());
-					else
-						stats.getPlayer().sendMessage(ChatColor.RED + "You got half money for getting an assist");
+					stats.getPlayer().sendMessage(Message.ASSIST_KILL.formatMessage(moneyModifier/2, type.toString()));
 				}
 			}
 		}
@@ -202,7 +199,7 @@ public class EntityListener implements Listener
 			if(rnd.nextInt((int)chance) == 0)
 			{
 				p.getInventory().addItem(i);
-				p.sendMessage(ChatColor.DARK_PURPLE+"The zombie drops an item as it dies!");
+				p.sendMessage(Message.ITEM_DROP.formatMessage());
 				if(rnd.nextInt(10) == 0)
 					p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 16));
 				return true;

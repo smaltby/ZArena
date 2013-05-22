@@ -9,10 +9,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.Random;
 
-
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.github.zarena.commands.CommandSenderWrapper;
@@ -23,7 +20,7 @@ import com.github.zarena.events.LevelChangeEvent;
 import com.github.zarena.spout.SpoutHandler;
 import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
-
+import com.github.zarena.utils.Message;
 
 public class LevelVoter implements Runnable
 {
@@ -58,7 +55,7 @@ public class LevelVoter implements Runnable
 	{
 		if(vote < 1 || vote > 3)
 		{
-			player.sendMessage(ChatColor.RED+"Vote must be an integer ranging from 1 to 3.");
+			player.sendMessage(Message.VOTE_MUST_RANGE_FROM1_TO3.formatMessage());
 			return;
 		}
 		int voteCount = 1;
@@ -76,7 +73,7 @@ public class LevelVoter implements Runnable
 			Bukkit.getScheduler().cancelTask(gameHandler.voterTaskID);
 			run();
 		}
-		player.sendMessage(ChatColor.GREEN+"Thank you for voting!");
+		player.sendMessage(Message.VOTE_SUCCESSFUL.formatMessage());
 	}
 	
 	public String[] getVoteMessage()
@@ -108,10 +105,12 @@ public class LevelVoter implements Runnable
 			}
 			else
 				normals--;
-			options.put(gameHandler.getLevelHandler().getRandomLevel(options.keySet()), optionGm);
+			List<ZLevel> toIgnore = new ArrayList<ZLevel>(options.keySet());	//Don't pick levels already picked
+			toIgnore.add(gameHandler.getLevel());	//Don't pick the current level
+			options.put(gameHandler.getLevelHandler().getRandomLevel(toIgnore), optionGm);
 		}
 		
-		ChatHelper.broadcastMessage(ChatHelper.VOTE_START, gameHandler.getBroadcastPlayers());
+		ChatHelper.broadcastMessage(Message.VOTE_START.formatMessage(), gameHandler.getBroadcastPlayers());
 		byte b = 1;
 		//Go through the entries, broadcasting each one.
 		for(Entry<ZLevel, Gamemode> entry : options.entrySet())
@@ -120,10 +119,10 @@ public class LevelVoter implements Runnable
 				continue;
 			String levelName = entry.getKey().getName();
 			String gmName = entry.getValue().toString();
-			currentVoteMessage[b-1] = ChatHelper.broadcastMessage(String.format(ChatHelper.VOTE_OPTION, b, levelName, gmName), gameHandler.getBroadcastPlayers());
+			currentVoteMessage[b-1] = ChatHelper.broadcastMessage(Message.VOTE_OPTION.formatMessage(b, levelName, gmName), gameHandler.getBroadcastPlayers());
 			b++;
 		}
-		ChatHelper.broadcastMessage(String.format(ChatHelper.VOTE_ENDS_IN, plugin.getConfig().getInt(Constants.VOTING_LENGTH)), gameHandler.getBroadcastPlayers());
+		ChatHelper.broadcastMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(Constants.VOTING_LENGTH)), gameHandler.getBroadcastPlayers());
 		
 		//Send vote screens to spout players with the option enabled
 		final String[] optionsArray = new String[3];
@@ -158,7 +157,7 @@ public class LevelVoter implements Runnable
 		//Go through the vote array, seeing which index has the most votes. Set that index as the leadingVoteIndex
 		for(int i = 0; i < 3; i++)
 		{
-			ChatHelper.broadcastMessage(String.format(ChatHelper.VOTES_FOR_MAP, i + 1, votes[i]), gameHandler.getBroadcastPlayers());
+			ChatHelper.broadcastMessage(Message.VOTES_FOR_EACH_MAP.formatMessage(i + 1, votes[i]), gameHandler.getBroadcastPlayers());
 			if(votes[i] > highest)
 			{
 				highest = votes[i];
@@ -175,7 +174,7 @@ public class LevelVoter implements Runnable
 				Bukkit.getServer().getPluginManager().callEvent(event);
 				gameHandler.setLevel(entry.getKey());
 				gameHandler.setGameMode(entry.getValue());
-				ChatHelper.broadcastMessage(String.format(ChatHelper.MAP_CHOSEN, entry.getKey().getName(), entry.getValue()), gameHandler.getBroadcastPlayers());
+				ChatHelper.broadcastMessage(Message.MAP_CHOSEN.formatMessage(entry.getKey().getName(), entry.getValue()), gameHandler.getBroadcastPlayers());
 				break;
 			}
 			b++;

@@ -31,6 +31,7 @@ import com.github.zarena.spout.SpoutHandler;
 import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.LocationSer;
+import com.github.zarena.utils.Message;
 import com.github.zarena.utils.StringEnums;
 
 public class CommandHandler
@@ -53,19 +54,19 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		if(gameHandler.isRunning() || gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.NOT_ALLOWED_WHILE_RUNNING);
+			senderWrapper.sendMessage(Message.NOT_ALLOWED_WHILE_RUNNING.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = new ZLevel(levelName, player.getLocation());
 		gameHandler.getLevelHandler().addLevel(level);
 		gameHandler.setLevel(level);
-		senderWrapper.sendMessage(ChatColor.GREEN+"Sucessfully created the new level "+ChatColor.BLUE+levelName);
+		senderWrapper.sendMessage(Message.CREATED_NEW_LEVEL.formatMessage("levelName"));
 	}
 	
 	public void getGameMode()
@@ -73,17 +74,17 @@ public class CommandHandler
 		Gamemode gm = gameHandler.getGameMode();
 		if(gm == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
-		senderWrapper.sendMessage(ChatColor.BLUE+"Current GameMode: "+gm.toString());
+		senderWrapper.sendMessage(Message.CURRENT_GAMEMODE.formatMessage(gm.toString()));
 	}
 
 	public void joinGame()
 	{
 		if(!senderWrapper.canEnterLeaveGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
@@ -97,7 +98,7 @@ public class CommandHandler
 			}
 			if(!isClear)
 			{
-				senderWrapper.sendMessage(ChatColor.RED + "Your inventory must be clear to join the game.");
+				senderWrapper.sendMessage(Message.INVENTORY_MUST_BE_CLEAR.formatMessage());
 				return;
 			}
 		}
@@ -108,14 +109,14 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		player.teleport(level.getDeathSpawn());
@@ -125,14 +126,14 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		player.teleport(level.getInitialSpawn());
@@ -142,14 +143,14 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		Location zSpawn = null;
@@ -166,11 +167,11 @@ public class CommandHandler
 		}
 		if(zSpawn == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED + "ZSpawn could not be found.");
+			senderWrapper.sendMessage(Message.ZSPAWN_NOT_FOUND.formatMessage());
 			return;
 		}
 		player.teleport(zSpawn);
-		player.sendMessage(ChatColor.GREEN+"Jumped to zombie spawn: "+ChatColor.RED+zSpawnName);
+		player.sendMessage(Message.JUMPED_TO_ZSPAWN.formatMessage(zSpawnName));
 	}
 
 	public void listLevels()
@@ -188,59 +189,63 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canEnterLeaveGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		gameHandler.removePlayer(player);
-		senderWrapper.sendMessage(ChatColor.GREEN+"Successfully left the ZArena game.");
+		senderWrapper.sendMessage(Message.LEAVE_GAME.formatMessage());
 	}
 	
 	public void listAlive()
 	{
-		senderWrapper.sendMessage(ChatColor.BLUE + "Players alive:");
+		senderWrapper.sendMessage(Message.PLAYERS_ALIVE_HEADER.formatMessage());
+		String totalMessage = "";
 		for(PlayerStats stats : gameHandler.getPlayerStats().values())
 		{
 			if(stats.isAlive())
-				senderWrapper.sendMessage(ChatColor.GREEN + stats.getPlayer().getName());
+				totalMessage += Message.PLAYERS_ALIVE_ITEM.formatMessage(stats.getPlayer().getName());
 		}
+		totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
+		senderWrapper.sendMessage(totalMessage);
 	}
 	
 	public void listSession()
 	{
-		senderWrapper.sendMessage(ChatColor.BLUE + "Players in game session:");
+		senderWrapper.sendMessage(Message.PLAYERS_IN_SESSION_HEADER.formatMessage());
+		String totalMessage = "";
 		for(Player player : gameHandler.getPlayers())
-			senderWrapper.sendMessage(ChatColor.GREEN + player.getName());
+			totalMessage += Message.PLAYERS_IN_SESSION_ITEM.formatMessage(player.getName());
+		totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
+		senderWrapper.sendMessage(totalMessage);
 	}
 	
 	public void listZSpawns()
 	{
 		if(!senderWrapper.canCreateLevels() && !senderWrapper.canControlGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
-		senderWrapper.sendMessage(ChatColor.GOLD+"ZSpawns:");
-		String zSpawnsString = "";
+		senderWrapper.sendMessage(Message.ZSPAWNS_LIST_HEADER.formatMessage());
+		String totalMessage = "";
 		for(String name : level.getZSpawnNames())
-		{
-			zSpawnsString = zSpawnsString + ChatColor.RED+name+", ";
-		}
-		senderWrapper.sendMessage(zSpawnsString);
-		
+			totalMessage += Message.ZSPAWNS_LIST_ITEM.formatMessage(name);
+		totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
+		senderWrapper.sendMessage(totalMessage);
 	}
 
 	public void loadLevel(String levelName)
 	{
 		if(!senderWrapper.canCreateLevels() && !senderWrapper.canControlGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevelHandler().getLevel(levelName);
@@ -260,43 +265,43 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		if(level.removeBossSpawn(spawnName))
 		{
-			senderWrapper.sendMessage(ChatColor.GREEN+"Boss spawn unset.");
+			senderWrapper.sendMessage(Message.BOSS_SPAWN_UNSET.formatMessage());
 			return;
 		}
 		if(level.addBossSpawn(spawnName))
-			senderWrapper.sendMessage(ChatColor.GREEN+"Boss spawn set.");
+			senderWrapper.sendMessage(Message.BOSS_SPAWN_SET.formatMessage());
 		else
-			senderWrapper.sendMessage(ChatColor.RED+"Spawn could not be found. Boss spawn not set.");
+			senderWrapper.sendMessage(Message.BOSS_SPAWN_NOT_FOUND.formatMessage());
 	}
 
 	public void markSign(String signName, String[] flagArguments)
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		ZTollSign sign = level.getZTollSign(signName);
 		if(sign == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Sign could not be found.");
+			senderWrapper.sendMessage(Message.SIGN_NOT_FOUND.formatMessage());
 			return;
 		}
 		for(String flag : flagArguments)
@@ -307,32 +312,32 @@ public class CommandHandler
 				if(sign.isUsableOnce())
 				{
 					sign.setUsableOnce(false);
-					senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully unmarked as usable once.");
+					senderWrapper.sendMessage(Message.SIGN_UNMARKED_AS_USEABLE_ONCE.formatMessage());
 					break;
 				}
 				sign.setUsableOnce(true);
-				senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully marked as usable once.");
+				senderWrapper.sendMessage(Message.SIGN_MARKED_AS_USEABLE_ONCE.formatMessage());
 				break;
 			case OP: case OPPOSITE:
 				if(sign.isOpposite())
 				{
 					sign.setOpposite(false);
-					senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully unmarked as opposite.");
+					senderWrapper.sendMessage(Message.SIGN_UNMARKED_AS_OPPOSITE.formatMessage());
 					break;
 				}
 				sign.setOpposite(true);
-				senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully marked as opposite.");
+				senderWrapper.sendMessage(Message.SIGN_MARKED_AS_OPPOSITE.formatMessage());
 			case NR: case NORESET:
 				if(sign.isNoReset())
 				{
 					sign.setNoReset(false);
-					senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully unmarked as non resetting.");
+					senderWrapper.sendMessage(Message.SIGN_UNMARKED_AS_NON_RESETTING.formatMessage());
 					break;
 				}
 				sign.setNoReset(true);
-				senderWrapper.sendMessage(ChatColor.GREEN+"Sign successfully marked as non resetting.");
+				senderWrapper.sendMessage(Message.SIGN_MARKED_AS_NON_RESETTING.formatMessage());
 			default:
-				senderWrapper.sendMessage(ChatColor.RED+"Flag by the name of '-"+flag+"' not found. Skipping.");
+				senderWrapper.sendMessage(Message.FLAG_NOT_FOUND.formatMessage(flag));
 			}
 		}
 
@@ -342,50 +347,50 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		ZTollSign sign = level.getZTollSign(zSignName);
 		if(sign == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Sign could not be found.");
+			senderWrapper.sendMessage(Message.SIGN_NOT_FOUND.formatMessage());
 			return;
 		}
 		Location zSpawn = level.getZombieSpawn(zSpawnerName);
 		LocationSer zSpawnSer = LocationSer.convertFromBukkitLocation(zSpawn);
 		if(zSpawn == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Spawn could not be found.");
+			senderWrapper.sendMessage(Message.ZSPAWN_NOT_FOUND.formatMessage());
 			return;
 		}
 		if(sign.zSpawns.contains(zSpawnSer))
 		{
 			sign.zSpawns.remove(zSpawnSer);
 			level.resetInactiveZSpawns();
-			senderWrapper.sendMessage(ChatColor.GREEN+"ZSpawn successfully unmarked as only active when this sign is active.");
+			senderWrapper.sendMessage(Message.ZSPAWN_UNMARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE.formatMessage());
 			return;
 		}
 		sign.zSpawns.add(zSpawnSer);
 		level.resetInactiveZSpawns();
-		senderWrapper.sendMessage(ChatColor.GREEN+"ZSpawn successfully marked as only active when this sign is active.");
+		senderWrapper.sendMessage(Message.ZSPAWN_MARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE.formatMessage());
 	}
 	
 	public void openOptions()
 	{
 		if(plugin.isSpoutEnabled())
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Spout not enabled on this server.");
+			senderWrapper.sendMessage(Message.SPOUT_NOT_ENABLED.formatMessage());
 			return;
 		}
 		if(!SpoutHandler.instanceofSpoutPlayer(senderWrapper.getPlayer()))
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"You must have the spout client to use this.");
+			senderWrapper.sendMessage(Message.SPOUT_CLIENT_REQUIRED.formatMessage());
 			return;
 		}
 		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(senderWrapper.getPlayer().getName());
@@ -396,7 +401,7 @@ public class CommandHandler
 	{
 		if(!senderWrapper.isAdmin())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		senderWrapper.sendMessage(ChatColor.GREEN+"ZArena config reloaded.");
@@ -408,63 +413,61 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		if(gameHandler.isRunning() || gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.NOT_ALLOWED_WHILE_RUNNING);
+			senderWrapper.sendMessage(Message.NOT_ALLOWED_WHILE_RUNNING.formatMessage());
 			return;
 		}
 		if(command.getArgAtIndex(2).equalsIgnoreCase("all"))
 		{
 			for(ZLevel level : gameHandler.getLevelHandler().getLevels())
-			{
 				level.reloadSigns();
-			}
 		}
 		else if(gameHandler.getLevel() != null)
 			gameHandler.getLevel().reloadSigns();
 		else
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 	}
 
 	public void removeLevel(String levelName)
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		if(gameHandler.isRunning() || gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.NOT_ALLOWED_WHILE_RUNNING);
+			senderWrapper.sendMessage(Message.NOT_ALLOWED_WHILE_RUNNING.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevelHandler().getLevel(levelName);
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Level could not be found.");
+			senderWrapper.sendMessage(Message.LEVEL_NOT_FOUND.formatMessage(levelName));
 			return;
 		}
 		gameHandler.getLevelHandler().removeLevel(level);
 		if(level == gameHandler.getLevel())
 			gameHandler.setLevel(null);
-		senderWrapper.sendMessage(ChatColor.GREEN+"Level sucessfuly removed.");
+		senderWrapper.sendMessage(Message.LEVEL_REMOVED.formatMessage());
 	}
 
 	public void removeZSpawn(String spawn)
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		boolean success;
@@ -474,16 +477,16 @@ public class CommandHandler
 			success = level.removeZombieSpawn(spawn);
 		
 		if(success)
-			senderWrapper.sendMessage(ChatColor.GREEN+"ZSpawn sucessfuly removed.");
+			senderWrapper.sendMessage(Message.ZSPAWN_REMOVED.formatMessage());
 		else
-			senderWrapper.sendMessage(ChatColor.RED+"ZSpawn could not be found.");
+			senderWrapper.sendMessage(Message.ZSPAWN_NOT_FOUND.formatMessage());
 	}
 
 	public void saveLevels()
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		gameHandler.saveLevelHandler(false);
@@ -494,13 +497,13 @@ public class CommandHandler
 	{
 		if(!gameHandler.isRunning() && !gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.GAME_MUST_BE_RUNNING);
+			senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		WaveHandler waveHandler = gameHandler.getWaveHandler();
@@ -508,41 +511,42 @@ public class CommandHandler
 		switch(StringEnums.valueOf(info.toUpperCase()))
 		{
 		case GENERAL:
-			senderWrapper.sendMessage(ChatColor.GOLD+"Wave: "+wave);
-			senderWrapper.sendMessage(ChatColor.GOLD+"Alive Count: "+gameHandler.getAliveCount());
-			senderWrapper.sendMessage(ChatColor.GOLD+"Remaining Zombies: "+waveHandler.getRemainingZombies());
-			senderWrapper.sendMessage(ChatColor.GOLD+"Level: "+gameHandler.getLevel());
-			senderWrapper.sendMessage(ChatColor.GOLD+"Gamemode: "+gameHandler.getGameMode());
-			senderWrapper.sendMessage(ChatColor.GOLD+"Giants Enabled: "+(gameHandler.getLevel().getRandomBossSpawn() != null));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.wave, wave));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.aliveCount, gameHandler.getAliveCount()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.remainingZombies, waveHandler.getRemainingZombies()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.level, gameHandler.getLevel()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.gamemode, gameHandler.getGameMode()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.giantsEnabled, gameHandler.getLevel().getRandomBossSpawn() != null));
 			break;
 		case ZOMBIESPERWAVE:
-			senderWrapper.sendMessage(ChatColor.GOLD+"Health of normal zombies on the first 20 waves:");
+			String amounts = "";
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
 				int toSpawn = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), checkWave, 
 						plugin.getConfig().getInt(Constants.ZOMBIE_QUANTITY_LIMIT), plugin.getConfig().getDoubleList(Constants.ZOMBIE_QUANTITY_COEFFICIENTS));
-				senderWrapper.sendMessage(ChatColor.BLUE +"Wave "+checkWave+": "+ChatColor.RED+toSpawn);
+				amounts += toSpawn;
 			}
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.zombieAmountsOnTheFirst20Waves, amounts));
 			break;
 		case HEALTHPERWAVE:
-			senderWrapper.sendMessage(ChatColor.GOLD+"Zombie amounts on the first 20 waves:");
+			String healthAmounts = "";
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
 				int health = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_HEALTH_FORMULA), checkWave, 
 						plugin.getConfig().getInt(Constants.ZOMBIE_HEALTH_LIMIT), plugin.getConfig().getDoubleList(Constants.ZOMBIE_HEALTH_COEFFICIENTS));
-				senderWrapper.sendMessage(ChatColor.BLUE +"Health "+checkWave+": "+ChatColor.RED+health);
+				healthAmounts += health;
 			}
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.healthOfNormalZombiesOnTheFirst20Waves, healthAmounts));
 			break;
 		case WAVE:
-			senderWrapper.sendMessage(ChatColor.GOLD+"Wave: "+wave);
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.wave, wave));
 			break;
 		case SPAWNCHANCE:
-			senderWrapper.sendMessage(ChatColor.GOLD+"Spawn Chance: "+waveHandler.getSpawnChance());
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.spawnChance, waveHandler.getSpawnChance()));
 			break;
 		case CHECKNEXTWAVE:
-			senderWrapper.sendMessage(ChatColor.GOLD+"To Spawn: "+(waveHandler.getRemainingZombies() - waveHandler.getEntites().size()));
-			senderWrapper.sendMessage(ChatColor.GOLD+"Alive: "+waveHandler.getEntites().size());
-			senderWrapper.sendMessage(ChatColor.GOLD+"");
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.toSpawn, waveHandler.getRemainingZombies() - waveHandler.getEntites().size()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.alive, waveHandler.getEntites().size()));
 			break;
 		default:
 			throw new ArgumentCountException(2);
@@ -553,24 +557,24 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canControlGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		if(!gameHandler.isRunning() && !gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.GAME_MUST_BE_RUNNING);
+			senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
 			return;
 		}
 		Player player = plugin.getServer().getPlayer(playerName);
 		if(player == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Player could not be found.");
+			senderWrapper.sendMessage(Message.PLAYER_NOT_FOUND.formatMessage());
 			return;
 		}
 		PlayerStats stats = gameHandler.getPlayerStats().get(player.getName());
 		if(stats == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Target player not in game.");
+			senderWrapper.sendMessage(Message.PLAYER_NOT_IN_GAME.formatMessage());
 			return;
 		}
 		if(aliveDead.equalsIgnoreCase("true"))
@@ -579,52 +583,52 @@ public class CommandHandler
 			stats.setAlive(false);
 		else
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Argument 4 must be either true or false.");
+			senderWrapper.sendMessage(Message.ARG4_MUST_BE_TRUE_OR_FALSE.formatMessage());
 			return;
 		}
-		senderWrapper.sendMessage(ChatColor.GREEN+"Successfully set player's alive status.");
+		senderWrapper.sendMessage(Message.SET_PLAYERS_ALIVE_STATUS.formatMessage());
 	}
 
 	public void setDSpawn()
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		level.setDeathSpawn((player.getLocation()));
-		senderWrapper.sendMessage(ChatColor.GREEN + "DSpawn set successfully.");
+		senderWrapper.sendMessage(Message.DSPAWN_SET.formatMessage());
 	}
 	
 	public void setGameMode(String gamemodeName)
 	{
 		if(!senderWrapper.canControlGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		if(!gameHandler.isRunning() && !gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.GAME_MUST_BE_RUNNING);
+			senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
 			return;
 		}
 		Gamemode gm = Gamemode.getGamemode(gamemodeName);
 		if(gm == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED + "Could not find a gamemode by that name.");
+			senderWrapper.sendMessage(Message.GAMEMODE_NOT_FOUND.formatMessage());
 			return;
 		}
 		gameHandler.setGameMode(gm);
@@ -634,25 +638,25 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		level.setInitialSpawn(player.getLocation());
-		senderWrapper.sendMessage(ChatColor.GREEN + "ISpawn set successfully.");
+		senderWrapper.sendMessage(Message.ISPAWN_SET.formatMessage());
 	}
 	
 	public void setLeaveLocation()
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
@@ -662,25 +666,25 @@ public class CommandHandler
 		locXYZ.add(player.getLocation().getY());
 		locXYZ.add(player.getLocation().getZ());
 		plugin.getConfig().set(Constants.GAME_LEAVE_LOCATION, locXYZ);
-		senderWrapper.sendMessage(ChatColor.GREEN + "Leave location set successfully.");
+		senderWrapper.sendMessage(Message.LEAVE_LOCATION_SET.formatMessage());
 	}
 
 	public void setWave(String waveString)
 	{
 		if(!senderWrapper.canControlGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		if(!gameHandler.isRunning() && !gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.GAME_MUST_BE_RUNNING);
+			senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
 			return;
 		}
 		int wave;
@@ -689,45 +693,45 @@ public class CommandHandler
 			wave = Integer.parseInt(waveString);
 		} catch(NumberFormatException e)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Wave must be a valid integer.");
+			senderWrapper.sendMessage(Message.WAVE_MUST_BE_INTEGER.formatMessage());
 			return;
 		}
 		gameHandler.getWaveHandler().setWave(wave);
-		senderWrapper.sendMessage(ChatColor.GREEN+"Wave successfully set.");
+		senderWrapper.sendMessage(Message.WAVE_SET.formatMessage());
 	}
 
 	public void setZSpawn(String spawnName)
 	{
 		if(!senderWrapper.canCreateLevels())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		ZLevel level = gameHandler.getLevel();
 		if(level == null)
 		{
-			senderWrapper.sendMessage(ChatHelper.NO_LEVEL_LOADED);
+			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
 		level.addZombieSpawn(spawnName, player.getLocation());
-		senderWrapper.sendMessage(ChatColor.GREEN + "ZSpawn "+ChatColor.BLUE+spawnName+ChatColor.GREEN+" set successfully.");
+		senderWrapper.sendMessage(Message.ZSPAWN_SET.formatMessage(spawnName));
 	}
 
 	public void showGameStats()
 	{
 		if(!gameHandler.isRunning() && !gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatHelper.GAME_MUST_BE_RUNNING);
+			senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
 			return;
 		}
-		senderWrapper.sendMessage(ChatColor.GOLD+"Game Stats:");
+		senderWrapper.sendMessage(Message.GAME_STATS_HEADER.formatMessage());
 		String statsString = "";
 		for(Entry<String, PlayerStats> entry : gameHandler.getPlayerStats().entrySet())
 		{
 			Player player = entry.getValue().getPlayer();
 			PlayerStats stats = entry.getValue();
-			statsString = statsString + ChatColor.RED+player.getName()+ChatColor.BLUE+" "+stats.getMoney()+" money "+stats.getPoints()+" points. ";
+			statsString += Message.GAME_STATS_ITEM.formatMessage(player.getName(), stats.getMoney(), stats.getPoints());
 		}
 		senderWrapper.sendMessage(statsString);
 	}
@@ -736,49 +740,49 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canControlGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		if(gameHandler.isRunning() || gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatColor.RED + "Game already running.");
+			senderWrapper.sendMessage(Message.GAME_ALREADY_RUNNING.formatMessage());
 			return;
 		}
 		GameStartEvent event = new GameStartEvent(GameStartCause.FORCE);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		gameHandler.start();
-		senderWrapper.sendMessage(ChatColor.GREEN + "Game started.");
+		senderWrapper.sendMessage(Message.GAME_STARTED.formatMessage());
 	}
 
 	public void stopGame()
 	{
 		if(!senderWrapper.canControlGames())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		GameStopEvent event = new GameStopEvent(GameStopCause.FORCE);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		gameHandler.stop();
-		senderWrapper.sendMessage(ChatColor.GREEN + "Game stopped.");
+		senderWrapper.sendMessage(Message.GAME_STOPPED.formatMessage());
 	}
 
 	public void vote(String vote)
 	{
 		if(!senderWrapper.canVote())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
 		if(!gameHandler.isVoting())
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Voting not currently taking place.");
+			senderWrapper.sendMessage(Message.VOTING_NOT_TAKING_PLACE.formatMessage());
 			return;
 		}
 		if(!gameHandler.getPlayers().contains(player))
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"You must be in game to vote.");
+			senderWrapper.sendMessage(Message.MUST_BE_INGAME_TO_VOTE.formatMessage());
 			return;
 		}
 		int voteNum;
@@ -787,7 +791,7 @@ public class CommandHandler
 			voteNum = Integer.parseInt(vote);
 		} catch(NumberFormatException e)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Vote must be a valid integer.");
+			senderWrapper.sendMessage(Message.VOTE_MUST_BE_VALID_INTEGER.formatMessage());
 			return;
 		}
 		gameHandler.getLevelVoter().castVote(voteNum, player);

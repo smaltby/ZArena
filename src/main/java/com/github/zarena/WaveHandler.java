@@ -14,7 +14,6 @@ import com.github.customentitylibrary.entities.CustomWolf;
 import com.github.customentitylibrary.entities.CustomZombie;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -24,6 +23,7 @@ import com.github.zarena.events.GameStopEvent;
 import com.github.zarena.events.WaveChangeEvent;
 import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.Message;
 import com.github.zarena.utils.StringEnums;
 
 public class WaveHandler implements Runnable
@@ -181,7 +181,7 @@ public class WaveHandler implements Runnable
 		Location spawn = gameHandler.getLevel().getRandomZombieSpawn();
 		if(spawn == null)
 		{
-			ChatHelper.broadcastMessage(ChatColor.RED+"Error: ZArena level has no zombie spawns. Stopping game.");
+			ChatHelper.broadcastMessage(Message.NO_ZOMBIE_SPAWNS.formatMessage());
 			gameHandler.stop();
 			return null;
 		}
@@ -436,7 +436,7 @@ public class WaveHandler implements Runnable
 		if(newWave)
 		{
 			timeUntilNextWave = plugin.getConfig().getInt(Constants.WAVE_DELAY);
-			ChatHelper.broadcastMessage(String.format(ChatHelper.WAVE_START_SOON, modifiedWave, timeUntilNextWave), gameHandler.getBroadcastPlayers());
+			ChatHelper.broadcastMessage(Message.WAVE_START_IN.formatMessage(modifiedWave, timeUntilNextWave), gameHandler.getBroadcastPlayers());
 		}
 		//Calculate the waves settings
 		toSpawn = calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), modifiedWave, plugin.getConfig().getInt(Constants.ZOMBIE_QUANTITY_LIMIT), 
@@ -464,13 +464,13 @@ public class WaveHandler implements Runnable
 				{
 					wolfWave = true;
 					lastWolfWave = 0;
-					ChatHelper.broadcastMessage(ChatColor.RED+"Wolf Wave Approaching!", gameHandler.getBroadcastPlayers());
+					ChatHelper.broadcastMessage(Message.WOLF_WAVE_APPROACHING.formatMessage());
 				}
 				else if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_WAVE_PERCENT_OCCUR) && lastSkeletonWave > 4)
 				{
 					skeletonWave = true;
 					lastSkeletonWave = 0;
-					ChatHelper.broadcastMessage(ChatColor.RED+"Skeleton Wave Approaching!", gameHandler.getBroadcastPlayers());
+					ChatHelper.broadcastMessage(Message.SKELETON_WAVE_APPROACHING.formatMessage());
 				}
 			}
 			if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY) > 0)
@@ -552,7 +552,7 @@ public class WaveHandler implements Runnable
 	 */
 	private void startWave()
 	{
-		ChatHelper.broadcastMessage(String.format(ChatHelper.WAVE_START, wave, toSpawn, health), gameHandler.getBroadcastPlayers());
+		ChatHelper.broadcastMessage(Message.WAVE_START.formatMessage(wave, toSpawn, health), gameHandler.getBroadcastPlayers());
 		for(Player p : gameHandler.getPlayers())
 		{
 			Gamemode gm = gameHandler.getGameMode();

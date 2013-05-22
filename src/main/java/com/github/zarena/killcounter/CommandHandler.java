@@ -2,13 +2,11 @@ package com.github.zarena.killcounter;
 
 import java.util.Map.Entry;
 
-
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import com.github.zarena.commands.CommandSenderWrapper;
 import com.github.zarena.commands.ECommand;
-import com.github.zarena.utils.ChatHelper;
+import com.github.zarena.utils.Message;
 import com.github.zarena.utils.Utils;
 
 public class CommandHandler
@@ -29,14 +27,14 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canControlKillCounter())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		int amount = Utils.parseInt(amountString, -1);
 		if(amount < 0)
-			senderWrapper.sendMessage(ChatColor.RED+"The amount to add kills to must be a valid integer greater than 0.");
+			senderWrapper.sendMessage(Message.ADD_KILLS_MUST_BE_GREATER_THAN0.formatMessage());
 		kc.setKills(name, kc.getKills(name) + amount);
-		senderWrapper.sendMessage(ChatColor.GREEN+name+"'s kills successfully set to "+kc.getKills(name)+".");
+		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(kc.getKills(name)));
 	}
 
 	public void sendTopPlayers()
@@ -44,12 +42,12 @@ public class CommandHandler
 		int playersToShow = Utils.parseInt(command.getArgAtIndex(2), 5);
 		if(playersToShow > 30)
 			playersToShow = 30;
-		senderWrapper.sendMessage(ChatColor.BLUE+"Top killers:");
+		senderWrapper.sendMessage(Message.TOP_KILLERS_HEADER.formatMessage());
 		for(int i = 0; i < playersToShow; i++)
 		{
 			Entry<String, Integer> entry = kc.getEntry(i);
 			if(entry == null) break;
-			senderWrapper.sendMessage(ChatColor.RED+"#"+(i + 1)+": "+entry.getKey()+" - "+entry.getValue()+" kills");
+			senderWrapper.sendMessage(Message.TOP_KILLERS_ITEM.formatMessage(i+1, entry.getKey(), entry.getValue()));
 		}
 	}
 
@@ -57,14 +55,14 @@ public class CommandHandler
 	{
 		if(!senderWrapper.canControlKillCounter())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		int amount = Utils.parseInt(amountString, -1);
 		if(amount < 0)
-			senderWrapper.sendMessage(ChatColor.RED+"The amount to set kills to must be a valid integer greater than 0.");
+			senderWrapper.sendMessage(Message.SET_KILLS_MUST_BE_GREATER_OR_EQUAL_TO0.formatMessage());
 		kc.setKills(name, amount);
-		senderWrapper.sendMessage(ChatColor.GREEN+name+"'s kills successfully set to "+amount+".");
+		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(kc.getKills(name)));
 		
 	}
 
@@ -73,26 +71,24 @@ public class CommandHandler
 		Integer kills = kc.getKills(name);
 		if(kills == null)
 		{
-			senderWrapper.sendMessage(ChatColor.RED+"Player could not be found.");
+			senderWrapper.sendMessage(Message.PLAYER_NOT_FOUND.formatMessage());
 			return;
 		}
 		int rank = kc.indexOf(name) + 1;
-		senderWrapper.sendMessage(ChatColor.BLUE+"Player: "+ChatColor.WHITE+name);
-		senderWrapper.sendMessage(ChatColor.RED+"Total Kills: "+ChatColor.WHITE+kills);
-		senderWrapper.sendMessage(ChatColor.RED+"Rank: "+ChatColor.WHITE+rank+"/"+kc.mapSize());
+		senderWrapper.sendMessage(Message.PLAYER_KILLS_INFO.formatMessage(name, kills, rank, kc.mapSize()));
 	}
 	
 	public void subKills(String name, String amountString)
 	{
 		if(!senderWrapper.canControlKillCounter())
 		{
-			senderWrapper.sendMessage(ChatHelper.INSUFFICIENT_PERMISSIONS);
+			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
 		int amount = Utils.parseInt(amountString, -1);
 		if(amount < 0)
-			senderWrapper.sendMessage(ChatColor.RED+"The amount to subtract kills from must be a valid integer greater than 0.");
+			senderWrapper.sendMessage(Message.SUB_KILLS_MUST_BE_GREATER_THAN0.formatMessage());
 		kc.setKills(name, kc.getKills(name) - amount);
-		senderWrapper.sendMessage(ChatColor.GREEN+name+"'s kills successfully set to "+kc.getKills(name)+".");
+		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(kc.getKills(name)));
 	}
 }

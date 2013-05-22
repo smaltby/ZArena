@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 
-
-
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -24,7 +21,7 @@ import com.github.zarena.Gamemode;
 import com.github.zarena.ZArena;
 import com.github.zarena.ZLevel;
 import com.github.zarena.utils.LocationSer;
-
+import com.github.zarena.utils.Message;
 
 public class ZShopSign extends ZSign implements Externalizable
 {
@@ -111,24 +108,24 @@ public class ZShopSign extends ZSign implements Externalizable
 		Gamemode gm = ZArena.getInstance().getGameHandler().getGameMode();
 		if(!gm.canBuyItem(getItem().getType().toString()))
 		{
-			player.sendMessage(ChatColor.RED + "You may not purchase this item in this Gamemode.");
+			player.sendMessage(Message.NO_BUY.formatMessage());
 			return false;
 		}
 		Double costMod = gm.getCostModifier(getItem().getType().toString());
 		if(costMod != null && costMod != 1)
 		{
-			player.sendMessage(ChatColor.RED + "Note: The price of this item in this Gamemode is multiplied by "+costMod+"x");
+			player.sendMessage(Message.EXTRA_COST.formatMessage(costMod));
 			double priceDifference = this.getPrice() * costMod - getPrice();
 			if(ZArena.getInstance().getGameHandler().getPlayerStats(player).getMoney() < priceDifference + price)
 			{
-				player.sendMessage(ChatColor.RED + "Insufficient funds.");
+				player.sendMessage(Message.INSUFFICIENT_FUNDS.formatMessage());
 				return false;
 			}
 			ZArena.getInstance().getGameHandler().getPlayerStats(player).subMoney(priceDifference);
 		}
 		player.getInventory().addItem(this.getItem());
 		player.updateInventory();
-		player.sendMessage(ChatColor.GREEN + "Purchase successful!");
+		player.sendMessage(Message.PURCHASE_SUCCESSFUL.formatMessage());
 		return true;
 	}
 	

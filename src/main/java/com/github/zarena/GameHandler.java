@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -33,6 +32,7 @@ import com.github.zarena.signs.ZSignCustomItem;
 import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.CustomObjectInputStream;
+import com.github.zarena.utils.Message;
 import com.github.zarena.utils.Utils;
 import com.google.common.io.Files;
 
@@ -79,7 +79,7 @@ public class GameHandler
 	{
 		if(players.size() >= plugin.getConfig().getInt(Constants.PLAYER_LIMIT))
 		{
-			player.sendMessage(ChatColor.DARK_PURPLE+"The game is currently full.");
+			player.sendMessage(Message.GAME_FULL.formatMessage());
 			return;
 		}
 		if(players.contains(player.getName()))
@@ -110,9 +110,9 @@ public class GameHandler
 				player.teleport(level.getDeathSpawn());
 			else
 				player.teleport(player.getWorld().getSpawnLocation());
-			player.sendMessage(ChatHelper.VOTE_START);
+			player.sendMessage(Message.VOTE_START.formatMessage());
 			player.sendMessage(levelVoter.getVoteMessage());
-			player.sendMessage(String.format(ChatHelper.VOTE_ENDS_IN, plugin.getConfig().getInt(Constants.VOTING_LENGTH)));
+			player.sendMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(Constants.VOTING_LENGTH)));
 		}
 		else
 		{
@@ -518,8 +518,8 @@ public class GameHandler
 			}
 		}
 		if(gamemode != null && gamemode.isApocalypse())
-			ChatHelper.broadcastMessage(ChatColor.RED + "You survived "+waveHandler.getGameLength()+" seconds!", getBroadcastPlayers());
+			ChatHelper.broadcastMessage(Message.GAME_END_APOCALYPSE_MESSAGE.formatMessage(waveHandler.getGameLength()), getBroadcastPlayers());
 		else	
-			ChatHelper.broadcastMessage(ChatColor.RED + "You reached wave "+waveHandler.getWave()+"!", getBroadcastPlayers());
+			ChatHelper.broadcastMessage(Message.GAME_END_MESSAGE.formatMessage(waveHandler.getWave()), getBroadcastPlayers());
 	}
 }
