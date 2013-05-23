@@ -139,7 +139,7 @@ public enum Message
 	    for (ChatColor color : ChatColor.values())
 	    	messageCopy = messageCopy.replaceAll("(?i)<" + color.name() + ">", "" + color);
 	    for(int i = 0; i < params.length; i++)
-	    	messageCopy = messageCopy.replaceAll(params[i], args[i].toString());
+	    	messageCopy = messageCopy.replaceAll("%"+params[i]+"%", args[i].toString());
 	    return messageCopy;
 	}
 	

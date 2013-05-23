@@ -517,6 +517,8 @@ public class ZArena extends JavaPlugin
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "Hardcore.yml");
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "NoBuying.yml");
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "Normal.yml");
+			
+			Utils.extractFromJar(new File(Constants.PLUGIN_FOLDER), "language.yml");
 		} catch (IOException e)
 		{
 			log(Level.WARNING, "ZArena: Error loading default files. You can download them manually from the plugins dev.bukkit.org page.");

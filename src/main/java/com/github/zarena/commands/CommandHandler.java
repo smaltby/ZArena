@@ -66,7 +66,7 @@ public class CommandHandler
 		ZLevel level = new ZLevel(levelName, player.getLocation());
 		gameHandler.getLevelHandler().addLevel(level);
 		gameHandler.setLevel(level);
-		senderWrapper.sendMessage(Message.CREATED_NEW_LEVEL.formatMessage("levelName"));
+		senderWrapper.sendMessage(Message.CREATED_NEW_LEVEL.formatMessage(levelName));
 	}
 	
 	public void getGameMode()

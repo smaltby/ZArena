@@ -48,8 +48,9 @@ public class LevelHandler implements Externalizable
 	
 	public ZLevel getRandomLevel(Collection<ZLevel> exludedLevels)
 	{
+		//We don't want to ever return null...so if the excludedLevels is a collection of all levels, screw it and just return any damn level
 		if(exludedLevels.containsAll(levels))
-			return null;
+			return levels.get(rnd.nextInt(levels.size()));
 		ZLevel level = null;
 		do
 		{

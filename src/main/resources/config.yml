@@ -1,0 +1,90 @@
+First Time Plugin Load: false
+Options:
+  Always Night: true
+  Auto-Start: true
+  Auto-Run: true
+  Auto-Join: false
+  Save Position on Game Join: true
+  Game World: world
+  Game Leave World: world
+  Game Leave Location:
+  - 0.0
+  - 64.0
+  - 0.0
+  Player Limit: 12
+  Adjust Quantity Based on Player Amount: true
+  Save Items: true
+  Voting Length: 30
+  XP Bar Shows Money: false
+  Broadcast To All: false
+  Seperate Inventory: true
+  Wave Start Delay: 10
+  World Exclusive: false
+  Disable Hunger: true
+  Disable Joining Game With Inventory: false
+  Disable Non ZArena Commands In Game: false
+  Enable Killcounter: true
+  Respawn Every X Waves (0 to disable): 3
+  Shop Sign Header: ZBuy
+  Toll Sign Header: ZPay
+  Start Items:
+  - wood axe
+Stats:
+  Money on Kill: 15
+  Money Percent Lost on Death: 0.2
+Entities:
+  Wolf Spawn Chance: 0.05
+  Skeleton Spawn Chance: 0.05
+  Wolf Wave Chance: 0.3
+  Skeleton Wave Chance: 0.2
+  Wolf Spawn Chance During Wolf Wave: 0.9
+  Skeleton Spawn Chance During Wolf Wave: 0.4
+  Default Entity File Name: NormalZombie.yml
+  Default Skeleton File Name: NormalSkeleton.yml
+  Default Wolf File Name: NormalWolf.yml
+  Entity File Name List:
+  - FastZombie.yml
+  - StrongZombie.yml
+  - FireZombie.yml
+  - GigaZombie.yml
+  - FastSkeleton.yml
+  - WitherSkeleton.yml
+  - HellHound.yml
+  - ZombiePigman.yml
+  - ZombieVillager.yml
+Zombies:
+  Health:
+    Formula Type [Quadratic|Logistic|Logarithmic]: Logarithmic
+    Limit (Only applicaple for Logistic Forumula): 0
+    Coefficients:
+    - 3.0
+    - 0.4
+    - 8.0
+  Quantity:
+    Formula Type [Quadratic|Logistic|Logarithmic]: Logistic
+    Limit (Only applicaple for Logistic Forumula): 60
+    Coefficients:
+    - 1.5
+    - 4.0
+    - 9.0
+Donator:
+  Start Money:
+    Donator1:
+      permission name: zarena.donator1
+      value: 15
+  Extra Votes:
+    Donator1:
+      permission name: zarena.donator1
+      value: 1
+SignCustomItems:
+  Healing Potion:
+    type: 373
+    amount: 1
+    damage value: 8229
+    id: 0
+Gamemodes:
+  Default Gamemode File Name: Normal.yml
+  Gamemode File Name List:
+  - Hardcore.yml
+  - Apocalypse.yml
+  - NoBuying.yml

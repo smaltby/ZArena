@@ -6,7 +6,7 @@ Range: 256
 Speed: 0.3
 WorthModifier: 4
 MinimumSpawnWave: 5
-SpawnPriority: 5
+SpawnPriority: 4
 Immunities:
 - fire
 - fire tick

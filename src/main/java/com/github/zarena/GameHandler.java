@@ -313,7 +313,6 @@ public class GameHandler
 
         } catch (Exception e)
         {
-        	e.printStackTrace();
         	ZArena.log(Level.WARNING, "ZArena: Couldn't load the LevelHandler database. Ignore if this is the first time the plugin has been run.");
             levelHandler = new LevelHandler();
         }

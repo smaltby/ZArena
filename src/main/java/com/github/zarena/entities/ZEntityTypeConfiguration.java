@@ -20,7 +20,7 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	double worthModifier;
 	double healthModifier;
 	int minSpawnWave;
-	int priority;
+	double priority;
 	public ZEntityTypeConfiguration(FileConfiguration config)
 	{
 		super(config);
@@ -31,7 +31,7 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 		{
 			int convertedPriority = 20;
 			double chance = config.getDouble("SpawnChance");
-			double currChance = .5;
+			double currChance = .25;
 			for(int i = 1; i <= 20; i++)
 			{
 				double nextChance = currChance / 2;
@@ -47,7 +47,7 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 			config.set("SpawnPriority", convertedPriority);
 			config.set("SpawnChance", null);
 		} 
-		priority = config.getInt("SpawnPriority", 5);
+		priority = config.getDouble("SpawnPriority", 5.0);
 	}
 	
 	@Override
@@ -69,7 +69,7 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	}
 	
 	@Override
-	public int getSpawnPriority()
+	public double getSpawnPriority()
 	{
 		return priority;
 	}

@@ -65,7 +65,7 @@ Map Chosen: "<dark_gray>Level <dark_aqua>%MAP%<gray><<dark_aqua>%GAMEMODE%<gray>
 #Broadcasted at the start of the preperation time before each wave.
 #WAVE - The next wave.
 #TIME - Time until the preperation time is over, and the next wave begins.
-Wave Start In: "<gray>Starting Wave: <red>%WAVE% $7in <red>%TIME% <gray>Seconds."
+Wave Start In: "<gray>Starting Wave: <red>%WAVE% <gray>in <red>%TIME% <gray>Seconds."
 
 #Broadcasted when a wolf wave is coming up.
 Wolf Wave Approaching: "<red>Wolf Wave Approaching!"
@@ -115,7 +115,7 @@ Insufficient Funds: "<red>Insufficient Funds."
 Purchase Successful: "<red>Purchase successful!"
 
 #Sent when a player tries to place a ZSign when there is no level loaded.
-Sign Place With No Level: "<red>A level must be loaded to place a ZSign".
+Sign Place With No Level: "<red>A level must be loaded to place a ZSign."
 
 #Sent when a player tries to place a ZSign, but fails.
 Sign Place Failure: "<red>ZArena sign creation failed."

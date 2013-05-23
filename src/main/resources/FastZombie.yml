@@ -6,5 +6,5 @@ Range: 256
 Speed: 0.3
 WorthModifier: 2
 MinimumSpawnWave: 2
-SpawnPriority: 2
+SpawnPriority: 1
 CanDive: true

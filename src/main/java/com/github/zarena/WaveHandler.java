@@ -64,7 +64,7 @@ public class WaveHandler implements Runnable
 		lastWolfWave = 0;
 	}
 	
-	private double calcChance(int priority, int wave)
+	private double calcChance(double priority, int wave)
 	{
 		double reduce = 2 - .75 / (1 + Math.pow(Math.E, -(wave/3 - 3)));
 		double chance = .5;
@@ -72,7 +72,10 @@ public class WaveHandler implements Runnable
 		{
 			chance /= reduce;
 		}
-		return chance;
+		//Get the prev chance, and interpolate between it and the current chance. This helps account for priorities that aren't exact integers
+		double prevChance = chance * reduce;
+		double inbetween = Math.ceil(priority) - priority;
+		return chance * (1 - inbetween) + prevChance * inbetween;
 	}
 	
 	/**

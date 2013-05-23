@@ -3,8 +3,8 @@ Name: Zombie Pigman
 Damage: 2
 HealthModifier: 2
 Range: 256
-Speed: 0.21
+Speed: 0.28
 WorthModifier: 2
 MinimumSpawnWave: 4
-SpawnPriority: 3
+SpawnPriority: 2
 CanDive: true
