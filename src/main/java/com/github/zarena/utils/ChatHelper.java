@@ -256,16 +256,33 @@ public class ChatHelper
 	
 	public static String[] broadcastMessage(String[] message, Player[] players)
 	{
-		for(Player p : players)
-		{
-			for(String messagePart : message)
-			{
-				p.sendMessage(messagePart);
-			}
-		}
 		for(String messagePart : message)
 		{
-			Bukkit.getConsoleSender().sendMessage(messagePart);
+			if(messagePart != null && messagePart.length() > 0)
+			{
+				for(Player p : players)
+				{
+					p.sendMessage(messagePart);
+				}
+				Bukkit.getConsoleSender().sendMessage(messagePart);
+			}
+		}
+		return message;
+	}
+	
+	public static String sendMessage(String message, Player player)
+	{
+		return sendMessage(new String[] {message}, player)[0];
+	}
+	
+	public static String[] sendMessage(String[] message, Player player)
+	{
+		for(String messagePart : message)
+		{
+			if(messagePart != null && messagePart.length() > 0)
+			{
+				player.sendMessage(messagePart);
+			}
 		}
 		return message;
 	}

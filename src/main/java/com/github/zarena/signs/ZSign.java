@@ -18,6 +18,7 @@ import com.github.zarena.PlayerStats;
 import com.github.zarena.ZArena;
 import com.github.zarena.ZLevel;
 import com.github.zarena.commands.CommandSenderWrapper;
+import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.LocationSer;
 import com.github.zarena.utils.Message;
@@ -54,7 +55,7 @@ public abstract class ZSign implements Externalizable
 		{
 			if(ZArena.getInstance().getGameHandler().getLevel() == null)
 			{
-				player.sendMessage(Message.SIGN_PLACE_WITH_NO_LEVEL.formatMessage());
+				ChatHelper.sendMessage(Message.SIGN_PLACE_WITH_NO_LEVEL.formatMessage(), player);
 				return null;
 			}
 
@@ -63,10 +64,10 @@ public abstract class ZSign implements Externalizable
 				ZSign zSign = (firstLine.equals(shopHeader)) ? ZShopSign.attemptCreateSign(level, location, lines) :
 					ZTollSign.attemptCreateSign(level, location, lines);
 				if(zSign == null)
-					player.sendMessage(Message.SIGN_PLACE_FAILURE.formatMessage());
+					ChatHelper.sendMessage(Message.SIGN_PLACE_FAILURE.formatMessage(), player);
 				else
 				{
-					player.sendMessage(Message.SIGN_PLACE_SUCCESS.formatMessage());
+					ChatHelper.sendMessage(Message.SIGN_PLACE_SUCCESS.formatMessage(), player);
 					ZArena.getInstance().getGameHandler().getLevel().addZSign(zSign);
 					return zSign;
 				}
@@ -131,7 +132,7 @@ public abstract class ZSign implements Externalizable
 		PlayerStats stats = gameHandler.getPlayerStats().get(player.getName());
 		if(stats.getMoney() < price)
 		{
-			player.sendMessage(Message.INSUFFICIENT_FUNDS.formatMessage());
+			ChatHelper.sendMessage(Message.INSUFFICIENT_FUNDS.formatMessage(), player);
 			return false;
 		}
 		if(executeClick(player))

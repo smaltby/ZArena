@@ -1,15 +1,14 @@
 package com.github.zarena;
 
-
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.Message;
 
@@ -109,8 +108,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 	
 	public void messageStats()
 	{
-		Message.SEND_STATS.formatMessage(getMoney(), getPoints());
-		getPlayer().sendMessage(ChatColor.DARK_GRAY+"Money: "+ChatColor.GRAY+getMoney()+ChatColor.DARK_GRAY+" Points: "+ChatColor.GRAY+getPoints());
+		ChatHelper.sendMessage(Message.SEND_STATS.formatMessage(getMoney(), getPoints()), getPlayer());
 	}
 	
 	public void resetStats()

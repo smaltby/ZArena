@@ -22,6 +22,7 @@ import com.github.zarena.ZLevel;
 import com.github.zarena.commands.CommandSenderWrapper;
 import com.github.zarena.signs.ZSign;
 import com.github.zarena.signs.ZTollSign;
+import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.Message;
 
@@ -133,7 +134,7 @@ public class PlayerListener implements Listener
 			if(sign != null)
 			{
 				level.removeZSign(sign);
-				player.sendMessage(Message.SIGN_REMOVE.formatMessage());
+				ChatHelper.sendMessage(Message.SIGN_REMOVE.formatMessage(), player);
 			}
 			else if(event.getAction() == Action.RIGHT_CLICK_BLOCK)
 			{

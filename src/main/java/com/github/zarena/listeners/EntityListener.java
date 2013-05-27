@@ -30,6 +30,7 @@ import com.github.zarena.GameHandler;
 import com.github.zarena.PlayerStats;
 import com.github.zarena.ZArena;
 import com.github.zarena.entities.ZEntityType;
+import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.Message;
 import com.github.zarena.utils.Utils;
@@ -93,13 +94,13 @@ public class EntityListener implements Listener
 				PlayerStats stats = gameHandler.getPlayerStats().get(customEnt.getBestAttacker().getName());
 
 				//Give the killer money/points
-				if(stats != null)
+				if(stats != null && stats.isAlive())
 				{
 					stats.addMoney(plugin.getConfig().getInt(Constants.KILL_MONEY) * moneyModifier);
 					stats.addPoints(1);
 					stats.messageStats();
 					if(moneyModifier > 1)
-						stats.getPlayer().sendMessage(Message.BONUS_MONEY_KILL.formatMessage(moneyModifier, type.toString()));
+						ChatHelper.sendMessage(Message.BONUS_MONEY_KILL.formatMessage(moneyModifier, type.toString()), stats.getPlayer());
 					
 					//If the gamemode is no buying, there is a chance for the player to get an item drop from the killed zombie
 					if(gameHandler.getGameMode().isScavenger())
@@ -123,11 +124,11 @@ public class EntityListener implements Listener
 			if(assister != null)
 			{
 				PlayerStats stats = gameHandler.getPlayerStats().get(assister.getName());
-				if(stats != null)
+				if(stats != null && stats.isAlive())
 				{
 					stats.addMoney(((double) plugin.getConfig().getInt(Constants.KILL_MONEY)) / 2 * moneyModifier);
 					stats.messageStats();
-					stats.getPlayer().sendMessage(Message.ASSIST_KILL.formatMessage(moneyModifier/2, type.toString()));
+					ChatHelper.sendMessage(Message.ASSIST_KILL.formatMessage(moneyModifier/2, type.toString()), stats.getPlayer());
 				}
 			}
 		}
@@ -199,7 +200,7 @@ public class EntityListener implements Listener
 			if(rnd.nextInt((int)chance) == 0)
 			{
 				p.getInventory().addItem(i);
-				p.sendMessage(Message.ITEM_DROP.formatMessage());
+				ChatHelper.sendMessage(Message.ITEM_DROP.formatMessage(), p);
 				if(rnd.nextInt(10) == 0)
 					p.getInventory().addItem(new ItemStack(Material.SNOW_BALL, 16));
 				return true;

@@ -55,7 +55,7 @@ public class LevelVoter implements Runnable
 	{
 		if(vote < 1 || vote > 3)
 		{
-			player.sendMessage(Message.VOTE_MUST_RANGE_FROM1_TO3.formatMessage());
+			ChatHelper.sendMessage(Message.VOTE_MUST_RANGE_FROM1_TO3.formatMessage(), player);
 			return;
 		}
 		int voteCount = 1;
@@ -73,7 +73,7 @@ public class LevelVoter implements Runnable
 			Bukkit.getScheduler().cancelTask(gameHandler.voterTaskID);
 			run();
 		}
-		player.sendMessage(Message.VOTE_SUCCESSFUL.formatMessage());
+		ChatHelper.sendMessage(Message.VOTE_SUCCESSFUL.formatMessage(), player);
 	}
 	
 	public String[] getVoteMessage()

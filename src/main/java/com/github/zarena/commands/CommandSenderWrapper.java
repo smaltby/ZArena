@@ -135,6 +135,7 @@ public class CommandSenderWrapper
      */
     public void sendMessage(String msg)
     {
-        sender.sendMessage(msg);
+    	if(msg != null && msg.length() > 0)
+    		sender.sendMessage(msg);
     }
 }

@@ -79,7 +79,7 @@ public class GameHandler
 	{
 		if(players.size() >= plugin.getConfig().getInt(Constants.PLAYER_LIMIT))
 		{
-			player.sendMessage(Message.GAME_FULL.formatMessage());
+			ChatHelper.sendMessage(Message.GAME_FULL.formatMessage(), player);
 			return;
 		}
 		if(players.contains(player.getName()))
@@ -110,9 +110,9 @@ public class GameHandler
 				player.teleport(level.getDeathSpawn());
 			else
 				player.teleport(player.getWorld().getSpawnLocation());
-			player.sendMessage(Message.VOTE_START.formatMessage());
-			player.sendMessage(levelVoter.getVoteMessage());
-			player.sendMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(Constants.VOTING_LENGTH)));
+			ChatHelper.sendMessage(Message.VOTE_START.formatMessage(), player);
+			ChatHelper.sendMessage(levelVoter.getVoteMessage(), player);
+			ChatHelper.sendMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(Constants.VOTING_LENGTH)), player);
 		}
 		else
 		{

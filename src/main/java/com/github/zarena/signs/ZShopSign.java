@@ -20,6 +20,7 @@ import org.bukkit.potion.Potion;
 import com.github.zarena.Gamemode;
 import com.github.zarena.ZArena;
 import com.github.zarena.ZLevel;
+import com.github.zarena.utils.ChatHelper;
 import com.github.zarena.utils.LocationSer;
 import com.github.zarena.utils.Message;
 
@@ -108,24 +109,24 @@ public class ZShopSign extends ZSign implements Externalizable
 		Gamemode gm = ZArena.getInstance().getGameHandler().getGameMode();
 		if(!gm.canBuyItem(getItem().getType().toString()))
 		{
-			player.sendMessage(Message.NO_BUY.formatMessage());
+			ChatHelper.sendMessage(Message.NO_BUY.formatMessage(), player);
 			return false;
 		}
 		Double costMod = gm.getCostModifier(getItem().getType().toString());
 		if(costMod != null && costMod != 1)
 		{
-			player.sendMessage(Message.EXTRA_COST.formatMessage(costMod));
+			ChatHelper.sendMessage(Message.EXTRA_COST.formatMessage(costMod), player);
 			double priceDifference = this.getPrice() * costMod - getPrice();
 			if(ZArena.getInstance().getGameHandler().getPlayerStats(player).getMoney() < priceDifference + price)
 			{
-				player.sendMessage(Message.INSUFFICIENT_FUNDS.formatMessage());
+				ChatHelper.sendMessage(Message.INSUFFICIENT_FUNDS.formatMessage(), player);
 				return false;
 			}
 			ZArena.getInstance().getGameHandler().getPlayerStats(player).subMoney(priceDifference);
 		}
 		player.getInventory().addItem(this.getItem());
 		player.updateInventory();
-		player.sendMessage(Message.PURCHASE_SUCCESSFUL.formatMessage());
+		ChatHelper.sendMessage(Message.PURCHASE_SUCCESSFUL.formatMessage(), player);
 		return true;
 	}
 	
