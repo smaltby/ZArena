@@ -12,24 +12,14 @@ import com.github.zarena.events.WaveChangeEvent;
 public class WorldListener implements Listener
 {
 	private ZArena plugin;
-	
+
 	public WorldListener()
 	{
 		plugin = ZArena.getInstance();
 	}
-	
+
 	public void registerEvents(PluginManager pm, ZArena plugin)
 	{
 		pm.registerEvents(this, plugin);
-	}
-	
-	@EventHandler
-	public void onWaveChange(WaveChangeEvent event)
-	{
-		int waveDifference = event.getNewWave() - event.getOldWave();
-		for(PlayerStats stats : plugin.getGameHandler().getPlayerStats().values())
-		{
-			stats.setWavesSinceDeath(waveDifference + stats.getWavesSinceDeath());
-		}
 	}
 }

@@ -1,0 +1,14 @@
+{
+    "folders": [
+        {
+            "path": "C:\\Users\\Jason\\Dropbox\\Eclipse\\Plugins\\workspace\\ZArena", 
+            "name": "c.g.z:ZArena:PROJECT"
+        }
+    ], 
+    "settings": {
+        "sublimejava_classpath": [
+            "C:\\Users\\Jason\\Dropbox\\Eclipse\\Plugins\\workspace\\ZArena\\target\\classes", 
+            "C:\\Users\\Jason\\Dropbox\\Eclipse\\Plugins\\workspace\\ZArena\\target\\test-classes"
+        ]
+    }
+}

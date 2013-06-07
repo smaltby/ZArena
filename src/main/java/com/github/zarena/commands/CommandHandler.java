@@ -40,12 +40,12 @@ public class CommandHandler
 	private GameHandler gameHandler;
 	private CommandSenderWrapper senderWrapper;
 	private ECommand command;
-	
+
 	public CommandHandler(CommandSender sender, ECommand command)
 	{
 		plugin = ZArena.getInstance();
 		gameHandler = plugin.getGameHandler();
-		
+
 		senderWrapper = new CommandSenderWrapper(sender);
 		this.command = command;
 	}
@@ -68,7 +68,7 @@ public class CommandHandler
 		gameHandler.setLevel(level);
 		senderWrapper.sendMessage(Message.CREATED_NEW_LEVEL.formatMessage(levelName));
 	}
-	
+
 	public void getGameMode()
 	{
 		Gamemode gm = gameHandler.getGameMode();
@@ -121,7 +121,7 @@ public class CommandHandler
 		}
 		player.teleport(level.getDeathSpawn());
 	}
-	
+
 	public void jumpToISpawn()
 	{
 		if(!senderWrapper.canCreateLevels())
@@ -184,7 +184,7 @@ public class CommandHandler
 		}
 		senderWrapper.sendMessage(levels);
 	}
-	
+
 	public void leaveGame()
 	{
 		if(!senderWrapper.canEnterLeaveGames())
@@ -196,7 +196,7 @@ public class CommandHandler
 		gameHandler.removePlayer(player);
 		senderWrapper.sendMessage(Message.LEAVE_GAME.formatMessage());
 	}
-	
+
 	public void listAlive()
 	{
 		senderWrapper.sendMessage(Message.PLAYERS_ALIVE_HEADER.formatMessage());
@@ -209,7 +209,7 @@ public class CommandHandler
 		totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
 		senderWrapper.sendMessage(totalMessage);
 	}
-	
+
 	public void listSession()
 	{
 		senderWrapper.sendMessage(Message.PLAYERS_IN_SESSION_HEADER.formatMessage());
@@ -219,7 +219,7 @@ public class CommandHandler
 		totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
 		senderWrapper.sendMessage(totalMessage);
 	}
-	
+
 	public void listZSpawns()
 	{
 		if(!senderWrapper.canCreateLevels() && !senderWrapper.canControlGames())
@@ -254,13 +254,13 @@ public class CommandHandler
 			senderWrapper.sendMessage(ChatColor.RED + "Level could not be found.");
 			return;
 		}
-		
+
 		LevelChangeEvent event = new LevelChangeEvent(gameHandler.getLevel(), level, LevelChangeCause.FORCE);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		gameHandler.setLevel(level);
 		senderWrapper.sendMessage(ChatColor.GREEN+"Level sucessfuly loaded.");
 	}
-	
+
 	public void markBossSpawn(String spawnName)
 	{
 		if(!senderWrapper.canCreateLevels())
@@ -342,7 +342,7 @@ public class CommandHandler
 		}
 
 	}
-	
+
 	public void markZSpawnToSign(String zSignName, String zSpawnerName)
 	{
 		if(!senderWrapper.canCreateLevels())
@@ -380,7 +380,7 @@ public class CommandHandler
 		level.resetInactiveZSpawns();
 		senderWrapper.sendMessage(Message.ZSPAWN_MARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE.formatMessage());
 	}
-	
+
 	public void openOptions()
 	{
 		if(plugin.isSpoutEnabled())
@@ -396,7 +396,7 @@ public class CommandHandler
 		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(senderWrapper.getPlayer().getName());
 		options.openOptions();
 	}
-	
+
 	public void reloadConfig()
 	{
 		if(!senderWrapper.isAdmin())
@@ -408,7 +408,7 @@ public class CommandHandler
 		ZArena.getInstance().reloadConfig();
 		ZArena.getInstance().saveConfig();
 	}
-	
+
 	public void reloadSigns()
 	{
 		if(!senderWrapper.canCreateLevels())
@@ -475,7 +475,7 @@ public class CommandHandler
 			success = level.removeZombieSpawn(level.getNearestZombieSpawn(player.getLocation()));
 		else
 			success = level.removeZombieSpawn(spawn);
-		
+
 		if(success)
 			senderWrapper.sendMessage(Message.ZSPAWN_REMOVED.formatMessage());
 		else
@@ -492,7 +492,7 @@ public class CommandHandler
 		gameHandler.saveLevelHandler(false);
 		senderWrapper.sendMessage(ChatColor.GREEN + "Levels saved successfully.");
 	}
-	
+
 	public void sendInfo(String info) throws ArgumentCountException
 	{
 		if(!gameHandler.isRunning() && !gameHandler.isVoting())
@@ -511,48 +511,48 @@ public class CommandHandler
 		switch(StringEnums.valueOf(info.toUpperCase()))
 		{
 		case GENERAL:
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.wave, wave));
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.aliveCount, gameHandler.getAliveCount()));
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.remainingZombies, waveHandler.getRemainingZombies()));
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.level, gameHandler.getLevel()));
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.gamemode, gameHandler.getGameMode()));
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.giantsEnabled, gameHandler.getLevel().getRandomBossSpawn() != null));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Wave"), wave));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Alive Count"), gameHandler.getAliveCount()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Remaining Zombies"), waveHandler.getRemainingZombies()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Level"), gameHandler.getLevel()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Gamemode"), gameHandler.getGameMode()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Giants Enabled"), gameHandler.getLevel().getRandomBossSpawn() != null));
 			break;
 		case ZOMBIESPERWAVE:
 			String amounts = "";
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
-				int toSpawn = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), checkWave, 
+				int toSpawn = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), checkWave,
 						plugin.getConfig().getInt(Constants.ZOMBIE_QUANTITY_LIMIT), plugin.getConfig().getDoubleList(Constants.ZOMBIE_QUANTITY_COEFFICIENTS));
 				amounts += toSpawn;
 			}
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.zombieAmountsOnTheFirst20Waves, amounts));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Zombie Amounts on the First 20 Waves"), amounts));
 			break;
 		case HEALTHPERWAVE:
 			String healthAmounts = "";
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
-				int health = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_HEALTH_FORMULA), checkWave, 
+				int health = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_HEALTH_FORMULA), checkWave,
 						plugin.getConfig().getInt(Constants.ZOMBIE_HEALTH_LIMIT), plugin.getConfig().getDoubleList(Constants.ZOMBIE_HEALTH_COEFFICIENTS));
 				healthAmounts += health;
 			}
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.healthOfNormalZombiesOnTheFirst20Waves, healthAmounts));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Health of Normal Zombies on the First 20 Waves"), healthAmounts));
 			break;
 		case WAVE:
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.wave, wave));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Wave"), wave));
 			break;
 		case SPAWNCHANCE:
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.spawnChance, waveHandler.getSpawnChance()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Spawn Chance"), waveHandler.getSpawnChance()));
 			break;
 		case CHECKNEXTWAVE:
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.toSpawn, waveHandler.getRemainingZombies() - waveHandler.getEntites().size()));
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.alive, waveHandler.getEntites().size()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("To Spawn"), waveHandler.getRemainingZombies() - waveHandler.getEntites().size()));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Alive"), waveHandler.getEntites().size()));
 			break;
 		default:
 			throw new ArgumentCountException(2);
 		}
 	}
-	
+
 	public void setAlive(String playerName, String aliveDead)
 	{
 		if(!senderWrapper.canControlGames())
@@ -606,7 +606,7 @@ public class CommandHandler
 		level.setDeathSpawn((player.getLocation()));
 		senderWrapper.sendMessage(Message.DSPAWN_SET.formatMessage());
 	}
-	
+
 	public void setGameMode(String gamemodeName)
 	{
 		if(!senderWrapper.canControlGames())
@@ -651,7 +651,7 @@ public class CommandHandler
 		level.setInitialSpawn(player.getLocation());
 		senderWrapper.sendMessage(Message.ISPAWN_SET.formatMessage());
 	}
-	
+
 	public void setLeaveLocation()
 	{
 		if(!senderWrapper.canCreateLevels())

@@ -39,18 +39,18 @@ public class EntityListener implements Listener
 {
 	private ZArena plugin;
 	private GameHandler gameHandler;
-	
+
 	public EntityListener()
 	{
 		plugin = ZArena.getInstance();
 		gameHandler = plugin.getGameHandler();
 	}
-	
+
 	public void registerEvents(PluginManager pm, ZArena plugin)
 	{
 		pm.registerEvents(this, plugin);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
@@ -60,7 +60,7 @@ public class EntityListener implements Listener
 				event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
@@ -75,7 +75,7 @@ public class EntityListener implements Listener
 				{
 					stats.setAlive(false);
 					stats.subMoney(stats.getMoney() * plugin.getConfig().getDouble(Constants.MONEY_LOST));
-					stats.setWavesSinceDeath(0);
+					stats.registerDeath();
 				}
 			}
 		}
@@ -85,9 +85,9 @@ public class EntityListener implements Listener
 				event.setDroppedExp(0);
 			CustomEntityWrapper customEnt = CustomEntityWrapper.getCustomEntity(ent);
 			ZEntityType type = (ZEntityType) customEnt.getType();
-			
+
 			double moneyModifier = type.getWorthModifier();
-			
+
 			Player bestAttacker = customEnt.getBestAttacker();
 			if(bestAttacker != null)
 			{
@@ -101,7 +101,7 @@ public class EntityListener implements Listener
 					stats.messageStats();
 					if(moneyModifier > 1)
 						ChatHelper.sendMessage(Message.BONUS_MONEY_KILL.formatMessage(moneyModifier, type.toString()), stats.getPlayer());
-					
+
 					//If the gamemode is no buying, there is a chance for the player to get an item drop from the killed zombie
 					if(gameHandler.getGameMode().isScavenger())
 					{
@@ -133,14 +133,14 @@ public class EntityListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void clearDrops(EntityDeathEvent event)
 	{
 		if(CustomEntityWrapper.instanceOf(event.getEntity()))
 			event.getDrops().clear();
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
@@ -169,7 +169,7 @@ public class EntityListener implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
@@ -183,7 +183,7 @@ public class EntityListener implements Listener
 		if(plugin.getConfig().getBoolean(Constants.DISABLE_HUNGER) && plugin.getGameHandler().getPlayers().contains(event.getEntity()) && event.getRegainReason() == RegainReason.SATIATED)
 			event.setCancelled(true);
 	}
-	
+
 	//TODO the methods involving getting item drops require simplification.
 	//For use in the below method, giveRandomItem
 	private boolean chooseItem(Map<ItemStack, Integer> itemRarity, Player p, int weight)

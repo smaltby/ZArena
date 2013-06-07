@@ -53,34 +53,34 @@ import com.github.zarena.utils.Utils;
 public class ZArena extends JavaPlugin
 {
 	private static ZArena instance;
-	
+
 	private Economy economy;
 	private KillCounter kc;
-	
+
 	private GameHandler gameHandler; //Game handler
 	private PlayerOptionsHandler playerOptionsHandler;
-	
+
 	//Command executors
 	private final ZACommands zaCommands = new ZACommands();
 	private final ZSpawnCommands zSpawnCommands = new ZSpawnCommands();
 	private final DSpawnCommands dSpawnCommands = new DSpawnCommands();
 	private final ISpawnCommands iSpawnCommands = new ISpawnCommands();
 	private final ZSignCommands zSignCommands = new ZSignCommands();
-	
+
 	//Listeners
 	private EntityListener eListener;
 	private PlayerListener pListener;
 	private WorldListener wListener;
 	private BlockListener bListener;
-	
+
 	private boolean spoutEnabled = false;
-	
+
 	public void onEnable()
 	{
 		instance = this;
-		
+
 		CustomEntityLibrary.load(this);
-		
+
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		Plugin p = pm.getPlugin("Spout");
 		if(p != null)
@@ -88,7 +88,7 @@ public class ZArena extends JavaPlugin
 			spoutEnabled = true;
 			SpoutHandler.onEnable();
 		}
-		
+
 		loadConfiguration();	//Lots of stuff relies on the config, so load it early
 		//Load some stuff the game handler relies on
 		loadDefaults();
@@ -102,45 +102,45 @@ public class ZArena extends JavaPlugin
 		saveConfig();
 		loadDonatorInfo();
 		loadZSignCustomItems();
-		
+
 		gameHandler = new GameHandler(); //Create the Game Handler...needs to be done so early because stuff below rely on it
-		
+
 		//Load more stuff
 		loadEntityTypes();
 		loadGamemodeTypes();//Note: Has to be after loadEntityTypes
 		loadFiles();
-		
+
 		//Load the language file and intialize the messages
 		ChatHelper.loadLanguageFile();
 		Message.setMessages();
-		
+
 		//Load metrics
-		try 
+		try
 		{
 		    Metrics metrics = new Metrics(this);
 		    metrics.start();
-		} catch (IOException e) 
+		} catch (IOException e)
 		{/* Failed to submit the stats :-( */}
 		//Load Vault economy
 		setupEconomy();
-		
+
 		//Register command executors
 		getCommand("zarena").setExecutor(zaCommands);
 		getCommand("zspawn").setExecutor(zSpawnCommands);
 		getCommand("dspawn").setExecutor(dSpawnCommands);
 		getCommand("ispawn").setExecutor(iSpawnCommands);
 		getCommand("zsign").setExecutor(zSignCommands);
-		
+
 		//Register listeners
 		eListener = new EntityListener();
 		pListener = new PlayerListener();
 		wListener = new WorldListener();
-		bListener = new BlockListener();			
+		bListener = new BlockListener();
 		eListener.registerEvents(pm, this);
 		pListener.registerEvents(pm, this);
 		wListener.registerEvents(pm, this);
 		bListener.registerEvents(pm, this);
-		
+
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
 		{
 			@Override
@@ -150,7 +150,7 @@ public class ZArena extends JavaPlugin
 			}
 		}, 1L, 1L);
 	}
-	
+
 	public void onDisable()
 	{
 		GameStopEvent event = new GameStopEvent(GameStopCause.SERVER_STOP);
@@ -165,38 +165,38 @@ public class ZArena extends JavaPlugin
 		instance = null;
 		spoutEnabled = false;
 	}
-	
+
 	public Economy getEconomy()
 	{
 		return economy;
 	}
-	
+
 	public GameHandler getGameHandler()
 	{
 		return gameHandler;
 	}
-	
+
 	public PlayerOptionsHandler getPlayerOptionsHandler()
 	{
 		return playerOptionsHandler;
 	}
-	
+
 	public static ZArena getInstance()
 	{
 		return instance;
 	}
-	
+
 	public boolean isSpoutEnabled()
 	{
 		return spoutEnabled;
 	}
-	
+
 	private void loadConfiguration()
 	{
-		getConfig().options().copyDefaults(true); 
+		getConfig().options().copyDefaults(true);
 		saveConfig();
 	}
-	
+
 	private void loadDefaults()
 	{
 		FileConfiguration cfg = getConfig().options().configuration();
@@ -208,13 +208,13 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.SAVE_POSITION, true);
 		cfg.addDefault(Constants.GAME_WORLD, getServer().getWorlds().get(0).getName());
 		cfg.addDefault(Constants.GAME_LEAVE_WORLD, getServer().getWorlds().get(0).getName());
-		
+
 		List<Double> locXYZ = new ArrayList<Double>();
 		locXYZ.add(getServer().getWorlds().get(0).getSpawnLocation().getX());
 		locXYZ.add(getServer().getWorlds().get(0).getSpawnLocation().getY());
 		locXYZ.add(getServer().getWorlds().get(0).getSpawnLocation().getZ());
 		cfg.addDefault(Constants.GAME_LEAVE_LOCATION, locXYZ);
-		
+
 		cfg.addDefault(Constants.PLAYER_LIMIT, 12);
 		cfg.addDefault(Constants.QUANTITY_ADJUST, true);
 		cfg.addDefault(Constants.SAVE_ITEMS, true);
@@ -228,40 +228,43 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.DISABLE_JOIN_WITH_INV, false);
 		cfg.addDefault(Constants.DISABLE_NON_ZA, false);
 		cfg.addDefault(Constants.ENABLE_KILLCOUNTER, true);
-		cfg.addDefault(Constants.RESPAWN_EVERY, 3);
+		cfg.addDefault(Constants.RESPAWN_EVERY_WAVES, 3);
+		cfg.addDefault(Constants.RESPAWN_EVERY_TIME, 0);
+		cfg.addDefault(Constants.RESPAWN_REMINDER_DELAY, 30);
 		cfg.addDefault(Constants.SHOP_HEADER, "ZBuy");
 		cfg.addDefault(Constants.TOLL_HEADER, "ZPay");
 		cfg.addDefault(Constants.KILL_MONEY, 15);
 		cfg.addDefault(Constants.MONEY_LOST, .2);
 		cfg.addDefault(Constants.USE_VAULT, false);
+		cfg.addDefault(Constants.MOB_CAP, 200);
 		cfg.addDefault(Constants.WOLF_PERCENT_SPAWN, .05);
 		cfg.addDefault(Constants.SKELETON_PERCENT_SPAWN, .05);
 		cfg.addDefault(Constants.WOLF_WAVE_PERCENT_OCCUR, .3);
 		cfg.addDefault(Constants.SKELETON_WAVE_PERCENT_OCCUR, .2);
 		cfg.addDefault(Constants.WOLF_WAVE_PERCENT_SPAWN, .9);
 		cfg.addDefault(Constants.SKELETON_WAVE_PERCENT_SPAWN, .4);
-		
+
 		cfg.addDefault(Constants.ZOMBIE_HEALTH_FORMULA, "Logarithmic");
 		cfg.addDefault(Constants.ZOMBIE_HEALTH_LIMIT, 0);
-		
+
 		List<Double> zombieHealth = new ArrayList<Double>();
 		zombieHealth.add(3.0);
 		zombieHealth.add(0.4);
 		zombieHealth.add(8.0);
 		cfg.addDefault(Constants.ZOMBIE_HEALTH_COEFFICIENTS, zombieHealth);
-		
+
 		cfg.addDefault(Constants.ZOMBIE_QUANTITY_FORMULA, "Logistic");
 		cfg.addDefault(Constants.ZOMBIE_QUANTITY_LIMIT, 60);
-		
+
 		List<Double> zombieQuantity = new ArrayList<Double>();
 		zombieQuantity.add(1.5);
 		zombieQuantity.add(4.0);
 		zombieQuantity.add(9.0);
 		cfg.addDefault(Constants.ZOMBIE_QUANTITY_COEFFICIENTS, zombieQuantity);
-		
+
 		saveConfig();
 	}
-	
+
 	private void loadDonatorInfo()
 	{
 		ConfigurationSection startMoney = getConfig().getConfigurationSection(Constants.START_MONEY);
@@ -286,7 +289,7 @@ public class ZArena extends JavaPlugin
 		}
 		Permissions.registerDonatorPermNodes(getServer().getPluginManager());
 	}
-	
+
 	private void loadGamemodeTypes()
 	{
 		new File(Constants.GAMEMODES_FOLDER).mkdir();
@@ -322,7 +325,7 @@ public class ZArena extends JavaPlugin
 			}
 		}
 	}
-	
+
 	private void loadEntityTypes()
 	{
 		new File(Constants.ENTITIES_FOLDER).mkdir();
@@ -348,7 +351,7 @@ public class ZArena extends JavaPlugin
 			e.printStackTrace();
 		}
 		gameHandler.getWaveHandler().defaultZombieType = zombieType;
-		
+
 		File skeletonFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_SKELETON));
 		if(!skeletonFile.exists())
 		{
@@ -371,7 +374,7 @@ public class ZArena extends JavaPlugin
 			e.printStackTrace();
 		}
 		gameHandler.getWaveHandler().defaultSkeletonType = skeletonType;
-		
+
 		File wolfFile = new File(Constants.ENTITIES_FOLDER+File.separator+getConfig().getString(Constants.DEFAULT_WOLF));
 		if(!wolfFile.exists())
 		{
@@ -421,7 +424,7 @@ public class ZArena extends JavaPlugin
 					break;
 				case SKELETON:
 					entityConfig = new ZEntityTypeConfiguration(config);
-					gameHandler.getWaveHandler().skeletonTypes.add((ZEntityTypeConfiguration) entityConfig);
+					gameHandler.getWaveHandler().skeletonTypes.add(entityConfig);
 					break;
 				case WOLF:
 					gameHandler.getWaveHandler().wolfTypes.add(entityConfig);
@@ -431,18 +434,18 @@ public class ZArena extends JavaPlugin
 			}
 		}
 	}
-	
+
 	private void loadFiles()
 	{
 		gameHandler.loadLevelHandler();
 		if(spoutEnabled)
 			loadPlayerOptions();
 	}
-	
+
 	private void loadPlayerOptions()
 	{
 		File path = new File(Constants.OPTIONS_PATH);
-		
+
         try
         {
         	FileInputStream fis = new FileInputStream(path);
@@ -460,7 +463,7 @@ public class ZArena extends JavaPlugin
         	playerOptionsHandler = new PlayerOptionsHandler();
         }
 	}
-	
+
 	private void loadPluginFirstTime()
 	{
 		getConfig().set(Constants.START_MONEY+".Donator1.permission name", "zarena.donator1");
@@ -475,13 +478,13 @@ public class ZArena extends JavaPlugin
 		getConfig().set(Constants.DEFAULT_SKELETON, "NormalSkeleton.yml");
 		getConfig().set(Constants.DEFAULT_WOLF, "NormalWolf.yml");
 		getConfig().set(Constants.DEFAULT_GAMEMODE, "Normal.yml");
-		
+
 		List<String> gamemodeFileNameList = new ArrayList<String>();
 		gamemodeFileNameList.add("Hardcore.yml");
 		gamemodeFileNameList.add("Apocalypse.yml");
 		gamemodeFileNameList.add("NoBuying.yml");
 		getConfig().set(Constants.GAMEMODES, gamemodeFileNameList);
-		
+
 		List<String> entityFileNameList = new ArrayList<String>();
 		entityFileNameList.add("FastZombie.yml");
 		entityFileNameList.add("StrongZombie.yml");
@@ -493,7 +496,7 @@ public class ZArena extends JavaPlugin
 		entityFileNameList.add("ZombiePigman.yml");
 		entityFileNameList.add("ZombieVillager.yml");
 		getConfig().set(Constants.ENTITIES, entityFileNameList);
-		
+
 		List<String> startItems = new ArrayList<String>();
 		startItems.add("wood axe");
 		getConfig().set(Constants.START_ITEMS, startItems);
@@ -517,7 +520,7 @@ public class ZArena extends JavaPlugin
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "Hardcore.yml");
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "NoBuying.yml");
 			Utils.extractFromJar(new File(Constants.GAMEMODES_FOLDER), "Normal.yml");
-			
+
 			Utils.extractFromJar(new File(Constants.PLUGIN_FOLDER), "language.yml");
 		} catch (IOException e)
 		{
@@ -533,13 +536,13 @@ public class ZArena extends JavaPlugin
 		for(String customItemString : customItems.getKeys(false))
 		{
 			ConfigurationSection customItem = customItems.getConfigurationSection(customItemString);
-			if(!customItem.contains("type")) //The type is a necessary paramater of the custom item. 
+			if(!customItem.contains("type")) //The type is a necessary paramater of the custom item.
 				continue;
 			int type = customItem.getInt("type");
 			int amount = customItem.getInt("amount", 1);
 			short damageValue = (short) customItem.getInt("damage value", 0);
 			byte id = (byte) customItem.getInt("id", 0);
-			
+
 			String[] name = new String[2];
 			String configName = customItem.getName();
 			int spaceIndex = configName.indexOf(" ");
@@ -553,7 +556,7 @@ public class ZArena extends JavaPlugin
 				name[0] = configName.substring(0, spaceIndex);
 				name[1] = configName.substring(spaceIndex + 1);
 			}
-			
+
 			Map<Enchantment, Integer> enchantments = new HashMap<Enchantment, Integer>();
 			for(String enchantName : customItem.getStringList("enchantments"))
 			{
@@ -562,11 +565,11 @@ public class ZArena extends JavaPlugin
 				int level = (args.length > 0) ? Utils.parseInt(args[0], 1) : 1;
 				enchantments.put(enchantment, level);
 			}
-			
+
 			new ZSignCustomItem(name, type, amount, damageValue, id, enchantments); //Creation of new instances of this object automatically add the instance to a list of them
 		}
 	}
-	
+
 	private int tick;
 	private void onTick()
 	{
@@ -577,18 +580,18 @@ public class ZArena extends JavaPlugin
 		}
 		tick++;
 	}
-	
+
 	private void saveFiles()
 	{
 		gameHandler.saveLevelHandler(true);
 		if(spoutEnabled)
 			savePlayerOptions();
 	}
-	
+
 	private void savePlayerOptions()
 	{
 		File path = new File(Constants.OPTIONS_PATH);
-        
+
         try
         {
         	FileOutputStream fos = new FileOutputStream(path);
@@ -605,7 +608,7 @@ public class ZArena extends JavaPlugin
         	log(Level.WARNING, "ZArena: Error saving the PlayerOptions database.");
         }
 	}
-	
+
 	private boolean setupEconomy()
     {
         RegisteredServiceProvider<Economy> economyProvider = getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
@@ -615,12 +618,12 @@ public class ZArena extends JavaPlugin
 
         return (economy != null);
     }
-	
+
 	public static void log(Level level, String msg)
 	{
 		getInstance().getLogger().log(level, msg);
 	}
-	
+
 	public static void log(String msg)
 	{
 		log(Level.INFO, msg);

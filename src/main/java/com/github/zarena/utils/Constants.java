@@ -5,7 +5,7 @@ import java.io.File;
 public class Constants
 {
 	public static final double TICK_LENGTH = 0.05;
-	
+
 	public static final String FIRST_TIME = "First Time Plugin Load";
 	private static final String ZOMBIE_QUANTITY = "Zombies.Quantity";
 	public static final String ZOMBIE_QUANTITY_COEFFICIENTS = ZOMBIE_QUANTITY+".Coefficients";
@@ -37,9 +37,12 @@ public class Constants
 	public static final String QUANTITY_ADJUST = "Options.Adjust Quantity Based on Player Amount";
 	public static final String SAVE_ITEMS = "Options.Save Items";
 	public static final String START_ITEMS = "Options.Start Items";
-	public static final String RESPAWN_EVERY = "Options.Respawn Every X Waves (0 to disable)";
+	public static final String RESPAWN_EVERY_WAVES = "Options.Respawn Every X Waves (0 to disable)";
+	public static final String RESPAWN_EVERY_TIME = "Options.Respawn Every X Minutes (0 to disable)";
+	public static final String RESPAWN_REMINDER_DELAY = "Options.Respawn Reminder Delay (Seconds)";
 	public static final String SHOP_HEADER = "Options.Shop Sign Header";
 	public static final String TOLL_HEADER = "Options.Toll Sign Header";
+	public static final String MOB_CAP = "Entities.Mob Cap";
 	public static final String DEFAULT_ZOMBIE = "Entities.Default Entity File Name";
 	public static final String DEFAULT_SKELETON = "Entities.Default Skeleton File Name";
 	public static final String DEFAULT_WOLF = "Entities.Default Wolf File Name";
@@ -58,7 +61,7 @@ public class Constants
 	public static final String CUSTOM_ITEMS = "SignCustomItems";
 	public static final String START_MONEY = "Donator.Start Money";
 	public static final String EXTRA_VOTES = "Donator.Extra Votes";
-	
+
 	public static final String PLUGIN_FOLDER = "plugins"+File.separator+"ZArena";
 	public static final String ENTITIES_FOLDER = PLUGIN_FOLDER+File.separator+"entities";
 	public static final String GAMEMODES_FOLDER = PLUGIN_FOLDER+File.separator+"gamemodes";

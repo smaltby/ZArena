@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.Stack;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
@@ -30,7 +31,7 @@ public class WaveHandler implements Runnable
 {
 	private ZArena plugin;
 	private GameHandler gameHandler;
-	
+
 	private double timeUntilNextWave;
 	private double zombieSpawnChance;
 	private Random rnd;
@@ -43,14 +44,14 @@ public class WaveHandler implements Runnable
 	private boolean skeletonWave;
 	private int lastWolfWave;
 	private int lastSkeletonWave;
-	
+
 	ZEntityType defaultZombieType;
 	ZEntityType defaultSkeletonType;
 	ZEntityType defaultWolfType;
 	List<ZEntityType> zombieTypes = new ArrayList<ZEntityType>();
 	List<ZEntityType> skeletonTypes = new ArrayList<ZEntityType>();
 	List<ZEntityType> wolfTypes = new ArrayList<ZEntityType>();
-	
+
 	public WaveHandler(GameHandler instance)
 	{
 		plugin = ZArena.getInstance();
@@ -63,7 +64,7 @@ public class WaveHandler implements Runnable
 		lastSkeletonWave = 0;
 		lastWolfWave = 0;
 	}
-	
+
 	private double calcChance(double priority, int wave)
 	{
 		double reduce = 2 - .75 / (1 + Math.pow(Math.E, -(wave/3 - 3)));
@@ -77,7 +78,7 @@ public class WaveHandler implements Runnable
 		double inbetween = Math.ceil(priority) - priority;
 		return chance * (1 - inbetween) + prevChance * inbetween;
 	}
-	
+
 	/**
 	 * Calculates function based on configuration settings
 	 * @return output gotten from function
@@ -109,7 +110,7 @@ public class WaveHandler implements Runnable
 			return calcQuadratic(x, coefficients);
 		}
 	}
-	
+
 	/**
 	 * Note, not a true logarithmic formula. It has been modified to be realistically useful for the plugin.
 	 */
@@ -123,7 +124,7 @@ public class WaveHandler implements Runnable
 		double answer = (Math.log(x)) / Math.log(base) + b * x + c;
 		return (int) Math.round(answer);
 	}
-	
+
 	/**
 	 * Note, not a true logistic formula. It has been modified to be realistically useful for the plugin.
 	 */
@@ -138,7 +139,7 @@ public class WaveHandler implements Runnable
 		double answer = limit / (1 + Math.pow(Math.E, ((-1*a)*(x - 8)))) - functionZero + b*x + c;
 		return (int) Math.round(answer);
 	}
-	
+
 	private int calcQuadratic(int x, List<Double> coefficients)
 	{
 		if (coefficients == null || coefficients.size() != 3) return 0;
@@ -148,8 +149,8 @@ public class WaveHandler implements Runnable
 		double answer = Math.pow(a*x, 2) + b*x + c;
 		return (int) Math.round(answer);
 	}
-	
-	
+
+
 	private boolean checkNextWave()
 	{
 		Gamemode gm = gameHandler.getGameMode();
@@ -157,7 +158,7 @@ public class WaveHandler implements Runnable
 			return false;
 		return toSpawn <= 0 && entities.isEmpty() && timeUntilNextWave <= 0;
 	}
-	
+
 	private CustomEntityWrapper chooseEntity(int wave, List<ZEntityType> types, List<ZEntityType> defaultTypes)
 	{
 		//This mass of code randomly selects a list of entities to spawn
@@ -176,7 +177,7 @@ public class WaveHandler implements Runnable
 		}
 		if(possibleTypes.isEmpty())
 			possibleTypes.add(defaultTypes.get(rnd.nextInt(defaultTypes.size())));
-		
+
 		//Randomly select a type from all of the possible types to be spawned
 		ZEntityType type = possibleTypes.get(rnd.nextInt(possibleTypes.size()));
 
@@ -212,7 +213,7 @@ public class WaveHandler implements Runnable
 		}
 		return customEnt;
 	}
-	
+
 	/**
 	 * Get all entity types, including default types.
 	 * @return	list of ZEntityType instances
@@ -226,7 +227,7 @@ public class WaveHandler implements Runnable
 		all.addAll(getZombieTypes());
 		return all;
 	}
-	
+
 	/**
 	 * Get the the special apocalypse wave, which is used to determine the types of zombies that spawn during the
 	 * technically waveless apocalypse mode.
@@ -236,7 +237,7 @@ public class WaveHandler implements Runnable
 	{
 		return (int) Math.ceil((Math.log(Math.pow((tickCount+1), 10)) + ((tickCount+1)/40))/30);	//Logarithmic function
 	}
-	
+
 	/**
 	 * Get the default skeleton type when it is not override by the current gamemode
 	 * @return	type
@@ -245,7 +246,7 @@ public class WaveHandler implements Runnable
 	{
 		return defaultSkeletonType;
 	}
-	
+
 	/**
 	 * Get the default wolf type when it is not override by the current gamemode
 	 * @return	type
@@ -254,7 +255,7 @@ public class WaveHandler implements Runnable
 	{
 		return defaultWolfType;
 	}
-	
+
 	/**
 	 * Get the default zombie type when it is not override by the current gamemode
 	 * @return	type
@@ -263,27 +264,27 @@ public class WaveHandler implements Runnable
 	{
 		return defaultZombieType;
 	}
-	
+
 	public List<CustomEntityWrapper> getEntites()
 	{
 		return entities;
 	}
-	
+
 	public int getGameLength()
 	{
 		return tickCount / 20;
 	}
-	
+
 	public int getRemainingZombies()
 	{
 		return entities.size() + toSpawn;
 	}
-	
+
 	public double getSpawnChance()
 	{
 		return zombieSpawnChance;
 	}
-	
+
 	/**
 	 * Get a list of all skeleton types that may be chosen when a skeleton spawns, assuming the current gamemode doesn't block it.
 	 * Includes default type.
@@ -295,7 +296,7 @@ public class WaveHandler implements Runnable
 		types.add(defaultSkeletonType);
 		return types;
 	}
-	
+
 	/**
 	 * Get a list of all wolf types that may be chosen when a wolf spawns, assuming the current gamemode doesn't block it.
 	 * Includes default type.
@@ -307,7 +308,7 @@ public class WaveHandler implements Runnable
 		types.add(defaultWolfType);
 		return types;
 	}
-	
+
 	/**
 	 * Get a list of all zombie types that may be chosen when a zombie spawns, assuming the current gamemode doesn't block it.
 	 * Includes default type.
@@ -319,12 +320,12 @@ public class WaveHandler implements Runnable
 		types.add(defaultZombieType);
 		return types;
 	}
-	
+
 	public int getWave()
 	{
 		return wave;
 	}
-	
+
 	private void incrementWave()
 	{
 		wave++;
@@ -332,7 +333,7 @@ public class WaveHandler implements Runnable
 		WaveChangeEvent event = new WaveChangeEvent(wave - 1, wave);
 		Bukkit.getPluginManager().callEvent(event);
 	}
-	
+
 	public void resetWave()
 	{
 		wave = 1;
@@ -407,9 +408,39 @@ public class WaveHandler implements Runnable
 				if(plugin.getConfig().getBoolean(Constants.AUTORUN))
 					gameHandler.getLevelVoter().startVoting();
 			}
+			//If the config has it so players respawn after a set amount of minutes...then respawn players after a
+			//set amount of minutes!
+			if(tickCount % 20 == 0)
+			{
+				if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) > 0)
+				{
+					for(PlayerStats stats : gameHandler.getPlayerStats().values())
+					{
+						if(!stats.isAlive())
+						{
+							if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) * 60)
+								gameHandler.respawnPlayer(stats.getPlayer());
+							if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) * 60)
+								gameHandler.respawnPlayer(stats.getPlayer());
+							else if(stats.getTimeSinceDeath() % plugin.getConfig().getInt(Constants.RESPAWN_REMINDER_DELAY) == 0)
+							{
+								int secondsUntilSpawn = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) * 60 - stats.getTimeSinceDeath();
+								int minutesUntilSpawn = (int)TimeUnit.SECONDS.toMinutes(secondsUntilSpawn);
+								secondsUntilSpawn = secondsUntilSpawn % 60;
+								String message = "";
+								if(minutesUntilSpawn != 0) message += minutesUntilSpawn + "min ";
+								if(secondsUntilSpawn != 0) message += secondsUntilSpawn + "sec ";
+								if(!message.isEmpty())
+									ChatHelper.sendMessage(Message.RESPAWN_IN_TIME.formatMessage(stats.getPlayer().getName(),
+										message), stats.getPlayer());
+							}
+						}
+					}
+				}
+			}
 		}
 	}
-	
+
 	/**
 	 * Sets the wave manually to a specified number. May cause unforseen errors that aren't caused by using the
 	 * internal increment wave method.
@@ -442,17 +473,18 @@ public class WaveHandler implements Runnable
 			ChatHelper.broadcastMessage(Message.WAVE_START_IN.formatMessage(modifiedWave, timeUntilNextWave), gameHandler.getBroadcastPlayers());
 		}
 		//Calculate the waves settings
-		toSpawn = calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), modifiedWave, plugin.getConfig().getInt(Constants.ZOMBIE_QUANTITY_LIMIT), 
+		toSpawn = calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), modifiedWave, plugin.getConfig().getInt(Constants.ZOMBIE_QUANTITY_LIMIT),
 				plugin.getConfig().getDoubleList(Constants.ZOMBIE_QUANTITY_COEFFICIENTS));
-		health = calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_HEALTH_FORMULA), modifiedWave, plugin.getConfig().getInt(Constants.ZOMBIE_HEALTH_LIMIT), 
+		health = calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_HEALTH_FORMULA), modifiedWave, plugin.getConfig().getInt(Constants.ZOMBIE_HEALTH_LIMIT),
 				plugin.getConfig().getDoubleList(Constants.ZOMBIE_HEALTH_COEFFICIENTS));
 		health *= gm.getHealthModifier();
 		toSpawn *= gm.getZombieAmountModifier();
 		if(plugin.getConfig().getBoolean(Constants.QUANTITY_ADJUST))
 			toSpawn *= 1.5/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-3) + .25);
-		
+
 		zombieSpawnChance = 0.15 / (1 + Math.pow(Math.E, ((double) -1/4 * (modifiedWave / 2))));	//Logistic function
 
+		//Do what's required when a new waves occurs (which never happens in apocaylpse mode)
 		if(!gm.isApocalypse() && newWave)
 		{
 			lastSkeletonWave++;
@@ -476,24 +508,31 @@ public class WaveHandler implements Runnable
 					ChatHelper.broadcastMessage(Message.SKELETON_WAVE_APPROACHING.formatMessage());
 				}
 			}
-			if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY) > 0)
+			//Respawn players, or inform them of when they will respawn, if applicable
+			if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY_WAVES) > 0)
 			{
 				for(PlayerStats stats : gameHandler.getPlayerStats().values())
 				{
 					if(!stats.isAlive())
 					{
-						if(stats.getWavesSinceDeath() + 1 >= plugin.getConfig().getInt(Constants.RESPAWN_EVERY))
+						int respawnEveryWaves = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_WAVES);
+						if(stats.getWavesSinceDeath() >= respawnEveryWaves)
 							gameHandler.respawnPlayer(stats.getPlayer());
+						else
+						{
+							ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES.formatMessage(stats.getPlayer().getName(),
+										respawnEveryWaves - stats.getWavesSinceDeath()), stats.getPlayer());
+						}
 					}
 				}
 			}
 		}
-		
+
 		//Modify settings based on gamemode
 		if(gm.isApocalypse())
 			zombieSpawnChance /= 2;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
 	}
-	
+
 	/**
 	 * Set the wave settings for this particular wave.
 	 */
@@ -501,7 +540,7 @@ public class WaveHandler implements Runnable
 	{
 		this.setWaveSettings(true);
 	}
-	
+
 	/**
 	 * Decides which type of entity should be spawned, and spawns it.
 	 */
@@ -513,13 +552,15 @@ public class WaveHandler implements Runnable
 			return;
 		if(rnd.nextDouble() > zombieSpawnChance)
 			return;
-		
+		if(entities.size() >= plugin.getConfig().getInt(Constants.MOB_CAP))
+			return;
+
 		//Get the modified wave, based on gamemode
 		int modifiedWave = wave;
 		if(gm.isApocalypse())
 			modifiedWave = getApocalypseWave();
 		modifiedWave *= gm.getDifficultyModifier();
-		
+
 		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
 //		List<ZEntityType> defaultSkeletons = (gm.getDefaultSkeletons().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultSkeletonType)) : gm.getDefaultSkeletons();
 //		List<ZEntityType> defaultWolves = (gm.getDefaultWolves().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultWolfType)) : gm.getDefaultWolves();
@@ -538,10 +579,10 @@ public class WaveHandler implements Runnable
 			else
 				customEnt = chooseEntity(modifiedWave, zombieTypes, gm.getDefaultZombies());
 		}
-		
+
 		if(customEnt == null)	//The chunk might not be loaded, or the event might have been cancelled
 			return;
-			
+
 		//Set the entities health, decrement the toSpawn count, and add the entity to the list of entities.
 		//Note that the entity was already spawned in one of the chooseEntity methods above.
 		customEnt.setMaxHealth((int) (health * (((ZEntityType) customEnt.getType()).getHealthModifier())));
@@ -563,7 +604,7 @@ public class WaveHandler implements Runnable
 				p.setHealth(20);
 		}
 	}
-	
+
 	/**
 	 * Checks to see if any entities have died.
 	 */

@@ -131,6 +131,36 @@ Game Full: "<dark_purple>The game is currently full."
 #POINTS - Current points
 Send Stats: "<dark_gray>Money: <gray>%MONEY%<dark_gray> Points: <gray>%POINTS%"
 
+#Sent when the player is being told how long it is until they respawn.
+#PLAYER - The player
+#TIME - Time until the player respawns. Time units included. For example: 2 min 30 sec
+Respawn In Time: "<dark_gray>You will respawn in %TIME%."
+
+#Sent when the player joins during the middle of the game, and is being told how long it is until they respawn.
+#PLAYER - The player
+#TIME - Time until the player respawns. Time units included. For example: 2 min 30 sec
+Respawn In Time After Join : "<dark_gray>Welcome, %PLAYER%, you will respawn in %TIME%."
+
+#Sent when the player dies during the middle of the game, and is being told how long it is until they respawn.
+#PLAYER - The player
+#TIME - Time until the player respawns. Time units included. For example: 2 min 30 sec
+Respawn In Time After Death: "<dark_gray>You have died, and will respawn in %TIME%."
+
+#Sent when the player is being told how long in waves it is until they respawn.
+#PLAYER - The player
+#WAVES - Time until the player respawns. Time units included. For example: 2 min 30 sec
+Respawn In Waves: "<dark_gray>You will respawn in %WAVES% waves."
+
+#Sent when the player joins during the middle of the game, and is being told how long it is in waves until they respawn.
+#PLAYER - The player
+#WAVES - Time until the player respawns. Time units included. For example: 2 min 30 sec
+Respawn In Waves After Join: "<dark_gray>Welcome, %PLAYER%, you will respawn in %WAVES% waves."
+
+#Sent when the player dies during the middle of the game, and is being told how long it is in waves until they respawn.
+#PLAYER - The player
+#WAVES - Time until the player respawns. Time units included. For example: 2 min 30 sec
+Respawn In Waves After Death: "<dark_gray>You have died, and will respawn in %WAVES% waves."
+
 #The following values are messages sent in response to commands
 #-----------------------------------------------------------------------------------
 
@@ -336,15 +366,15 @@ Vote Must Range From 1 To 3: "<dark_aqua>Vote must be an integer ranging from 1 
 Vote Successful: "<red>Thank you for voting!"
 
 #Called when a player's kills are set, and the argument isn't greater or equal to 0.
-Set Kills Must Be Greater Or Equal To 0: "<red>The amount to set kills to must be a valid 
+Set Kills Must Be Greater Or Equal To 0: "<red>The amount to set kills to must be a valid
 integer greater than or equal to 0"
 
 #Called when a player's kills are added to, and the argument isn't greater than 0.
-Add Kills Must Be Greater Than 0: "<red>The amount to add kills to must be a valid integer 
+Add Kills Must Be Greater Than 0: "<red>The amount to add kills to must be a valid integer
 greater than 0"
 
 #Called when a player's kills are subtracted from, and the argument isn't greater than 0.
-Sub Kills Must Be Greater Than 0: "<red>The amount to sub kills from must be a valid 
+Sub Kills Must Be Greater Than 0: "<red>The amount to sub kills from must be a valid
 integer greater than 0"
 
 #Called when kills are set, either by directly setting them, adding to them, or

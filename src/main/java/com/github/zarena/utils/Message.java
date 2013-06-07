@@ -1,122 +1,134 @@
 package com.github.zarena.utils;
 
-import java.util.logging.Level;
-
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.ChatColor;
 
 import com.github.zarena.ZArena;
 
+import java.io.File;
+import java.util.logging.Level;
+import java.util.Map;
+import java.util.HashMap;
+
 public enum Message
 {
-	GAME_END_MESSAGE("WAVE"),
-	GAME_END_APOCALYPSE_MESSAGE("TIME"),
-	VOTE_START(),
-	VOTE_OPTION("NUM", "MAP", "GAMEMODE"),
-	VOTE_ENDS_IN("TIME"),
-	VOTES_FOR_EACH_MAP("NUM", "VOTES"),
-	MAP_CHOSEN("MAP", "GAMEMODE"),
-	WAVE_START_IN("WAVE", "TIME"),
-	WOLF_WAVE_APPROACHING(),
-	SKELETON_WAVE_APPROACHING(),
-	WAVE_START("WAVE", "NUM", "HEALTH"),
-	NO_ZOMBIE_SPAWNS(),
-	
-	BONUS_MONEY_KILL("MODIFIER", "MOB"),
-	ASSIST_KILL("MODIFIER", "MOB"),
-	ITEM_DROP(),
-	SIGN_REMOVE(),
-	NO_BUY(),
-	EXTRA_COST("MODIFIER"),
-	INSUFFICIENT_FUNDS(),
-	PURCHASE_SUCCESSFUL(),
-	SIGN_PLACE_WITH_NO_LEVEL(),
-	SIGN_PLACE_FAILURE(),
-	SIGN_PLACE_SUCCESS(),
-	GAME_FULL(),
-	SEND_STATS("MONEY", "POINTS"),
-	
-	INSUFFICIENT_PERMISSIONS(),
-	NOT_ALLOWED_WHILE_RUNNING(),
-	CREATED_NEW_LEVEL("LEVEL"),
-	NO_LEVEL_LOADED(),
-	CURRENT_GAMEMODE("GAMEMODE"),
-	INVENTORY_MUST_BE_CLEAR(),
-	ZSPAWN_NOT_FOUND(),
-	JUMPED_TO_ZSPAWN("ZSPAWN"),
-	LEVEL_LIST_HEADER(),
-	LEVEL_LIST_ITEM("LEVEL"),
-	LEAVE_GAME(),
-	PLAYERS_ALIVE_HEADER(),
-	PLAYERS_ALIVE_ITEM("PLAYER"),
-	PLAYERS_IN_SESSION_HEADER(),
-	PLAYERS_IN_SESSION_ITEM("PLAYER"),
-	ZSPAWNS_LIST_HEADER(),
-	ZSPAWNS_LIST_ITEM("ZSPAWN"),
-	LEVEL_NOT_FOUND(),
-	LEVEL_LOADED("LEVEL"),
-	BOSS_SPAWN_SET(),
-	BOSS_SPAWN_UNSET(),
-	BOSS_SPAWN_NOT_FOUND(),
-	SIGN_NOT_FOUND(),
-	SIGN_MARKED_AS_USEABLE_ONCE(),
-	SIGN_UNMARKED_AS_USEABLE_ONCE(),
-	SIGN_MARKED_AS_OPPOSITE(),
-	SIGN_UNMARKED_AS_OPPOSITE(),
-	SIGN_MARKED_AS_NON_RESETTING(),
-	SIGN_UNMARKED_AS_NON_RESETTING(),
-	FLAG_NOT_FOUND("FLAG"),
-	ZSPAWN_MARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE(),
-	ZSPAWN_UNMARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE(),
-	SPOUT_NOT_ENABLED(),
-	SPOUT_CLIENT_REQUIRED(),
-	CONFIG_RELOADED(),
-	LEVEL_REMOVED("LEVEL"),
-	ZSPAWN_REMOVED(),
-	LEVELS_SAVED(),
-	GAME_MUST_BE_RUNNING(),
-	INFO_ITEM("NAME", "VALUE"),
-	PLAYER_NOT_FOUND(),
-	PLAYER_NOT_IN_GAME(),
-	ARG4_MUST_BE_TRUE_OR_FALSE(),
-	SET_PLAYERS_ALIVE_STATUS(),
-	DSPAWN_SET(),
-	GAMEMODE_NOT_FOUND(),
-	ISPAWN_SET(),
-	LEAVE_LOCATION_SET("LOCATION"),
-	WAVE_MUST_BE_INTEGER(),
-	WAVE_SET(),
-	ZSPAWN_SET("ZSPAWN"),
-	GAME_STATS_HEADER(),
-	GAME_STATS_ITEM("PLAYER", "MONEY", "POINTS"),
-	GAME_ALREADY_RUNNING(),
-	GAME_STARTED(),
-	GAME_STOPPED(),
-	VOTING_NOT_TAKING_PLACE(),
-	MUST_BE_INGAME_TO_VOTE(),
-	VOTE_MUST_BE_VALID_INTEGER(),
-	VOTE_MUST_RANGE_FROM1_TO3(),
-	VOTE_SUCCESSFUL(),
-	SET_KILLS_MUST_BE_GREATER_OR_EQUAL_TO0(),
-	ADD_KILLS_MUST_BE_GREATER_THAN0(),
-	SUB_KILLS_MUST_BE_GREATER_THAN0(),
-	KILLS_SET("PLAYER", "NUM"),
-	TOP_KILLERS_HEADER(),
-	TOP_KILLERS_ITEM("NUM", "PLAYER", "KILLS"),
-	PLAYER_KILLS_INFO("PLAYER", "KILLS", "RANK", "TOTAL");
-	
+	GAME_END_MESSAGE("Game End Message", "WAVE"),
+	GAME_END_APOCALYPSE_MESSAGE("Game End Apocalypse Message", "TIME"),
+	VOTE_START("Vote Start"),
+	VOTE_OPTION("Vote Option", "NUM", "MAP", "GAMEMODE"),
+	VOTE_ENDS_IN("Vote Ends In", "TIME"),
+	VOTES_FOR_EACH_MAP("Votes For Each Map", "NUM", "VOTES"),
+	MAP_CHOSEN("Map Chosen", "MAP", "GAMEMODE"),
+	WAVE_START_IN("Wave Start In", "WAVE", "TIME"),
+	WOLF_WAVE_APPROACHING("Wolf Wave Approaching"),
+	SKELETON_WAVE_APPROACHING("Skeleton Wave Approaching"),
+	WAVE_START("Wave Start", "WAVE", "NUM", "HEALTH"),
+	NO_ZOMBIE_SPAWNS("No Zombie Spawns"),
+
+	BONUS_MONEY_KILL("Bonus Money Kill", "MODIFIER", "MOB"),
+	ASSIST_KILL("Assist Kill", "MODIFIER", "MOB"),
+	ITEM_DROP("Item Drop"),
+	SIGN_REMOVE("Sign Remove"),
+	NO_BUY("No Buy"),
+	EXTRA_COST("Extra Cost", "MODIFIER"),
+	INSUFFICIENT_FUNDS("Insufficient Funds"),
+	PURCHASE_SUCCESSFUL("Purchase Successful"),
+	SIGN_PLACE_WITH_NO_LEVEL("Sign Place With No Level"),
+	SIGN_PLACE_FAILURE("Sign Place Failure"),
+	SIGN_PLACE_SUCCESS("Sign Place Success"),
+	GAME_FULL("Game Full"),
+	SEND_STATS("Send Stats", "MONEY", "POINTS"),
+	RESPAWN_IN_TIME("Respawn In Time", "PLAYER", "TIME"),
+	RESPAWN_IN_TIME_AFTER_JOIN("Respawn In Time After Join", "PLAYER", "TIME"),
+	RESPAWN_IN_TIME_AFTER_DEATH("Respawn In Time After Death", "PLAYER", "TIME"),
+	RESPAWN_IN_WAVES("Respawn In Waves", "PLAYER", "TIME"),
+	RESPAWN_IN_WAVES_AFTER_JOIN("Respawn In Waves After Join", "PLAYER", "WAVES"),
+	RESPAWN_IN_WAVES_AFTER_DEATH("Respawn In Waves After Death", "PLAYER", "WAVES"),
+
+	INSUFFICIENT_PERMISSIONS("Insufficient Permissions"),
+	NOT_ALLOWED_WHILE_RUNNING("Not Allowed While Running"),
+	CREATED_NEW_LEVEL("Created New Level", "LEVEL"),
+	NO_LEVEL_LOADED("No Level Loaded"),
+	CURRENT_GAMEMODE("Current Gamemode", "GAMEMODE"),
+	INVENTORY_MUST_BE_CLEAR("Inventory Must Be Clear"),
+	ZSPAWN_NOT_FOUND("ZSpawn Not Found"),
+	JUMPED_TO_ZSPAWN("Jumped To ZSpawn", "ZSPAWN"),
+	LEVEL_LIST_HEADER("Level List Header"),
+	LEVEL_LIST_ITEM("Level List Item", "LEVEL"),
+	LEAVE_GAME("Leave Game"),
+	PLAYERS_ALIVE_HEADER("Players Alive Header"),
+	PLAYERS_ALIVE_ITEM("Players Alive Item", "PLAYER"),
+	PLAYERS_IN_SESSION_HEADER("Players In Session Header"),
+	PLAYERS_IN_SESSION_ITEM("Players In Session Item", "PLAYER"),
+	ZSPAWNS_LIST_HEADER("ZSpawns List Header"),
+	ZSPAWNS_LIST_ITEM("ZSpawns List Item", "ZSPAWN"),
+	LEVEL_NOT_FOUND("Level Not Found"),
+	LEVEL_LOADED("Level Loaded", "LEVEL"),
+	BOSS_SPAWN_SET("Boss Spawn Set"),
+	BOSS_SPAWN_UNSET("Boss Spawn Unset"),
+	BOSS_SPAWN_NOT_FOUND("Boss Spawn Not Found"),
+	SIGN_NOT_FOUND("Sign Not Found"),
+	SIGN_MARKED_AS_USEABLE_ONCE("Sign Marked As Useable Once"),
+	SIGN_UNMARKED_AS_USEABLE_ONCE("Sign Unmarked As Useable Once"),
+	SIGN_MARKED_AS_OPPOSITE("Sign Marked As Opposite"),
+	SIGN_UNMARKED_AS_OPPOSITE("Sign Unmarked As Opposite"),
+	SIGN_MARKED_AS_NON_RESETTING("Sign Marked As Non Resetting"),
+	SIGN_UNMARKED_AS_NON_RESETTING("Sign Unmarked As Non Resetting"),
+	FLAG_NOT_FOUND("Flag Not Found", "FLAG"),
+	ZSPAWN_MARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE("ZSpawn Marked As Active When Sign Active"),
+	ZSPAWN_UNMARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE("ZSpawn Unmarked As Active When Sign Active"),
+	SPOUT_NOT_ENABLED("Spout Not Enabled"),
+	SPOUT_CLIENT_REQUIRED("Spout Client Required"),
+	CONFIG_RELOADED("Config Reloaded"),
+	LEVEL_REMOVED("Level Removed", "LEVEL"),
+	ZSPAWN_REMOVED("ZSpawn Removed"),
+	LEVELS_SAVED("Levels Saved"),
+	GAME_MUST_BE_RUNNING("Game Must Be Running"),
+	INFO_ITEM("Info Item", "NAME", "VALUE"),
+	PLAYER_NOT_FOUND("Player Not Found"),
+	PLAYER_NOT_IN_GAME("Player Not In Game"),
+	ARG4_MUST_BE_TRUE_OR_FALSE("Arg 4 Must Be True Or False"),
+	SET_PLAYERS_ALIVE_STATUS("Set Players Alive Status"),
+	DSPAWN_SET("DSpawn Set"),
+	GAMEMODE_NOT_FOUND("Gamemode Not Found"),
+	ISPAWN_SET("ISpawn Set"),
+	LEAVE_LOCATION_SET("Leave Location Set", "LOCATION"),
+	WAVE_MUST_BE_INTEGER("Wave Must Be Integer"),
+	WAVE_SET("Wave Set"),
+	ZSPAWN_SET("ZSpawn Set", "ZSPAWN"),
+	GAME_STATS_HEADER("Game Stats Header"),
+	GAME_STATS_ITEM("Game Stats Item", "PLAYER", "MONEY", "POINTS"),
+	GAME_ALREADY_RUNNING("Game Already Running"),
+	GAME_STARTED("Game Started"),
+	GAME_STOPPED("Game Stopped"),
+	VOTING_NOT_TAKING_PLACE("Voting Not Taking Place"),
+	MUST_BE_INGAME_TO_VOTE("Must Be Ingame To Vote"),
+	VOTE_MUST_BE_VALID_INTEGER("Vote Must Be Valid Integer"),
+	VOTE_MUST_RANGE_FROM1_TO3("Vote Must Range From 1 To 3"),
+	VOTE_SUCCESSFUL("Vote Successful"),
+	SET_KILLS_MUST_BE_GREATER_OR_EQUAL_TO0("Set Kills Must Be Greater Or Equal To 0"),
+	ADD_KILLS_MUST_BE_GREATER_THAN0("Add Kills Must Be Greater Than 0"),
+	SUB_KILLS_MUST_BE_GREATER_THAN0("Sub Kills Must Be Greater Than 0"),
+	KILLS_SET("Kills Set", "PLAYER", "NUM"),
+	TOP_KILLERS_HEADER("Top Killers Header"),
+	TOP_KILLERS_ITEM("Top Killers Item", "NUM", "PLAYER", "KILLS"),
+	PLAYER_KILLS_INFO("Player Kills Info", "PLAYER", "KILLS", "RANK", "TOTAL");
+
+	String name;
 	String message = "";
 	String[] params;
-	
-	Message(String... params)
+
+	Message(String name, String... params)
 	{
+		this.name = name;
 		this.params = params;
 	}
-	
+
 	public String[] getParams()
 	{
 		return params;
 	}
-	
+
 	/**
 	 * Get the unformatted message. To get the formatted message, use the formatMessage method.
 	 * @return	raw message
@@ -125,7 +137,7 @@ public enum Message
 	{
 		return message;
 	}
-	
+
 	/**
 	 * Formats a message. The message should be gotten from one of the public static variables of the ChatHelper class.
 	 * @param args		arguments to use in formatting. Size should be equal to the size of message.getParams(). Non-String arguments will be toString()ified
@@ -142,104 +154,22 @@ public enum Message
 	    	messageCopy = messageCopy.replaceAll("%"+params[i]+"%", args[i].toString());
 	    return messageCopy;
 	}
-	
+
 	/**
 	 * Sets the messages for each enumeration item. Needs to be done AFTER ChatHelper has loaded the language files.
 	 */
 	public static void setMessages()
 	{
-		GAME_END_MESSAGE.message = ChatHelper.gameEndMessage;
-		GAME_END_APOCALYPSE_MESSAGE.message = ChatHelper.gameEndApocalypseMessage;
-		VOTE_START.message = ChatHelper.voteStart;
-		VOTE_OPTION.message = ChatHelper.voteOption;
-		VOTE_ENDS_IN.message = ChatHelper.voteEndsIn;
-		VOTES_FOR_EACH_MAP.message = ChatHelper.votesForEachMap;
-		MAP_CHOSEN.message = ChatHelper.mapChosen;
-		WAVE_START_IN.message = ChatHelper.waveStartIn;
-		WOLF_WAVE_APPROACHING.message = ChatHelper.wolfWaveApproaching;
-		SKELETON_WAVE_APPROACHING.message = ChatHelper.skeletonWaveApproaching;
-		WAVE_START.message = ChatHelper.waveStart;
-		NO_ZOMBIE_SPAWNS.message = ChatHelper.noZombieSpawns;
-		BONUS_MONEY_KILL.message = ChatHelper.bonusMoneyKill;
-		ASSIST_KILL.message = ChatHelper.assistKill;
-		ITEM_DROP.message = ChatHelper.itemDrop;
-		SIGN_REMOVE.message = ChatHelper.signRemove;
-		NO_BUY.message = ChatHelper.noBuy;
-		EXTRA_COST.message = ChatHelper.extraCost;
-		INSUFFICIENT_FUNDS.message = ChatHelper.insufficientFunds;
-		PURCHASE_SUCCESSFUL.message = ChatHelper.purchaseSuccessful;
-		SIGN_PLACE_WITH_NO_LEVEL.message = ChatHelper.signPlaceWithNoLevel;
-		SIGN_PLACE_FAILURE.message = ChatHelper.signPlaceFailure;
-		SIGN_PLACE_SUCCESS.message = ChatHelper.signPlaceSuccess;
-		GAME_FULL.message = ChatHelper.gameFull;
-		SEND_STATS.message = ChatHelper.sendStats;
-		INSUFFICIENT_PERMISSIONS.message = ChatHelper.insufficientPermissions;
-		NOT_ALLOWED_WHILE_RUNNING.message = ChatHelper.notAllowedWhileRunning;
-		CREATED_NEW_LEVEL.message = ChatHelper.createdNewLevel;
-		NO_LEVEL_LOADED.message = ChatHelper.noLevelLoaded;
-		CURRENT_GAMEMODE.message = ChatHelper.currentGamemode;
-		INVENTORY_MUST_BE_CLEAR.message = ChatHelper.inventoryMustBeClear;
-		ZSPAWN_NOT_FOUND.message = ChatHelper.zSpawnNotFound;
-		JUMPED_TO_ZSPAWN.message = ChatHelper.jumpedToZSpawn;
-		LEVEL_LIST_HEADER.message = ChatHelper.levelListHeader;
-		LEVEL_LIST_ITEM.message = ChatHelper.levelListItem;
-		LEAVE_GAME.message = ChatHelper.leaveGame;
-		PLAYERS_ALIVE_HEADER.message = ChatHelper.playersAliveHeader;
-		PLAYERS_ALIVE_ITEM.message = ChatHelper.playersAliveItem;
-		PLAYERS_IN_SESSION_HEADER.message = ChatHelper.playersInSessionHeader;
-		PLAYERS_IN_SESSION_ITEM.message = ChatHelper.playersInSessionItem;
-		ZSPAWNS_LIST_HEADER.message = ChatHelper.zSpawnsListHeader;
-		ZSPAWNS_LIST_ITEM.message = ChatHelper.zSpawnsListItem;
-		LEVEL_NOT_FOUND.message = ChatHelper.levelNotFound;
-		LEVEL_LOADED.message = ChatHelper.levelLoaded;
-		BOSS_SPAWN_SET.message = ChatHelper.bossSpawnSet;
-		BOSS_SPAWN_UNSET.message = ChatHelper.bossSpawnUnset;
-		BOSS_SPAWN_NOT_FOUND.message = ChatHelper.bossSpawnNotFound;
-		SIGN_NOT_FOUND.message = ChatHelper.signNotFound;
-		SIGN_MARKED_AS_USEABLE_ONCE.message = ChatHelper.signMarkedAsUseableOnce;
-		SIGN_UNMARKED_AS_USEABLE_ONCE.message = ChatHelper.signUnmarkedAsUseableOnce;
-		SIGN_MARKED_AS_OPPOSITE.message = ChatHelper.signMarkedAsOpposite;
-		SIGN_UNMARKED_AS_OPPOSITE.message = ChatHelper.signUnmarkedAsOpposite;
-		SIGN_MARKED_AS_NON_RESETTING.message = ChatHelper.signMarkedAsNonResetting;
-		SIGN_UNMARKED_AS_NON_RESETTING.message = ChatHelper.signUnmarkedAsNonResetting;
-		FLAG_NOT_FOUND.message = ChatHelper.flagNotFound;
-		ZSPAWN_MARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE.message = ChatHelper.zSpawnMarkedAsActiveWhenSignActive;
-		ZSPAWN_UNMARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE.message = ChatHelper.zSpawnUnmarkedAsActiveWhenSignActive;
-		SPOUT_NOT_ENABLED.message = ChatHelper.spoutNotEnabled;
-		SPOUT_CLIENT_REQUIRED.message = ChatHelper.spoutClientRequired;
-		CONFIG_RELOADED.message = ChatHelper.configReloaded;
-		LEVEL_REMOVED.message = ChatHelper.levelRemoved;
-		ZSPAWN_REMOVED.message = ChatHelper.zSpawnRemoved;
-		LEVELS_SAVED.message = ChatHelper.levelsSaved;
-		GAME_MUST_BE_RUNNING.message = ChatHelper.gameMustBeRunning;
-		INFO_ITEM.message = ChatHelper.infoItem;
-		PLAYER_NOT_FOUND.message = ChatHelper.playerNotFound;
-		PLAYER_NOT_IN_GAME.message = ChatHelper.playerNotInGame;
-		ARG4_MUST_BE_TRUE_OR_FALSE.message = ChatHelper.arg4MustBeTrueOrFalse;
-		SET_PLAYERS_ALIVE_STATUS.message = ChatHelper.setPlayersAliveStatus;
-		DSPAWN_SET.message = ChatHelper.dSpawnSet;
-		GAMEMODE_NOT_FOUND.message = ChatHelper.gamemodeNotFound;
-		ISPAWN_SET.message = ChatHelper.iSpawnSet;
-		LEAVE_LOCATION_SET.message = ChatHelper.leaveLocationSet;
-		WAVE_MUST_BE_INTEGER.message = ChatHelper.waveMustBeInteger;
-		WAVE_SET.message = ChatHelper.waveSet;
-		ZSPAWN_SET.message = ChatHelper.zSpawnSet;
-		GAME_STATS_HEADER.message = ChatHelper.gameStatsHeader;
-		GAME_STATS_ITEM.message = ChatHelper.gameStatsItem;
-		GAME_ALREADY_RUNNING.message = ChatHelper.gameAlreadyRunning;
-		GAME_STARTED.message = ChatHelper.gameStarted;
-		GAME_STOPPED.message = ChatHelper.gameStopped;
-		VOTING_NOT_TAKING_PLACE.message = ChatHelper.votingNotTakingPlace;
-		MUST_BE_INGAME_TO_VOTE.message = ChatHelper.mustBeIngameToVote;
-		VOTE_MUST_BE_VALID_INTEGER.message = ChatHelper.voteMustBeValidInteger;
-		VOTE_MUST_RANGE_FROM1_TO3.message = ChatHelper.voteMustRangeFrom1To3;
-		VOTE_SUCCESSFUL.message = ChatHelper.voteSuccessful;
-		SET_KILLS_MUST_BE_GREATER_OR_EQUAL_TO0.message = ChatHelper.setKillsMustBeGreaterOrEqualTo0;
-		ADD_KILLS_MUST_BE_GREATER_THAN0.message = ChatHelper.addKillsMustBeGreaterThan0;
-		SUB_KILLS_MUST_BE_GREATER_THAN0.message = ChatHelper.subKillsMustBeGreaterThan0;
-		KILLS_SET.message = ChatHelper.killsSet;
-		TOP_KILLERS_HEADER.message = ChatHelper.topKillersHeader;
-		TOP_KILLERS_ITEM.message = ChatHelper.topKillersItem;
-		PLAYER_KILLS_INFO.message = ChatHelper.playerKillsInfo;
+		for(Message message : Message.values())
+		{
+			//This following set of expressions uses the word 'message' a lot.
+			if(ChatHelper.messages.containsKey(message.name))
+			{
+				message.message = ChatHelper.messages.get(message.name);
+			} else
+			{
+				message.message = YamlConfiguration.loadConfiguration(new File(Constants.LANGUAGE_PATH)).getString(message.name);
+			}
+		}
 	}
 }

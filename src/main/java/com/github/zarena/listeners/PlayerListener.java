@@ -30,25 +30,41 @@ public class PlayerListener implements Listener
 {
 	private ZArena plugin;
 	private GameHandler gameHandler;
-	
+
 	public PlayerListener()
 	{
 		plugin = ZArena.getInstance();
 		gameHandler = plugin.getGameHandler();
 	}
-	
+
 	public void registerEvents(PluginManager pm, ZArena plugin)
 	{
 		pm.registerEvents(this, plugin);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerRespawn(PlayerRespawnEvent event)
 	{
 		if(gameHandler.getLevel() != null && plugin.getGameHandler().getPlayerNames().contains(event.getPlayer().getName()))
+		{
+			//Send messages informing the player when he will next respawn, if applicable
+			int respawnEveryTime = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME);
+			if(respawnEveryTime != 0)
+			{
+				ChatHelper.sendMessage(Message.RESPAWN_IN_TIME_AFTER_DEATH.formatMessage(event.getPlayer().getName(),
+											respawnEveryTime + "min"), event.getPlayer());
+			}
+			int respawnEveryWaves = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_WAVES);
+			if(respawnEveryWaves != 0)
+			{
+				ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES_AFTER_DEATH.formatMessage(event.getPlayer().getName(),
+											respawnEveryWaves), event.getPlayer());
+			}
+			//Teleport player to death spawn
 			event.setRespawnLocation(gameHandler.getLevel().getDeathSpawn());
+		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onPlayerJoin(final PlayerJoinEvent event)
 	{
@@ -76,7 +92,7 @@ public class PlayerListener implements Listener
 	{
 		gameHandler.removePlayer(event.getPlayer());
 	}
-	
+
 	@EventHandler
 	public void onCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
@@ -125,7 +141,7 @@ public class PlayerListener implements Listener
 						}
 				}
 		}
-		else if(new CommandSenderWrapper(player).canCreateLevels() && player.getGameMode() == GameMode.CREATIVE 
+		else if(new CommandSenderWrapper(player).canCreateLevels() && player.getGameMode() == GameMode.CREATIVE
 				&& (!gameHandler.getPlayers().contains(player) || !gameHandler.isRunning()))
 		{
 			if(!(block.getState() instanceof Sign))

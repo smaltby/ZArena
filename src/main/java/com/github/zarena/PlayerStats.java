@@ -2,6 +2,8 @@ package com.github.zarena;
 
 import net.milkbowl.vault.economy.Economy;
 
+import java.util.concurrent.TimeUnit;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -18,29 +20,29 @@ public class PlayerStats implements Comparable<PlayerStats>
 	private float money;
 	private int points;
 	private boolean alive;
-	private int wavesSinceDeath;
-	
+	private int deathWave;
+	private long deathTime;
+
 	//Saved pre-game info
 	private Location oldLocation;
 	private ItemStack[] items;
 	private ItemStack[] armor;
 	private GameMode oldGameMode;
 	private int oldLevel;
-	
+
 	public PlayerStats(Player player)
 	{
 		this.player = player.getName();
-		money = 0;
-		points = 0;
 		alive = false;
-		
+		resetStats();
+
 		oldLocation = player.getLocation();
 		items = player.getInventory().getContents();
 		armor = player.getInventory().getArmorContents();
 		oldGameMode = player.getGameMode();
 		oldLevel = player.getLevel();
 	}
-	
+
 	public void addMoney(double money)
 	{
 		if(usingVault())
@@ -50,84 +52,96 @@ public class PlayerStats implements Comparable<PlayerStats>
 		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
 			getPlayer().setLevel((int) getMoney());
 	}
-	
+
 	public void addPoints(int points)
 	{
 		this.points += points;
 	}
-	
+
 	public ItemStack[] getInventoryArmor()
 	{
 		return armor;
 	}
-	
+
 	public ItemStack[] getInventoryContents()
 	{
 		return items;
 	}
-	
+
 	public float getMoney()
 	{
 		return (float) (usingVault() ? getEconomy().getBalance(player) : money);
 	}
-	
+
 	public GameMode getOldGameMode()
 	{
 		return oldGameMode;
 	}
-	
+
 	public int getOldLevel()
 	{
 		return oldLevel;
 	}
-	
+
 	public Location getOldLocation()
 	{
 		return oldLocation;
 	}
-	
+
 	public Player getPlayer()
 	{
 		return Bukkit.getPlayer(player);
 	}
-	
+
 	public int getPoints()
 	{
 		return points;
 	}
-	
+
+	/**
+	 * Returns the players time since death in seconds.
+	 */
+	public int getTimeSinceDeath()
+	{
+		//The +1 is to ensure this never returns 0. This prevents the plugin from sending the player a message on death while
+		//simultaneously sending them a message updating the time until the respawn.
+		return (int) (TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()) - TimeUnit.MILLISECONDS.toSeconds(deathTime) + 1);
+	}
+
 	public int getWavesSinceDeath()
 	{
-		return wavesSinceDeath;
+		return ZArena.getInstance().getGameHandler().getWaveHandler().getWave() - deathWave;
 	}
-	
+
 	public boolean isAlive()
 	{
 		return alive;
 	}
-	
+
 	public void messageStats()
 	{
 		ChatHelper.sendMessage(Message.SEND_STATS.formatMessage(getMoney(), getPoints()), getPlayer());
 	}
-	
+
+	public void registerDeath()
+	{
+		deathWave = ZArena.getInstance().getGameHandler().getWaveHandler().getWave();
+		deathTime = System.currentTimeMillis();
+	}
+
 	public void resetStats()
 	{
 		money = 0;
 		points = 0;
-		wavesSinceDeath = 0;
+		deathWave = 0;
+		deathTime = System.currentTimeMillis();
 	}
-	
+
 	public void setAlive(boolean alive)
 	{
 		this.alive = alive;
 	}
-	
-	public void setWavesSinceDeath(int wavesSinceDeath)
-	{
-		this.wavesSinceDeath = wavesSinceDeath;
-	}
-	
+
 	public void subMoney(double money)
 	{
 		if(usingVault())
@@ -141,7 +155,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
 			getPlayer().setLevel((int) getMoney());
 	}
-	
+
 	public void subPoints(int points)
 	{
 		this.points -= points;
@@ -174,12 +188,12 @@ public class PlayerStats implements Comparable<PlayerStats>
 		}
 		return -1;
 	}
-	
+
 	private boolean usingVault()
 	{
 		return ZArena.getInstance().getConfig().getBoolean(Constants.USE_VAULT);
 	}
-	
+
 	private Economy getEconomy()
 	{
 		return ZArena.getInstance().getEconomy();
