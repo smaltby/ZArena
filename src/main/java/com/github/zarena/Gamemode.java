@@ -20,7 +20,7 @@ import com.github.zarena.utils.Utils;
 public class Gamemode
 {
 	private static List<Gamemode> gamemodes;	//Not initialized here for a reason specified at bottom of constructor
-	
+
 	private String name;
 	private boolean isApocalypse;
 	private boolean isScavenger;
@@ -50,29 +50,29 @@ public class Gamemode
 		damageModifier = config.getDouble("Damage Modifier", 1);
 		zombieAmountModifier = config.getDouble("Zombie Amount Modifier", 1);
 		difficultyModifier = config.getDouble("Difficulty Modifier", 1);
-		
+
 		List<String> defaultsNames = new ArrayList<String>();
 		if(config.contains("Default Zombie"))
 			defaultsNames = config.getStringList("Default Zombie");
 		if(defaultsNames.isEmpty())
 			defaultsNames.add(config.getString("Default Zombie", ZArena.getInstance().getConfig().getString(Constants.DEFAULT_ZOMBIE)));
-		
+
 		defaultZombies.addAll(handleConversion(defaultsNames));
-		
+
 		if(config.contains("Default Wolf"))
 			defaultsNames = config.getStringList("Default Wolf");
 		if(defaultsNames.isEmpty())
 			defaultsNames.add(config.getString("Default Wolf", ZArena.getInstance().getConfig().getString(Constants.DEFAULT_WOLF)));
-		
+
 		defaultWolves.addAll(handleConversion(defaultsNames));
-		
+
 		if(config.contains("Default Skeleton"))
 			defaultsNames = config.getStringList("Default Skeleton");
 		if(defaultsNames.isEmpty())
 			defaultsNames.add(config.getString("Default Skeleton", ZArena.getInstance().getConfig().getString(Constants.DEFAULT_SKELETON)));
-		
+
 		defaultSkeletons.addAll(handleConversion(defaultsNames));
-		
+
 		if(config.getStringList("Start Items") != null)
 		{
 			for(String arg : config.getStringList("Start Items"))
@@ -130,14 +130,14 @@ public class Gamemode
 		}
 		if(itemCostModifiers.isEmpty())
 			itemCostModifiers.put("ALL", 1.0);
-		
+
 		//A weird way of ensuring the first created gamemode (the default one) isn't added to this list
 		if(gamemodes == null)
 			gamemodes = new ArrayList<Gamemode>();
 		else
 			gamemodes.add(this);
 	}
-	
+
 	public boolean canBuyItem(String item)
 	{
 		if(itemCostModifiers.containsKey("ALL"))
@@ -148,7 +148,7 @@ public class Gamemode
 			return true;
 		return false;
 	}
-	
+
 	public boolean canSpawn(String entity)
 	{
 		if(allowedEntityModifiers.containsKey("ALL"))
@@ -157,12 +157,12 @@ public class Gamemode
 			return true;
 		return false;
 	}
-	
+
 	public double getChoiceWeight()
 	{
 		return weight;
 	}
-	
+
 	public Double getCostModifier(String item)
 	{
 		if(!canBuyItem(item))	//Generally shouldn't ever be true
@@ -171,12 +171,12 @@ public class Gamemode
 			return itemCostModifiers.get(item.toUpperCase().replaceAll(" ", "_"));
 		return itemCostModifiers.get("ALL");
 	}
-	
+
 	public double getDamageModifier()
 	{
 		return damageModifier;
 	}
-	
+
 	public List<ZEntityType> getDefaultSkeletons()
 	{
 		return defaultSkeletons;
@@ -186,70 +186,70 @@ public class Gamemode
 	{
 		return defaultWolves;
 	}
-	
+
 	public List<ZEntityType> getDefaultZombies()
 	{
 		return defaultZombies;
 	}
-	
+
 	public double getDifficultyModifier()
 	{
 		return difficultyModifier;
 	}
-	
+
 	public double getHealthModifier()
 	{
 		return healthModifier;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	public double getSpawnChanceModifier(String entity)
 	{
 		if(!(canSpawn(entity)))	//Generally shouldn't ever be true
 			return 0;
 		return allowedEntityModifiers.get(entity.toLowerCase().split(".")[0]);
 	}
-	
+
 	public List<ItemStack> getStartItems()
 	{
 		return startItems;
 	}
-	
+
 	public double getZombieAmountModifier()
 	{
 		return zombieAmountModifier;
 	}
-	
+
 	public boolean isApocalypse()
 	{
 		return isApocalypse;
 	}
-	
+
 	public boolean isNoRegen()
 	{
 		return isNoRegen;
 	}
-	
+
 	public boolean isScavenger()
 	{
 		return isScavenger;
 	}
-	
+
 	public boolean isSlowRegen()
 	{
 		return isSlowRegen;
 	}
-	
+
 	@Override
 	public String toString()
 	{
 		return name;
 	}
-	
+
 	private ZEntityType convertToEntityType(String typeName)
 	{
 		WaveHandler waveHandler = ZArena.getInstance().getGameHandler().getWaveHandler();
@@ -260,7 +260,7 @@ public class Gamemode
 		}
 		return null;
 	}
-	
+
 	private List<ZEntityType> handleConversion(List<String> typeNames)
 	{
 		List<ZEntityType> types = new ArrayList<ZEntityType>();
@@ -275,7 +275,7 @@ public class Gamemode
 		typeNames.clear();
 		return types;
 	}
-	
+
 	public static Gamemode getGamemode(String name)
 	{
 		Gamemode defaultGm = ZArena.getInstance().getGameHandler().defaultGamemode;
@@ -288,26 +288,25 @@ public class Gamemode
 		}
 		return null;
 	}
-	
+
 	public static Gamemode getRandomGamemode()
 	{
 		return getRandomGamemode(new ArrayList<Gamemode>());
 	}
-	
+
 	public static Gamemode getRandomGamemode(Gamemode exclude)
 	{
 		List<Gamemode> excludes = new ArrayList<Gamemode>();
 		excludes.add(exclude);
 		return getRandomGamemode(excludes);
 	}
-	
+
 	public static Gamemode getRandomGamemode(List<Gamemode> excludes)
 	{
 		int totalWeight = 0;
 		for(Gamemode gm : gamemodes)
-		{
 			totalWeight += (int) (gm.weight * 10);
-		}
+
 		Gamemode[] weightedGameModes = new Gamemode[totalWeight];
 		for(Gamemode gm : gamemodes)
 		{
