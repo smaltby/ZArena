@@ -1,7 +1,7 @@
 /.project
 /.classpath
 /.settings
+/*.class
 /bin
 /target
 /dependency-reduced-pom.xml
-/ZArena.sublime-project

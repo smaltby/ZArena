@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
+
   <groupId>com.github.zarena</groupId>
   <artifactId>ZArena</artifactId>
   <version>0.6.2</version>
   <packaging>jar</packaging>
-  
+
   <name>ZArena</name>
   <description>Minecraft minigame plugin, in which you must survive waves of zombies for as long as possible.</description>
   <url>http://dev.bukkit.org/server-mods/zarena/</url>
-  
+
   <repositories>
     <repository>
       <id>bukkit-repo</id>
@@ -20,33 +20,34 @@
       <url>http://repo.spout.org/</url>
     </repository>
     <repository>
-		<id>vault-repo</id>
-		<url>http://ci.herocraftonline.com/plugin/repository/everything</url>
-	</repository>
+		  <id>vault-repo</id>
+		  <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+	  </repository>
   </repositories>
-  
+
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  
+
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>craftbukkit</artifactId>
       <version>1.5.2-R0.1-SNAPSHOT</version>
-      <type>jar</type>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.getspout</groupId>
       <artifactId>spoutplugin</artifactId>
       <version>1.5.1-R0.2-SNAPSHOT</version>
-      <type>jar</type>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-		<groupId>net.milkbowl.vault</groupId>
-		<artifactId>Vault</artifactId>
-		<version>1.2.25-SNAPSHOT</version>
-	</dependency>
+		  <groupId>net.milkbowl.vault</groupId>
+		  <artifactId>Vault</artifactId>
+		  <version>1.2.25-SNAPSHOT</version>
+      <scope>provided</scope>
+	  </dependency>
     <dependency>
     	<groupId>com.github.customentitylibrary</groupId>
     	<artifactId>CustomEntityLibrary</artifactId>
@@ -54,12 +55,12 @@
     	<scope>compile</scope>
     </dependency>
   </dependencies>
-  
+
   <build>
     <defaultGoal>clean install</defaultGoal>
     <directory>${basedir}/target</directory>
     <finalName>${project.name}</finalName>
-    
+
     <resources>
       <resource>
         <targetPath>.</targetPath>
@@ -70,9 +71,9 @@
         </includes>
       </resource>
     </resources>
-    
+
     <plugins>
-    
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -82,7 +83,7 @@
           <target>1.6</target>
         </configuration>
       </plugin>
-      
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -99,12 +100,14 @@
                 <excludes>
                   <exclude>org.bukkit:craftbukkit</exclude>
                   <exclude>org.getspout:spoutplugin</exclude>
+                  <exclude>net.milkbowl.vault:Vault</exclude>
                 </excludes>
               </artifactSet>
             </configuration>
           </execution>
         </executions>
       </plugin>
+
     </plugins>
   </build>
 </project>
