@@ -22,9 +22,9 @@
 #<yellow>
 #<white>
 #
-#You can use new lines by inserting a '\n'
+#You can use new lines by inserting a <new_line>
 #
-#If you leave a message empty, it disables the message entirely.
+#If you set the message as <disabled>, it disables the message entirely.
 #
 #The following values are broadcasts
 #-----------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ Game End Message: "<red>You survived to wave %WAVE%!"
 Game End Apocalypse Message: "<red>You survived %TIME% seconds!"
 
 #Broadcasted when voting starts.
-Vote Start: "<dark_green>Level vote starting...\nType the command -"
+Vote Start: "<dark_green>Level vote starting...<new_line>Type the command -"
 
 #Broadcasted for each map option that can be voted on, with different parameters
 #for each option.
@@ -414,7 +414,7 @@ Top Killers Item: "<gold>#%NUM%: %PLAYER% - %KILLS% kills"
 #KILLS - The kills of that player.
 #RANK - The rank of that player.
 #TOTAL - The total number of players who are in the rankings.
-Player Kills Info: "<dark_aqua>Player: <white>%PLAYER%\n<red>Total Kills: <white>%KILLS%\n<red>Rank: <white>%RANK%/%TOTAL%"
+Player Kills Info: "<dark_aqua>Player: <white>%PLAYER%<new_line><red>Total Kills: <white>%KILLS%<new_line><red>Rank: <white>%RANK%/%TOTAL%"
 
 #The following are names of types of info that are sent when you use '/za info'. They can be translated
 #to another language if necessary. Do not use color codes, new lines, or make the values empty.

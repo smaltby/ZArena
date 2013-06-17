@@ -19,11 +19,8 @@ import com.github.zarena.utils.Constants;
 public class KillCounter
 {
 	public static KillCounter instance;
-	
-	private final KCCommands kcCommands = new KCCommands();
-	private KCListener kcListener;
-	
-	// Needs to be two arraylists as opposed to a map to allow for random access and mutable value sorting
+
+	// Needs to be two arraylists as opposed to a map to allow for dual random access and mutable value sorting
 	private ArrayList<String> killsPlayers;
 	private ArrayList<Integer> killsAmounts;
 	
@@ -35,11 +32,10 @@ public class KillCounter
 		killsAmounts = new ArrayList<Integer>();
 		
 		loadKills();
+
+		new KCListener().registerEvents(Bukkit.getServer().getPluginManager());
 		
-		kcListener = new KCListener();			
-		kcListener.registerEvents(Bukkit.getServer().getPluginManager());
-		
-		ZArena.getInstance().getCommand("killcounter").setExecutor(kcCommands);
+		ZArena.getInstance().getCommand("killcounter").setExecutor(new KCCommands());
 		
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(ZArena.getInstance(), new Runnable()
 		{

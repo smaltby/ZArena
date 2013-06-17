@@ -151,10 +151,13 @@ public enum Message
 		if(args.length != params.length)
 			ZArena.log(Level.SEVERE, "Yo, the length of args and params don't match. What the fuck man, this isn't complicated. Look to the enum "+this+" and fix this shit.");
 		String messageCopy = message;
+		if(messageCopy.equals("<disabled>"))
+			return "";
 	    for (ChatColor color : ChatColor.values())
 	    	messageCopy = messageCopy.replaceAll("(?i)<" + color.name() + ">", "" + color);
 	    for(int i = 0; i < params.length; i++)
 	    	messageCopy = messageCopy.replaceAll("%"+params[i]+"%", args[i].toString());
+		messageCopy.replaceAll("<new_line>", "\n");
 	    return messageCopy;
 	}
 

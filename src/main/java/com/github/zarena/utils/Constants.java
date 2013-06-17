@@ -33,6 +33,7 @@ public class Constants
 	public static final String DISABLE_JOIN_WITH_INV = "Options.Disable Joining Game With Inventory";
 	public static final String PLAYER_LIMIT = "Options.Player Limit";
 	public static final String ENABLE_KILLCOUNTER = "Options.Enable Killcounter";
+	public static final String ENABLE_AFKKICKER = "Options.Set AFK Players as Dead";
 	public static final String XP_BAR_IS_MONEY = "Options.XP Bar Shows Money";
 	public static final String QUANTITY_ADJUST = "Options.Adjust Quantity Based on Player Amount";
 	public static final String SAVE_ITEMS = "Options.Save Items";

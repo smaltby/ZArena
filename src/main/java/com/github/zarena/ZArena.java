@@ -13,6 +13,7 @@ import java.util.logging.Level;
 
 import com.github.customentitylibrary.CustomEntityLibrary;
 
+import com.github.zarena.afkmanager.AFKManager;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
@@ -60,19 +61,6 @@ public class ZArena extends JavaPlugin
 	private GameHandler gameHandler; //Game handler
 	private PlayerOptionsHandler playerOptionsHandler;
 
-	//Command executors
-	private final ZACommands zaCommands = new ZACommands();
-	private final ZSpawnCommands zSpawnCommands = new ZSpawnCommands();
-	private final DSpawnCommands dSpawnCommands = new DSpawnCommands();
-	private final ISpawnCommands iSpawnCommands = new ISpawnCommands();
-	private final ZSignCommands zSignCommands = new ZSignCommands();
-
-	//Listeners
-	private EntityListener eListener;
-	private PlayerListener pListener;
-	private WorldListener wListener;
-	private BlockListener bListener;
-
 	private boolean spoutEnabled = false;
 
 	public void onEnable()
@@ -99,6 +87,11 @@ public class ZArena extends JavaPlugin
 			kc = new KillCounter();
 			kc.enable();
 		}
+		if(getConfig().getBoolean(Constants.ENABLE_AFKKICKER))
+		{
+			new AFKManager().enable();
+		}
+
 		saveConfig();
 		loadDonatorInfo();
 		loadZSignCustomItems();
@@ -126,21 +119,17 @@ public class ZArena extends JavaPlugin
 			setupEconomy();
 
 		//Register command executors
-		getCommand("zarena").setExecutor(zaCommands);
-		getCommand("zspawn").setExecutor(zSpawnCommands);
-		getCommand("dspawn").setExecutor(dSpawnCommands);
-		getCommand("ispawn").setExecutor(iSpawnCommands);
-		getCommand("zsign").setExecutor(zSignCommands);
+		getCommand("zarena").setExecutor(new ZACommands());
+		getCommand("zspawn").setExecutor(new ZSpawnCommands());
+		getCommand("dspawn").setExecutor(new DSpawnCommands());
+		getCommand("ispawn").setExecutor(new ISpawnCommands());
+		getCommand("zsign").setExecutor(new ZSignCommands());
 
 		//Register listeners
-		eListener = new EntityListener();
-		pListener = new PlayerListener();
-		wListener = new WorldListener();
-		bListener = new BlockListener();
-		eListener.registerEvents(pm, this);
-		pListener.registerEvents(pm, this);
-		wListener.registerEvents(pm, this);
-		bListener.registerEvents(pm, this);
+		new EntityListener().registerEvents(pm, this);
+		new PlayerListener().registerEvents(pm, this);
+		new WorldListener().registerEvents(pm, this);
+		new BlockListener().registerEvents(pm, this);
 
 		getServer().getScheduler().scheduleSyncRepeatingTask(this, new Runnable()
 		{
@@ -229,6 +218,7 @@ public class ZArena extends JavaPlugin
 		cfg.addDefault(Constants.DISABLE_JOIN_WITH_INV, false);
 		cfg.addDefault(Constants.DISABLE_NON_ZA, false);
 		cfg.addDefault(Constants.ENABLE_KILLCOUNTER, true);
+		cfg.addDefault(Constants.ENABLE_AFKKICKER, true);
 		cfg.addDefault(Constants.RESPAWN_EVERY_WAVES, 3);
 		cfg.addDefault(Constants.RESPAWN_EVERY_TIME, 0);
 		cfg.addDefault(Constants.RESPAWN_REMINDER_DELAY, 30);
