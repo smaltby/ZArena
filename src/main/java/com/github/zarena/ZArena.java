@@ -122,7 +122,8 @@ public class ZArena extends JavaPlugin
 		} catch (IOException e)
 		{/* Failed to submit the stats :-( */}
 		//Load Vault economy
-		setupEconomy();
+		if(getConfig().getBoolean(Constants.USE_VAULT))
+			setupEconomy();
 
 		//Register command executors
 		getCommand("zarena").setExecutor(zaCommands);
@@ -615,7 +616,6 @@ public class ZArena extends JavaPlugin
         if (economyProvider != null) {
             economy = economyProvider.getProvider();
         }
-
         return (economy != null);
     }
 

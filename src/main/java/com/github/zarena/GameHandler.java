@@ -102,18 +102,26 @@ public class GameHandler
 			else
 			{
 				//Send messages informing the player when he will next respawn, if applicable
+                boolean respawningEnabled = false;
 				int respawnEveryTime = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME);
 				if(respawnEveryTime != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_TIME_AFTER_JOIN.formatMessage(player.getName(),
 												respawnEveryTime + "min"), player);
+                    respawningEnabled = true;
 				}
 				int respawnEveryWaves = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_WAVES);
 				if(respawnEveryWaves != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES_AFTER_JOIN.formatMessage(stats.getPlayer().getName(),
 												respawnEveryWaves), stats.getPlayer());
+                    respawningEnabled = true;
 				}
+                //Else, send a message informing the player to wait until the next game to play
+                if(!respawningEnabled)
+                {
+                    ChatHelper.sendMessage(Message.ON_PLAYER_JOIN.formatMessage(stats.getPlayer().getName()), stats.getPlayer());
+                }
 				if(level != null)
 					player.teleport(level.getDeathSpawn());
 				else
@@ -150,8 +158,7 @@ public class GameHandler
 				continue;
 			}
 			ItemStack itemStack = new ItemStack(Material.getMaterial(item.replaceAll(" ", "_").toUpperCase()));
-			if(itemStack != null)
-				inv.addItem(itemStack);
+			inv.addItem(itemStack);
 		}
 		for(ItemStack item : gamemode.getStartItems())
 		{
@@ -273,8 +280,7 @@ public class GameHandler
 		}
 		World world = Bukkit.createWorld(new WorldCreator(plugin.getConfig().getString(Constants.GAME_LEAVE_WORLD, "world")));
 		List<Double> locXYZ = plugin.getConfig().getDoubleList(Constants.GAME_LEAVE_LOCATION);
-		Location defaultLocation = new Location(world, locXYZ.get(0), locXYZ.get(1), locXYZ.get(2));
-		return defaultLocation;
+        return new Location(world, locXYZ.get(0), locXYZ.get(1), locXYZ.get(2));
 	}
 
 	public synchronized Map<String, PlayerStats> getPlayerStats()

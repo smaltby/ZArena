@@ -67,6 +67,7 @@ public class EntityListener implements Listener
 		Entity ent = event.getEntity();
 		if(ent instanceof Player)
 		{
+            //Set the player as dead, and sub the amount of money that the config defines
 			Player player = (Player) event.getEntity();
 			PlayerStats stats = gameHandler.getPlayerStats().get(player.getName());
 			if(stats != null)
@@ -76,6 +77,12 @@ public class EntityListener implements Listener
 					stats.setAlive(false);
 					stats.subMoney(stats.getMoney() * plugin.getConfig().getDouble(Constants.MONEY_LOST));
 					stats.registerDeath();
+                    //Broadcast the players death
+                    if(gameHandler.getAliveCount() > 0)
+                    {
+                        ChatHelper.broadcastMessage(Message.ON_PLAYER_DEATH_GLOBAL.formatMessage(player.getName(),
+                                gameHandler.getAliveCount()), gameHandler.getBroadcastPlayers());
+                    }
 				}
 			}
 		}
@@ -150,7 +157,7 @@ public class EntityListener implements Listener
 		Entity damager = event.getDamager();
 		if(CustomEntityWrapper.instanceOf(damager))
 			event.setDamage((int) (event.getDamage() * gameHandler.getGameMode().getDamageModifier()));
-		else if (damager instanceof Projectile)
+        else if (damager instanceof Projectile)
 		{
 			Projectile pj = (Projectile) event.getDamager();
 			damager = pj.getShooter();

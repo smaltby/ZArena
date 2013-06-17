@@ -562,9 +562,6 @@ public class WaveHandler implements Runnable
 		modifiedWave *= gm.getDifficultyModifier();
 
 		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
-//		List<ZEntityType> defaultSkeletons = (gm.getDefaultSkeletons().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultSkeletonType)) : gm.getDefaultSkeletons();
-//		List<ZEntityType> defaultWolves = (gm.getDefaultWolves().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultWolfType)) : gm.getDefaultWolves();
-//		List<ZEntityType> defaultZombies = (gm.getDefaultZombies().isEmpty()) ? new ArrayList<ZEntityType>(Arrays.asList(defaultZombieType)) : gm.getDefaultZombies();
 		CustomEntityWrapper customEnt = null;
 		if(wolfWave && rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_WAVE_PERCENT_SPAWN))
 			customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());

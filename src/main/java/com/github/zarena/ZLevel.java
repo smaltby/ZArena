@@ -28,7 +28,7 @@ public class ZLevel implements Externalizable
 	 * The version of the ZLevel class. This MUST be incremented whenever the
 	 * writeExternal or readExternal methods are changed.
 	 */
-	private static int VERSION = 2;
+	private static final int VERSION = 2;
 	
 	private LocationSer dSpawn;
 	private LocationSer iSpawn;
@@ -127,7 +127,7 @@ public class ZLevel implements Externalizable
 	{
 		if (activeZSpawns.size() == 0)
 			return null;
-		Location spawn = null;
+		Location spawn;
 		do
 		{
 			spawn = LocationSer.convertToBukkitLocation(activeZSpawns.get(rnd.nextInt(activeZSpawns.size())));

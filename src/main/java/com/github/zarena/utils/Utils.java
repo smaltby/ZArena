@@ -234,19 +234,20 @@ public class Utils
 	
 	/**
 	 * Ease of use method for extracting a File from the plugin .jar file to a specified directory.
-	 * @param dir	directory to extract to
+	 * @param dir	    directory to extract to
 	 * @param fileName	name of file being extracted
-	 * @return	file that was moved, or file that was already there if there was one, or null if the file is null
+     * @param override  whether or not to override if the file already exists
+	 * @return	        file that was moved, or file that was already there if there was one, or null if the file is null
 	 * @throws IOException
 	 */
-	public static File extractFromJar(File dir, String fileName) throws IOException
+	public static File extractFromJar(File dir, String fileName, boolean override) throws IOException
 	{
         if (!dir.exists())	//Make directory if it doesn't exist
         	dir.mkdirs();
         
         File file = new File(dir, fileName);
-        
-        if (file.exists())	//What we are extracting from the jar file are default files. If the files are already there, we don't want to overwrite them
+
+        if (file.exists() && !override)
         	return file;
         
         InputStream in = ZArena.class.getResourceAsStream("/"+fileName);	//Get inputstream from base folder
@@ -268,6 +269,18 @@ public class Utils
 
         return file;
 	}
+
+    /**
+     * Ease of use method for extracting a File from the plugin .jar file to a specified directory.
+     * @param dir	directory to extract to
+     * @param fileName	name of file being extracted
+     * @return	file that was moved, or file that was already there if there was one, or null if the file is null
+     * @throws IOException
+     */
+    public static File extractFromJar(File dir, String fileName) throws IOException
+    {
+        return extractFromJar(dir, fileName, false);
+    }
 
 	/**
 	 * Parse a String to a int

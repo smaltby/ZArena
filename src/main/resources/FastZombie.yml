@@ -2,7 +2,7 @@ Type: Zombie
 Name: Fast Zombie
 Damage: 2
 HealthModifier: 2.5
-Range: 256
+Range: 64
 Speed: 0.3
 WorthModifier: 2
 MinimumSpawnWave: 2

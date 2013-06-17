@@ -2,7 +2,7 @@ Type: Zombie
 Name: Zombie Villager
 Damage: 2
 HealthModifier: 1
-Range: 256
+Range: 64
 Speed: 0.25
 WorthModifier: 1
 MinimumSpawnWave: 1

@@ -144,18 +144,14 @@ public class Gamemode
 			return true;
 		if(itemCostModifiers.containsKey("NONE"))
 			return false;
-		if(itemCostModifiers.containsKey(item.toUpperCase().replaceAll(" ", "_")))
-			return true;
-		return false;
+		return itemCostModifiers.containsKey(item.toUpperCase().replaceAll(" ", "_"));
 	}
 
 	public boolean canSpawn(String entity)
 	{
 		if(allowedEntityModifiers.containsKey("ALL"))
 			return true;
-		if(allowedEntityModifiers.containsKey(entity.toLowerCase().split(".")[0]))
-			return true;
-		return false;
+		return allowedEntityModifiers.containsKey(entity.toLowerCase().split(".")[0]);
 	}
 
 	public double getChoiceWeight()

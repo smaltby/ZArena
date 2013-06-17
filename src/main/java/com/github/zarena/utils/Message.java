@@ -6,9 +6,9 @@ import org.bukkit.ChatColor;
 import com.github.zarena.ZArena;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.Map;
-import java.util.HashMap;
 
 public enum Message
 {
@@ -24,6 +24,7 @@ public enum Message
 	SKELETON_WAVE_APPROACHING("Skeleton Wave Approaching"),
 	WAVE_START("Wave Start", "WAVE", "NUM", "HEALTH"),
 	NO_ZOMBIE_SPAWNS("No Zombie Spawns"),
+    ON_PLAYER_DEATH_GLOBAL("On Player Death Global", "PLAYER", "ALIVECOUNT"),
 
 	BONUS_MONEY_KILL("Bonus Money Kill", "MODIFIER", "MOB"),
 	ASSIST_KILL("Assist Kill", "MODIFIER", "MOB"),
@@ -41,9 +42,11 @@ public enum Message
 	RESPAWN_IN_TIME("Respawn In Time", "PLAYER", "TIME"),
 	RESPAWN_IN_TIME_AFTER_JOIN("Respawn In Time After Join", "PLAYER", "TIME"),
 	RESPAWN_IN_TIME_AFTER_DEATH("Respawn In Time After Death", "PLAYER", "TIME"),
-	RESPAWN_IN_WAVES("Respawn In Waves", "PLAYER", "TIME"),
+	RESPAWN_IN_WAVES("Respawn In Waves", "PLAYER", "WAVES"),
 	RESPAWN_IN_WAVES_AFTER_JOIN("Respawn In Waves After Join", "PLAYER", "WAVES"),
 	RESPAWN_IN_WAVES_AFTER_DEATH("Respawn In Waves After Death", "PLAYER", "WAVES"),
+    ON_PLAYER_JOIN("On Player Join", "PLAYER"),
+    ON_PLAYER_DEATH("On Player Death", "PLAYER"),
 
 	INSUFFICIENT_PERMISSIONS("Insufficient Permissions"),
 	NOT_ALLOWED_WHILE_RUNNING("Not Allowed While Running"),
@@ -160,6 +163,8 @@ public enum Message
 	 */
 	public static void setMessages()
 	{
+        //If the language file is missing some messages
+        boolean outOfSync = false;
 		for(Message message : Message.values())
 		{
 			//This following set of expressions uses the word 'message' a lot.
@@ -168,8 +173,28 @@ public enum Message
 				message.message = ChatHelper.messages.get(message.name);
 			} else
 			{
+                outOfSync = true;
 				message.message = YamlConfiguration.loadConfiguration(new File(Constants.LANGUAGE_PATH)).getString(message.name);
 			}
 		}
+        //Reload the config from the plugins default resources, and restore the users preferences
+        if(outOfSync)
+        {
+			File file;
+            try
+            {
+                file = Utils.extractFromJar(new File(Constants.PLUGIN_FOLDER), "language.yml", true);
+            } catch(IOException e)
+            {
+                e.printStackTrace();
+				return;
+            }
+			Configuration language = new Configuration(file);
+			for(Map.Entry<String, String> e : ChatHelper.messages.entrySet())
+			{
+				language.set(e.getKey(), e.getValue());
+			}
+			language.save();
+        }
 	}
 }

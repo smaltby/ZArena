@@ -2,11 +2,11 @@ name: ZArena
 main: com.github.zarena.ZArena
 author: kabbage
 version: 0.6.2
-softdepend: [Spout]
+softdepend: [Spout, Vault]
 commands:
     zarena:
         description: Basic command for the plugin. Enter and leave, vote, get various info on various things, control spout options if you have spout, control the game and create levels.
-        usage: /zarena enter | leave | vote <1|2|3> | stats | list | alive | session | gamemode| info | wave | dia 
+        usage: /zarena enter | leave | vote <1|2|3> | stats | list | alive | session | gamemode| info | wave | dia
         aliases: [za]
     zspawn:
         description: Zombie spawn manipulation

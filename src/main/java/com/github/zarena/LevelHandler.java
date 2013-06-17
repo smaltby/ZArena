@@ -19,7 +19,7 @@ public class LevelHandler implements Externalizable
 	 * The version of the LevelHandler class. This MUST be incremented whenever the
 	 * writeExternal or readExternal methods are changed.
 	 */
-	private static int VERSION = 0;
+	private static final int VERSION = 0;
 	
 	private List<com.github.zarena.ZLevel> levels = new ArrayList<com.github.zarena.ZLevel>();
 	private transient Random rnd;

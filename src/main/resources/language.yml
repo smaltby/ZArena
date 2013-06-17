@@ -3,7 +3,7 @@
 #tells you when and where the value is used. Below that, it tells you all of the
 #parameters that value uses. You can use parameters in the text by surrounding them
 #with percentage '%' signs.
-
+#
 #You can use colors by putting the color you want in < >
 #<black>
 #<dark_blue>
@@ -21,11 +21,11 @@
 #<light_purple>
 #<yellow>
 #<white>
-
-#You can use new lines by inserting a '/n'
-
+#
+#You can use new lines by inserting a '\n'
+#
 #If you leave a message empty, it disables the message entirely.
-
+#
 #The following values are broadcasts
 #-----------------------------------------------------------------------------------
 
@@ -82,9 +82,14 @@ Wave Start: "<gray>Starting Wave <red>%WAVE%<gray> with <red>%NUM%<gray> Zombies
 #Broadcasted when the game ends because there are no zombie spawns in the map.
 No Zombie Spawns: "<red>Error: ZArena level has no zombie spawns. Stopping game."
 
+#Broadcasted when a player dies.
+#PLAYER - The player who died.
+#ALIVECOUNT - The number of players left alive.
+On Player Death Global: "<dark_red>%PLAYER% <dark_gray>has died! Players left alive: <dark_red>%ALIVECOUNT%"
+
 #The following values are messages sent to individual players
 #-----------------------------------------------------------------------------------
-
+#
 #Sent when a player kills a mob that gives extra money.
 #MODIFIER - The money modifier of this mob.
 #MOB - The mob's name.
@@ -161,9 +166,21 @@ Respawn In Waves After Join: "<dark_gray>Welcome, %PLAYER%, you will respawn in 
 #WAVES - Time until the player respawns. Time units included. For example: 2 min 30 sec
 Respawn In Waves After Death: "<dark_gray>You have died, and will respawn in %WAVES% waves."
 
+#Sent when the player joins during the middle of the game and RESPAWNING IS DISABLED. If you want to send a message to
+#a player when they join with respawning enabled, use either the 'Respawn In Waves After Join' or 'Respawn In Time After
+#Join' messages.
+#PLAYER - The player
+On Player Join: "<dark_gray>Welcome! Please wait until the current game has finished to begin playing."
+
+#Sent when the player dies during the middle of the game and RESPAWNING IS DISABLED. If you want to send a message to
+#a player when they die with respawning enabled, use either the 'Respawn In Waves After Death' or 'Respawn In Time After
+#Death' messages.
+#PLAYER - The player
+On Player Death: "<dark_gray>You have died. Please wait until the current game has finished to rejoin the game."
+
 #The following values are messages sent in response to commands
 #-----------------------------------------------------------------------------------
-
+#
 #Sent when the player has insufficient permissions to use whatever command he/she tried to use.
 Insufficient Permissions: "<red>You have insufficient permissions to do this."
 
@@ -402,6 +419,7 @@ Player Kills Info: "<dark_aqua>Player: <white>%PLAYER%\n<red>Total Kills: <white
 #The following are names of types of info that are sent when you use '/za info'. They can be translated
 #to another language if necessary. Do not use color codes, new lines, or make the values empty.
 #-----------------------------------------------------------------------------------
+#
 Wave: "Wave"
 Alive Count: "Alive Count"
 Remaining Zombies: "Remaining Zombies"

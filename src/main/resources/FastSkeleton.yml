@@ -2,7 +2,7 @@ Type: Skeleton
 Name: Fast Skeleton
 Damage: 2
 HealthModifier: 2.5
-Range: 256
+Range: 64
 Speed: 0.3
 WorthModifier: 2
 MinimumSpawnWave: 4

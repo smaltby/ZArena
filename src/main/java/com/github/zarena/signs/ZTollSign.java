@@ -36,16 +36,16 @@ public class ZTollSign extends ZSign implements Externalizable
 {
 	private static final long serialVersionUID = "ZTOLLSIGN".hashCode(); // DO NOT CHANGE
 	private static final int VERSION = 3;
-	
+
 	private LocationSer costBlockLocation; //The location of the block that costs money to be used
 	private boolean usableOnce;	//Whether or not this sign can only be used once
 	private boolean opposite; 	//The sign's costblock starts out open/on, as opposed to closed/off
 	private boolean noReset; 	//The sign's costblock doesn't reset, staying the same across multiple games
 	private boolean active;
 	private String name;
-	
+
 	public List<LocationSer> zSpawns;	//List of zSpawns that are only active when this sign is active
-	
+
 	/**
 	 * Empty constructor for externalization.
 	 */
@@ -53,7 +53,7 @@ public class ZTollSign extends ZSign implements Externalizable
 	{
 		resetCostBlock();
 	}
-	
+
 	public ZTollSign(ZLevel level, Location location, LocationSer costBlockLocation, int price, String name, String[] flags)
 	{
 		super(level, LocationSer.convertFromBukkitLocation(location), price);
@@ -63,22 +63,26 @@ public class ZTollSign extends ZSign implements Externalizable
 		zSpawns = new ArrayList<LocationSer>();
 		for(String flag : flags)
 		{
-			switch(StringEnums.valueOf(flag.toUpperCase().replaceAll("-", "")))
+			try
 			{
-			case UO: case USABLEONCE:
-				setUsableOnce(true);
-				break;
-			case OP: case OPPOSITE:
-				setOpposite(true);
-				break;
-			case NR: case NORESET:
-				setNoReset(true);
-				break;
-			default:
-			}
+				switch(StringEnums.valueOf(flag.toUpperCase().replaceAll("-", "")))
+				{
+				case UO: case USABLEONCE:
+					setUsableOnce(true);
+					break;
+				case OP: case OPPOSITE:
+					setOpposite(true);
+					break;
+				case NR: case NORESET:
+					setNoReset(true);
+					break;
+				default:
+				}
+			//Catch nonexistent flags
+			} catch(Exception e){}
 		}
 	}
-	
+
 	public static ZTollSign attemptCreateSign(ZLevel level, Location location, String[] lines)
 	{
 		int price;
@@ -94,14 +98,14 @@ public class ZTollSign extends ZSign implements Externalizable
 			costBlockLocation = getTollableBlock(location);
 		if(costBlockLocation == null)
 			return null;
-		
+
 		String[] flags = lines[2].split("\\s");
-		
+
 		if(lines[3] == null)
 			return null;
 		return new ZTollSign(level, location, costBlockLocation, price, lines[3], flags);
 	}
-	
+
 	private boolean canBeUsed()
 	{
 		boolean usable = true;
@@ -111,24 +115,24 @@ public class ZTollSign extends ZSign implements Externalizable
 			usable = false;
 		return usable;
 	}
-	
+
 	public Block getCostBlock()
 	{
 		if(costBlockLocation != null)
 			return LocationSer.convertToBukkitLocation(costBlockLocation).getBlock();
 		return null;
 	}
-	
+
 	public String getName()
 	{
 		return name;
 	}
-	
+
 	private static LocationSer getTollableBlock(Location pos)
 	{
 		BlockFace[] verticalFaces = new BlockFace[] {BlockFace.UP, BlockFace.SELF, BlockFace.DOWN};
 		BlockFace[] horizontalFaces = new BlockFace[] {BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.SELF};
-		
+
 		for (BlockFace bf : verticalFaces)
 		{
 			Block current = pos.getBlock().getRelative(bf);
@@ -137,7 +141,7 @@ public class ZTollSign extends ZSign implements Externalizable
 				if (current.getRelative(bf2).getType() == Material.LEVER
 						|| current.getRelative(bf2).getType() == Material.WOODEN_DOOR || current.getRelative(bf2).getType() == Material.TRAP_DOOR
 						|| current.getRelative(bf2).getType() == Material.WOOD_BUTTON || current.getRelative(bf2).getType() == Material.STONE_BUTTON
-						|| current.getRelative(bf2).getType() == Material.IRON_DOOR_BLOCK) 
+						|| current.getRelative(bf2).getType() == Material.IRON_DOOR_BLOCK)
 				{
 					return LocationSer.convertFromBukkitLocation(current.getRelative(bf2).getLocation());
 				}
@@ -145,7 +149,7 @@ public class ZTollSign extends ZSign implements Externalizable
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean executeClick(Player player)
 	{
@@ -210,27 +214,27 @@ public class ZTollSign extends ZSign implements Externalizable
 			return false;
 		}
 	}
-	
+
 	public boolean isActive()
 	{
 		return active;
 	}
-	
+
 	public boolean isOpposite()
 	{
 		return opposite;
 	}
-	
+
 	public boolean isNoReset()
 	{
 		return noReset;
 	}
-	
+
 	public boolean isUsableOnce()
 	{
 		return usableOnce;
 	}
-	
+
 	public void reload()
 	{
 		if(!(getLocation().getBlock().getState() instanceof Sign))
@@ -251,7 +255,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			}
 		}
 	}
-	
+
 	public void resetCostBlock()
 	{
 		if(noReset)
@@ -288,12 +292,12 @@ public class ZTollSign extends ZSign implements Externalizable
 		//Bye bye Joe :(
 		Arrays.asList(player.server.getPlayers()).remove(player.getName());
 	}
-	
+
 	public void setNoReset(boolean noReset)
 	{
 		this.noReset = noReset;
 	}
-	
+
 	public void setOpposite(boolean opposite)
 	{
 		this.opposite = opposite;
@@ -303,14 +307,14 @@ public class ZTollSign extends ZSign implements Externalizable
 	{
 		usableOnce = usable;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException
 	{
 		super.readExternal(in);
 		int ver = in.readInt();
-		
+
 		if(ver == 0)
 		{
 			costBlockLocation = (LocationSer) in.readObject();
@@ -355,14 +359,14 @@ public class ZTollSign extends ZSign implements Externalizable
 	{
 		super.writeExternal(out);
 		out.writeInt(VERSION);
-		
+
 		out.writeObject(costBlockLocation);
 		out.writeBoolean(active);
 		out.writeUTF(name);
 		out.writeObject(zSpawns);
 		out.writeBoolean(usableOnce);
 	}
-	
+
 	private static String generateString(Random rng, String characters, int length)
 	{
 	    char[] text = new char[length];
