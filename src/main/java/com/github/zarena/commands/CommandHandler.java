@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 
-
+import com.github.zarena.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -28,11 +28,6 @@ import com.github.zarena.events.LevelChangeEvent;
 import com.github.zarena.signs.ZTollSign;
 import com.github.zarena.spout.PlayerOptions;
 import com.github.zarena.spout.SpoutHandler;
-import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
-import com.github.zarena.utils.LocationSer;
-import com.github.zarena.utils.Message;
-import com.github.zarena.utils.StringEnums;
 
 public class CommandHandler
 {
@@ -88,7 +83,7 @@ public class CommandHandler
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
-		if(plugin.getConfig().getBoolean(Constants.DISABLE_JOIN_WITH_INV))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.DISABLE_JOIN_WITH_INV.toString()))
 		{
 			boolean isClear = true;
 			for(ItemStack item : player.getInventory().getContents())
@@ -522,8 +517,7 @@ public class CommandHandler
 			String amounts = "";
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
-				int toSpawn = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), checkWave,
-						plugin.getConfig().getInt(Constants.ZOMBIE_QUANTITY_LIMIT), plugin.getConfig().getDoubleList(Constants.ZOMBIE_QUANTITY_COEFFICIENTS));
+				int toSpawn = waveHandler.calcQuantity(checkWave);
 				amounts += toSpawn;
 			}
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Zombie Amounts on the First 20 Waves"), amounts));
@@ -532,8 +526,7 @@ public class CommandHandler
 			String healthAmounts = "";
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
-				int health = waveHandler.calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_HEALTH_FORMULA), checkWave,
-						plugin.getConfig().getInt(Constants.ZOMBIE_HEALTH_LIMIT), plugin.getConfig().getDoubleList(Constants.ZOMBIE_HEALTH_COEFFICIENTS));
+				int health = waveHandler.calcHealth(checkWave);
 				healthAmounts += health;
 			}
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Health of Normal Zombies on the First 20 Waves"), healthAmounts));
@@ -661,11 +654,11 @@ public class CommandHandler
 		}
 		Player player = senderWrapper.getPlayer();
 		List<Double> locXYZ = new ArrayList<Double>();
-		plugin.getConfig().set(Constants.GAME_LEAVE_WORLD, player.getWorld().getName());
+		plugin.getConfiguration().set(ConfigEnum.GAME_LEAVE_WORLD.toString(), player.getWorld().getName());
 		locXYZ.add(player.getLocation().getX());
 		locXYZ.add(player.getLocation().getY());
 		locXYZ.add(player.getLocation().getZ());
-		plugin.getConfig().set(Constants.GAME_LEAVE_LOCATION, locXYZ);
+		plugin.getConfiguration().set(ConfigEnum.GAME_LEAVE_LOCATION.toString(), locXYZ);
 		senderWrapper.sendMessage(Message.LEAVE_LOCATION_SET.formatMessage());
 	}
 

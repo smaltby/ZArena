@@ -14,6 +14,11 @@ import com.github.customentitylibrary.entities.CustomSkeleton;
 import com.github.customentitylibrary.entities.CustomWolf;
 import com.github.customentitylibrary.entities.CustomZombie;
 
+import com.github.zarena.utils.*;
+import de.congrace.exp4j.Calculable;
+import de.congrace.exp4j.ExpressionBuilder;
+import de.congrace.exp4j.UnknownFunctionException;
+import de.congrace.exp4j.UnparsableExpressionException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -22,10 +27,10 @@ import com.github.zarena.entities.ZEntityType;
 import com.github.zarena.events.GameStopCause;
 import com.github.zarena.events.GameStopEvent;
 import com.github.zarena.events.WaveChangeEvent;
-import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
-import com.github.zarena.utils.Message;
-import com.github.zarena.utils.StringEnums;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 public class WaveHandler implements Runnable
 {
@@ -79,77 +84,86 @@ public class WaveHandler implements Runnable
 		return chance * (1 - inbetween) + prevChance * inbetween;
 	}
 
-	/**
-	 * Calculates function based on configuration settings
-	 * @return output gotten from function
-	 */
-	public int calcFunction(String type, int x, int limit, List<Double> coefficients)
+	public int calcHealth(int wave)
 	{
-		if(coefficients.size() > 3)
-			coefficients = coefficients.subList(0, 3);
-		else if(coefficients.size() < 3)
+		Configuration c = plugin.getConfiguration();
+		try
 		{
-			ZArena.log(Level.WARNING, "Either Zombie Quantity or Zombie Health in the configuration is set incorrectly. Using default values instead until the" +
-					"problem is fixed.");
-			coefficients.clear();
-			coefficients.add(.5d);
-			coefficients.add(.5d);
-			coefficients.add(5d);
+			return calcInternal(wave, c.getDouble(ConfigEnum.HEALTH_STARTING.toString()), c.getDouble(ConfigEnum.HEALTH_INCREASE.toString()),
+					c.getDouble(ConfigEnum.HEALTH_EXPOTENTIAL_INCREASE.toString()), c.getInt(ConfigEnum.HEALTH_LIMIT.toString()),
+					c.getBoolean(ConfigEnum.HEALTH_SOFT_LIMIT.toString()), c.getString(ConfigEnum.HEALTH_FORMULA.toString()));
+		} catch(UnknownFunctionException e)
+		{
+			ZArena.log(Level.WARNING, e.getMessage() + " in the custom formula for Health, defined in the config.yml");
+		} catch(UnparsableExpressionException e)
+		{
+			ZArena.log(Level.WARNING, e.getMessage() + " in the custom formula for Health, defined in the config.yml");
 		}
-		if(type == null)
-			type = "Quadratic";
-		switch(StringEnums.valueOf(type.toUpperCase()))
+		//If we get here, the custom formula screwed up, and the user has been warned of such. Now just calc the health without any custom formula
+		try
 		{
-		case QUADRATIC:
-			return calcQuadratic(x, coefficients);
-		case LOGISTIC:
-			return calcLogistic(x, limit, coefficients);
-		case LOGARITHMIC:
-			return calcLogarithmic(x, coefficients);
-		default:
-			return calcQuadratic(x, coefficients);
+			return calcInternal(wave, c.getDouble(ConfigEnum.HEALTH_STARTING.toString()), c.getDouble(ConfigEnum.HEALTH_INCREASE.toString()),
+					c.getDouble(ConfigEnum.HEALTH_EXPOTENTIAL_INCREASE.toString()), c.getInt(ConfigEnum.HEALTH_LIMIT.toString()),
+					c.getBoolean(ConfigEnum.HEALTH_SOFT_LIMIT.toString()), "");
+		} catch(Exception e)
+		{
+			//Shouldn't be possible to get here
+			e.printStackTrace();
+			return 0;
 		}
 	}
 
-	/**
-	 * Note, not a true logarithmic formula. It has been modified to be realistically useful for the plugin.
-	 */
-	private int calcLogarithmic(int x, List<Double> coefficients)
+	private int calcInternal(int wave, double starting, double increasePerWave, double expotentialIncreasePerWave, int limit,
+							 boolean softLimit, String customFormula) throws UnparsableExpressionException, UnknownFunctionException
 	{
-		if (coefficients == null || coefficients.size() != 3) return 0;
-		double a = coefficients.get(0);
-		double b = coefficients.get(1);
-		double c = coefficients.get(2);
-		double base = Math.pow(10, 1/a);
-		double answer = (Math.log(x)) / Math.log(base) + b * x + c;
-		return (int) Math.round(answer);
+		if(!customFormula.isEmpty())
+		{
+			Calculable calc = new ExpressionBuilder(customFormula)
+					.withVariable("x",wave)
+					.build();
+			return (int) calc.calculate();
+		} else
+		{
+			int base = (int) (Math.pow(wave, expotentialIncreasePerWave) + wave * increasePerWave + starting);
+			if(base > limit && limit > 0)
+			{
+				if(softLimit)
+					return base + (base - limit) / 10;
+				else
+					return limit;
+			} else
+				return base;
+		}
 	}
 
-	/**
-	 * Note, not a true logistic formula. It has been modified to be realistically useful for the plugin.
-	 */
-	private int calcLogistic(int x, int limit, List<Double> coefficients)
+	public int calcQuantity(int wave)
 	{
-		if (coefficients == null || coefficients.size() != 3) return 0;
-		limit = (int) (limit * .75);	//With the weird way I set up the calculation, the limit tends to get exceeded by ~25% unless I do this
-		double a = coefficients.get(0) / 3;	//Divide by 3 to prevent the rise from being to drastic unless it is wanted to
-		double b = coefficients.get(1);
-		double c = coefficients.get(2);
-		double functionZero = limit / (1 + Math.pow(Math.E, ((-1*a)*(0 - 8))));	//Makes the function start at 0 for the theoretical wave 0
-		double answer = limit / (1 + Math.pow(Math.E, ((-1*a)*(x - 8)))) - functionZero + b*x + c;
-		return (int) Math.round(answer);
+		Configuration c = plugin.getConfiguration();
+		try
+		{
+			return calcInternal(wave, c.getDouble(ConfigEnum.QUANTITY_STARTING.toString()), c.getDouble(ConfigEnum.QUANTITY_INCREASE.toString()),
+					c.getDouble(ConfigEnum.QUANTITY_EXPOTENTIAL_INCREASE.toString()), c.getInt(ConfigEnum.QUANTITY_LIMIT.toString()),
+					c.getBoolean(ConfigEnum.QUANTITY_SOFT_LIMIT.toString()), c.getString(ConfigEnum.QUANTITY_FORMULA.toString()));
+		} catch(UnknownFunctionException e)
+		{
+			ZArena.log(Level.WARNING, e.getMessage() + " in the custom formula for Quantity, defined in the config.yml");
+		} catch(UnparsableExpressionException e)
+		{
+			ZArena.log(Level.WARNING, e.getMessage() + " in the custom formula for Quantity, defined in the config.yml");
+		}
+		//If we get here, the custom formula screwed up, and the user has been warned of such. Now just calc the health without any custom formula
+		try
+		{
+			return calcInternal(wave, c.getDouble(ConfigEnum.QUANTITY_STARTING.toString()), c.getDouble(ConfigEnum.QUANTITY_INCREASE.toString()),
+					c.getDouble(ConfigEnum.QUANTITY_EXPOTENTIAL_INCREASE.toString()), c.getInt(ConfigEnum.QUANTITY_LIMIT.toString()),
+					c.getBoolean(ConfigEnum.QUANTITY_SOFT_LIMIT.toString()), "");
+		} catch(Exception e)
+		{
+			//Shouldn't be possible to get here
+			e.printStackTrace();
+			return 0;
+		}
 	}
-
-	private int calcQuadratic(int x, List<Double> coefficients)
-	{
-		if (coefficients == null || coefficients.size() != 3) return 0;
-		double a = coefficients.get(0);
-		double b = coefficients.get(1);
-		double c = coefficients.get(2);
-		double answer = Math.pow(a*x, 2) + b*x + c;
-		return (int) Math.round(answer);
-	}
-
 
 	private boolean checkNextWave()
 	{
@@ -353,7 +367,7 @@ public class WaveHandler implements Runnable
 		{
 			if(timeUntilNextWave > 0)
 			{
-				timeUntilNextWave -= Constants.TICK_LENGTH;
+				timeUntilNextWave -= 0.05;
 				if(timeUntilNextWave <= 0)
 					startWave();
 			}
@@ -396,7 +410,7 @@ public class WaveHandler implements Runnable
 
 				//Ever 4 minutes, set the time to the beginning of night so we never end up in daytime (assuming the config says to do this)
 				if(tickCount % 4800 == 0)
-					Bukkit.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).setTime(38000);
+					Bukkit.getServer().getWorld(gameHandler.getLevel().getWorld()).setTime(38000);
 				tickCount++;
 			}
 			//Is the alive count less than 0? Yes? Well then end the bloody game!
@@ -405,26 +419,26 @@ public class WaveHandler implements Runnable
 				GameStopEvent event = new GameStopEvent(GameStopCause.ALL_DEAD);
 				Bukkit.getServer().getPluginManager().callEvent(event);
 				gameHandler.stop();
-				if(plugin.getConfig().getBoolean(Constants.AUTORUN))
+				if(plugin.getConfiguration().getBoolean(ConfigEnum.AUTORUN.toString()))
 					gameHandler.getLevelVoter().startVoting();
 			}
 			//If the config has it so players respawn after a set amount of minutes...then respawn players after a
 			//set amount of minutes!
 			if(tickCount % 20 == 0)
 			{
-				if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) > 0)
+				if(plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) > 0)
 				{
 					for(PlayerStats stats : gameHandler.getPlayerStats().values())
 					{
 						if(!stats.isAlive())
 						{
-							if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) * 60)
+							if(stats.getTimeSinceDeath() >= plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
 								gameHandler.respawnPlayer(stats.getPlayer());
-							if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) * 60)
+							if(stats.getTimeSinceDeath() >= plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
 								gameHandler.respawnPlayer(stats.getPlayer());
-							else if(stats.getTimeSinceDeath() % plugin.getConfig().getInt(Constants.RESPAWN_REMINDER_DELAY) == 0)
+							else if(stats.getTimeSinceDeath() % plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_REMINDER_DELAY.toString()) == 0)
 							{
-								int secondsUntilSpawn = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME) * 60 - stats.getTimeSinceDeath();
+								int secondsUntilSpawn = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60 - stats.getTimeSinceDeath();
 								int minutesUntilSpawn = (int)TimeUnit.SECONDS.toMinutes(secondsUntilSpawn);
 								secondsUntilSpawn = secondsUntilSpawn % 60;
 								String message = "";
@@ -469,17 +483,15 @@ public class WaveHandler implements Runnable
 
 		if(newWave)
 		{
-			timeUntilNextWave = plugin.getConfig().getInt(Constants.WAVE_DELAY);
+			timeUntilNextWave = plugin.getConfiguration().getInt(ConfigEnum.WAVE_DELAY.toString());
 			ChatHelper.broadcastMessage(Message.WAVE_START_IN.formatMessage(modifiedWave, timeUntilNextWave), gameHandler.getBroadcastPlayers());
 		}
 		//Calculate the waves settings
-		toSpawn = calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_QUANTITY_FORMULA), modifiedWave, plugin.getConfig().getInt(Constants.ZOMBIE_QUANTITY_LIMIT),
-				plugin.getConfig().getDoubleList(Constants.ZOMBIE_QUANTITY_COEFFICIENTS));
-		health = calcFunction(plugin.getConfig().getString(Constants.ZOMBIE_HEALTH_FORMULA), modifiedWave, plugin.getConfig().getInt(Constants.ZOMBIE_HEALTH_LIMIT),
-				plugin.getConfig().getDoubleList(Constants.ZOMBIE_HEALTH_COEFFICIENTS));
+		toSpawn = calcQuantity(wave);
+		health = calcHealth(health);
 		health *= gm.getHealthModifier();
 		toSpawn *= gm.getZombieAmountModifier();
-		if(plugin.getConfig().getBoolean(Constants.QUANTITY_ADJUST))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.QUANTITY_ADJUST.toString()))
 			toSpawn *= 1.5/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-3) + .25);
 
 		zombieSpawnChance = 0.15 / (1 + Math.pow(Math.E, ((double) -1/4 * (modifiedWave / 2))));	//Logistic function
@@ -495,13 +507,13 @@ public class WaveHandler implements Runnable
 				wolfWave = false;
 			else
 			{
-				if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_WAVE_PERCENT_OCCUR) && lastWolfWave > 4)
+				if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.WOLF_WAVE_PERCENT_OCCUR.toString()) && lastWolfWave > 4)
 				{
 					wolfWave = true;
 					lastWolfWave = 0;
 					ChatHelper.broadcastMessage(Message.WOLF_WAVE_APPROACHING.formatMessage());
 				}
-				else if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_WAVE_PERCENT_OCCUR) && lastSkeletonWave > 4)
+				else if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.SKELETON_WAVE_PERCENT_OCCUR.toString()) && lastSkeletonWave > 4)
 				{
 					skeletonWave = true;
 					lastSkeletonWave = 0;
@@ -509,13 +521,13 @@ public class WaveHandler implements Runnable
 				}
 			}
 			//Respawn players, or inform them of when they will respawn, if applicable
-			if(plugin.getConfig().getInt(Constants.RESPAWN_EVERY_WAVES) > 0)
+			if(plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString()) > 0)
 			{
 				for(PlayerStats stats : gameHandler.getPlayerStats().values())
 				{
 					if(!stats.isAlive())
 					{
-						int respawnEveryWaves = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_WAVES);
+						int respawnEveryWaves = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
 						if(stats.getWavesSinceDeath() >= respawnEveryWaves)
 							gameHandler.respawnPlayer(stats.getPlayer());
 						else
@@ -552,7 +564,7 @@ public class WaveHandler implements Runnable
 			return;
 		if(rnd.nextDouble() > zombieSpawnChance)
 			return;
-		if(entities.size() >= plugin.getConfig().getInt(Constants.MOB_CAP))
+		if(entities.size() >= plugin.getConfiguration().getInt(ConfigEnum.MOB_CAP.toString()))
 			return;
 
 		//Get the modified wave, based on gamemode
@@ -563,15 +575,15 @@ public class WaveHandler implements Runnable
 
 		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
 		CustomEntityWrapper customEnt = null;
-		if(wolfWave && rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_WAVE_PERCENT_SPAWN))
+		if(wolfWave && rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.WOLF_WAVE_PERCENT_SPAWN.toString()))
 			customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
-		else if(skeletonWave && rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_WAVE_PERCENT_SPAWN))
+		else if(skeletonWave && rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.SKELETON_WAVE_PERCENT_SPAWN.toString()))
 			customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
 		else
 		{
-			if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.WOLF_PERCENT_SPAWN) && (wave > 1 || gm.isApocalypse()))
+			if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.WOLF_PERCENT_SPAWN.toString()) && (wave > 1 || gm.isApocalypse()))
 				customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
-			else if(rnd.nextDouble() < plugin.getConfig().getDouble(Constants.SKELETON_PERCENT_SPAWN) && (wave > 1 || gm.isApocalypse()))
+			else if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.SKELETON_PERCENT_SPAWN.toString()) && (wave > 1 || gm.isApocalypse()))
 				customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
 			else
 				customEnt = chooseEntity(modifiedWave, zombieTypes, gm.getDefaultZombies());

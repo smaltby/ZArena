@@ -22,7 +22,7 @@ public class Configuration extends ConfigurationNode
 
 	public Configuration(File file)
 	{
-		super(new HashMap<String, Object>());
+		super("", new HashMap<String, Object>());
 
 		DumperOptions options = new DumperOptions();
 
@@ -58,7 +58,7 @@ public class Configuration extends ConfigurationNode
 			{
 				if(line.startsWith("#"))
 					currentComment += line + "\n";
-				else if(line.matches(".+:.*"))
+				else if(line.matches("\\S+:.*"))
 				{
 					//If the first key has passed and no header has been registered, then there is no header
 					headerDone = true;
@@ -264,7 +264,7 @@ public class Configuration extends ConfigurationNode
 	 */
 	public static ConfigurationNode getEmptyNode()
 	{
-		return new ConfigurationNode(new HashMap<String, Object>());
+		return new ConfigurationNode("", new HashMap<String, Object>());
 	}
 
 	class EmptyNullRepresenter extends Representer

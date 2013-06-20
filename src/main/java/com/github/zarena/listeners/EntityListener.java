@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
+import com.github.zarena.utils.*;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -30,10 +31,6 @@ import com.github.zarena.GameHandler;
 import com.github.zarena.PlayerStats;
 import com.github.zarena.ZArena;
 import com.github.zarena.entities.ZEntityType;
-import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
-import com.github.zarena.utils.Message;
-import com.github.zarena.utils.Utils;
 
 public class EntityListener implements Listener
 {
@@ -54,9 +51,9 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
-		if(plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()) && plugin.getGameHandler().isRunning())
 		{
-			if(event.getLocation().getWorld().getName().equals(plugin.getConfig().getString(Constants.GAME_WORLD)) && event.getSpawnReason() != SpawnReason.CUSTOM)
+			if(event.getLocation().getWorld().getName().equals(plugin.getGameHandler().getLevel().getWorld()) && event.getSpawnReason() != SpawnReason.CUSTOM)
 				event.setCancelled(true);
 		}
 	}
@@ -75,7 +72,7 @@ public class EntityListener implements Listener
 				if(stats.isAlive())
 				{
 					stats.setAlive(false);
-					stats.subMoney(stats.getMoney() * plugin.getConfig().getDouble(Constants.MONEY_LOST));
+					stats.subMoney(stats.getMoney() * plugin.getConfiguration().getDouble(ConfigEnum.MONEY_LOST.toString()));
 					stats.registerDeath();
                     //Broadcast the players death
                     if(gameHandler.getAliveCount() > 0)
@@ -88,7 +85,7 @@ public class EntityListener implements Listener
 		}
 		else if(CustomEntityWrapper.instanceOf(ent))
 		{
-			if(plugin.getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
+			if(plugin.getConfiguration().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
 				event.setDroppedExp(0);
 			CustomEntityWrapper customEnt = CustomEntityWrapper.getCustomEntity(ent);
 			ZEntityType type = (ZEntityType) customEnt.getType();
@@ -103,7 +100,7 @@ public class EntityListener implements Listener
 				//Give the killer money/points
 				if(stats != null && stats.isAlive())
 				{
-					stats.addMoney(plugin.getConfig().getInt(Constants.KILL_MONEY) * moneyModifier);
+					stats.addMoney(plugin.getConfiguration().getInt(ConfigEnum.KILL_MONEY.toString()) * moneyModifier);
 					stats.addPoints(1);
 					stats.messageStats();
 					if(moneyModifier > 1)
@@ -133,7 +130,7 @@ public class EntityListener implements Listener
 				PlayerStats stats = gameHandler.getPlayerStats().get(assister.getName());
 				if(stats != null && stats.isAlive())
 				{
-					stats.addMoney(((double) plugin.getConfig().getInt(Constants.KILL_MONEY)) / 2 * moneyModifier);
+					stats.addMoney(((double) plugin.getConfiguration().getInt(ConfigEnum.KILL_MONEY.toString())) / 2 * moneyModifier);
 					stats.messageStats();
 					ChatHelper.sendMessage(Message.ASSIST_KILL.formatMessage(moneyModifier/2, type.toString()), stats.getPlayer());
 				}
@@ -180,14 +177,14 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onFoodLevelChange(FoodLevelChangeEvent event)
 	{
-		if(plugin.getConfig().getBoolean(Constants.DISABLE_HUNGER) && plugin.getGameHandler().getPlayers().contains(event.getEntity()))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.DISABLE_HUNGER.toString()) && plugin.getGameHandler().getPlayers().contains(event.getEntity()))
 			event.setCancelled(true);
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event)
 	{
-		if(plugin.getConfig().getBoolean(Constants.DISABLE_HUNGER) && plugin.getGameHandler().getPlayers().contains(event.getEntity()) && event.getRegainReason() == RegainReason.SATIATED)
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.DISABLE_HUNGER.toString()) && plugin.getGameHandler().getPlayers().contains(event.getEntity()) && event.getRegainReason() == RegainReason.SATIATED)
 			event.setCancelled(true);
 	}
 

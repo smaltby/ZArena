@@ -6,6 +6,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.logging.Level;
 
+import com.github.zarena.utils.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,10 +19,6 @@ import com.github.zarena.PlayerStats;
 import com.github.zarena.ZArena;
 import com.github.zarena.ZLevel;
 import com.github.zarena.commands.CommandSenderWrapper;
-import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
-import com.github.zarena.utils.LocationSer;
-import com.github.zarena.utils.Message;
 
 public abstract class ZSign implements Externalizable
 {
@@ -49,8 +46,8 @@ public abstract class ZSign implements Externalizable
 	public static ZSign attemptCreateSign(ZLevel level, Location location, Player player, String[] lines)
 	{
 		String firstLine = lines[0];
-		String shopHeader = ZArena.getInstance().getConfig().getString(Constants.SHOP_HEADER, "ZBuy");
-		String tollHeader = ZArena.getInstance().getConfig().getString(Constants.TOLL_HEADER, "ZPay");
+		String shopHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.SHOP_HEADER.toString(), "ZBuy");
+		String tollHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.TOLL_HEADER.toString(), "ZPay");
 		if(firstLine.equals(shopHeader) || firstLine.equals(tollHeader))
 		{
 			if(ZArena.getInstance().getGameHandler().getLevel() == null)
@@ -78,8 +75,8 @@ public abstract class ZSign implements Externalizable
 	
 	public static ZSign attemptCreateSign(ZLevel level, Location location, String[] lines)
 	{
-		String shopHeader = ZArena.getInstance().getConfig().getString(Constants.SHOP_HEADER, "ZBuy");
-		String tollHeader = ZArena.getInstance().getConfig().getString(Constants.TOLL_HEADER, "ZPay");
+		String shopHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.SHOP_HEADER.toString(), "ZBuy");
+		String tollHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.TOLL_HEADER.toString(), "ZPay");
 		String firstLine = lines[0];
 		if(firstLine.equals(shopHeader) || firstLine.equals(tollHeader))
 		{

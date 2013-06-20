@@ -23,12 +23,10 @@ public class LevelHandler implements Externalizable
 	
 	private List<com.github.zarena.ZLevel> levels = new ArrayList<com.github.zarena.ZLevel>();
 	private transient Random rnd;
-	private String world;
 	
 	public LevelHandler()
 	{
 		rnd = new Random();
-		world = ZArena.getInstance().getConfig().getString(Constants.GAME_WORLD);
 	}
 	
 	public void addLevel(ZLevel level)
@@ -72,11 +70,6 @@ public class LevelHandler implements Externalizable
 	public List<ZLevel> getLevels()
 	{
 		return levels;
-	}
-	
-	public String getWorldName()
-	{
-		return world;
 	}
 	
 	@SuppressWarnings("unchecked")

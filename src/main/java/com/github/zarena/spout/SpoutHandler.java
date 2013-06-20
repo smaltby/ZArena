@@ -21,7 +21,7 @@ public class SpoutHandler
 {
 	private static SpoutListener sListener = new SpoutListener();
 	
-	public static void onEnable()
+	public static void enable()
 	{
 		sListener = new SpoutListener();
 		sListener.registerEvents(Bukkit.getServer().getPluginManager(), ZArena.getInstance());

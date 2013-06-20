@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.Random;
 
+import com.github.zarena.utils.ConfigEnum;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -122,7 +123,8 @@ public class LevelVoter implements Runnable
 			currentVoteMessage[b-1] = ChatHelper.broadcastMessage(Message.VOTE_OPTION.formatMessage(b, levelName, gmName), gameHandler.getBroadcastPlayers());
 			b++;
 		}
-		ChatHelper.broadcastMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(Constants.VOTING_LENGTH)), gameHandler.getBroadcastPlayers());
+		ChatHelper.broadcastMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfiguration().getInt(ConfigEnum.VOTING_LENGTH.toString())),
+				gameHandler.getBroadcastPlayers());
 		
 		//Send vote screens to spout players with the option enabled
 		final String[] optionsArray = new String[3];
@@ -134,7 +136,8 @@ public class LevelVoter implements Runnable
 		}
 		if(plugin.isSpoutEnabled())
 			SpoutHandler.openVotingScreens(optionsArray);
-		gameHandler.voterTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this, plugin.getConfig().getInt(Constants.VOTING_LENGTH) * 20);
+		gameHandler.voterTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this,
+				plugin.getConfiguration().getInt(ConfigEnum.VOTING_LENGTH.toString()) * 20);
 	}
 
 	public void resetVoting()

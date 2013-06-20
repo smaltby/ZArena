@@ -1,5 +1,6 @@
 package com.github.zarena;
 
+import com.github.zarena.utils.ConfigEnum;
 import net.milkbowl.vault.economy.Economy;
 
 import java.util.concurrent.TimeUnit;
@@ -49,7 +50,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 			getEconomy().depositPlayer(player, money);
 		else
 			this.money += money;
-		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
+		if(ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
 			getPlayer().setLevel((int) getMoney());
 	}
 
@@ -152,7 +153,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 			if(this.money < 0)
 				this.money = 0;
 		}
-		if(ZArena.getInstance().getConfig().getBoolean(Constants.XP_BAR_IS_MONEY))
+		if(ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
 			getPlayer().setLevel((int) getMoney());
 	}
 
@@ -191,7 +192,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 
 	private boolean usingVault()
 	{
-		return ZArena.getInstance().getConfig().getBoolean(Constants.USE_VAULT);
+		return ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.USE_VAULT.toString()) && Bukkit.getPluginManager().getPlugin("Vault") != null;
 	}
 
 	private Economy getEconomy()

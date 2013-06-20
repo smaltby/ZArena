@@ -15,6 +15,7 @@ import java.util.logging.Level;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
+import com.github.zarena.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -29,11 +30,6 @@ import org.bukkit.potion.PotionEffect;
 
 import com.github.zarena.commands.CommandSenderWrapper;
 import com.github.zarena.signs.ZSignCustomItem;
-import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
-import com.github.zarena.utils.CustomObjectInputStream;
-import com.github.zarena.utils.Message;
-import com.github.zarena.utils.Utils;
 import com.google.common.io.Files;
 
 public class GameHandler
@@ -64,7 +60,7 @@ public class GameHandler
 		plugin = ZArena.getInstance();
 		isRunning = false;
 		isVoting = false;
-		isWaiting = plugin.getConfig().getBoolean(Constants.AUTOSTART);
+		isWaiting = plugin.getConfiguration().getBoolean(ConfigEnum.AUTOSTART.toString());
 		waveHandler = new WaveHandler(this);
 		levelVoter = new LevelVoter(this);
 		players = new ArrayList<String>();
@@ -77,7 +73,7 @@ public class GameHandler
 	 */
 	public void addPlayer(Player player)
 	{
-		if(players.size() >= plugin.getConfig().getInt(Constants.PLAYER_LIMIT))
+		if(players.size() >= plugin.getConfiguration().getInt(ConfigEnum.PLAYER_LIMIT.toString()))
 		{
 			ChatHelper.sendMessage(Message.GAME_FULL.formatMessage(), player);
 			return;
@@ -89,7 +85,7 @@ public class GameHandler
 		PlayerStats stats = new PlayerStats(player);
 		playerStats.put(player.getName(), stats);
 
-		if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			clearInventory(player.getInventory());
 
 		player.setGameMode(org.bukkit.GameMode.ADVENTURE);
@@ -103,14 +99,14 @@ public class GameHandler
 			{
 				//Send messages informing the player when he will next respawn, if applicable
                 boolean respawningEnabled = false;
-				int respawnEveryTime = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_TIME);
+				int respawnEveryTime = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString());
 				if(respawnEveryTime != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_TIME_AFTER_JOIN.formatMessage(player.getName(),
 												respawnEveryTime + "min"), player);
                     respawningEnabled = true;
 				}
-				int respawnEveryWaves = plugin.getConfig().getInt(Constants.RESPAWN_EVERY_WAVES);
+				int respawnEveryWaves = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
 				if(respawnEveryWaves != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES_AFTER_JOIN.formatMessage(stats.getPlayer().getName(),
@@ -136,7 +132,7 @@ public class GameHandler
 				player.teleport(player.getWorld().getSpawnLocation());
 			ChatHelper.sendMessage(Message.VOTE_START.formatMessage(), player);
 			ChatHelper.sendMessage(levelVoter.getVoteMessage(), player);
-			ChatHelper.sendMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(Constants.VOTING_LENGTH)), player);
+			ChatHelper.sendMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfiguration().getInt(ConfigEnum.VOTING_LENGTH.toString())), player);
 		}
 		else
 		{
@@ -149,7 +145,7 @@ public class GameHandler
 
 	private void addStartItems(PlayerInventory inv)
 	{
-		for(String item : plugin.getConfig().getStringList(Constants.START_ITEMS))
+		for(String item : plugin.getConfiguration().getStringList(ConfigEnum.START_ITEMS.toString()))
 		{
 			ZSignCustomItem customItem = ZSignCustomItem.getCustomItem(item.split("\\s"));
 			if(customItem != null)
@@ -193,7 +189,7 @@ public class GameHandler
 			player.removePotionEffect(effect.getType());
 		}
 		PlayerInventory pi = player.getInventory();
-		if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			clearInventory(pi);
 		addStartItems(pi);
 	}
@@ -221,13 +217,13 @@ public class GameHandler
 	public List<Player> getBroadcastPlayers()
 	{
 		List<Player> toBroadcast = new ArrayList<Player>();
-		if(plugin.getConfig().getBoolean(Constants.BROADCAST_ALL, false))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.BROADCAST_ALL.toString(), false))
 			toBroadcast = Arrays.asList(Bukkit.getOnlinePlayers());
-		else if(plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE, false))
+		else if(plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString(), false))
 		{
 			for(Player p : Bukkit.getServer().getOnlinePlayers())
 			{
-				if(p.getWorld().getName().equals(plugin.getConfig().getString(Constants.GAME_WORLD)))
+				if(p.getWorld().getName().equals(level.getWorld()))
 					toBroadcast.add(p);
 			}
 		} else
@@ -272,14 +268,14 @@ public class GameHandler
 
 	public Location getPlayersLeaveLocation(Player player)
 	{
-		if(plugin.getConfig().getBoolean(Constants.SAVE_POSITION))
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.SAVE_POSITION.toString()))
 		{
 			Location oldLocation = getPlayerStats(player).getOldLocation();
 			if(oldLocation != null)
 				return oldLocation;
 		}
-		World world = Bukkit.createWorld(new WorldCreator(plugin.getConfig().getString(Constants.GAME_LEAVE_WORLD, "world")));
-		List<Double> locXYZ = plugin.getConfig().getDoubleList(Constants.GAME_LEAVE_LOCATION);
+		World world = Bukkit.createWorld(new WorldCreator(plugin.getConfiguration().getString(ConfigEnum.GAME_LEAVE_WORLD.toString(), "world")));
+		List<Double> locXYZ = plugin.getConfiguration().getDoubleList(ConfigEnum.GAME_LEAVE_LOCATION.toString());
         return new Location(world, locXYZ.get(0), locXYZ.get(1), locXYZ.get(2));
 	}
 
@@ -363,19 +359,16 @@ public class GameHandler
 		if(players.contains(player.getName()))
 		{
 			PlayerStats stats = getPlayerStats(player);
-			if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			{
 				clearInventory(player.getInventory());
-				if(plugin.getConfig().getBoolean(Constants.SAVE_ITEMS))
-				{
-					PlayerInventory pi = player.getInventory();
-					ItemStack[] contents = stats.getInventoryContents();
-					if(contents != null)
-						pi.setContents(contents);
-					ItemStack[] armorContents = stats.getInventoryArmor();
-					if(armorContents != null)
-						pi.setArmorContents(armorContents);
-				}
+				PlayerInventory pi = player.getInventory();
+				ItemStack[] contents = stats.getInventoryContents();
+				if(contents != null)
+					pi.setContents(contents);
+				ItemStack[] armorContents = stats.getInventoryArmor();
+				if(armorContents != null)
+					pi.setArmorContents(armorContents);
 			}
 			player.teleport(getPlayersLeaveLocation(player));
 			player.setGameMode(stats.getOldGameMode());
@@ -399,7 +392,7 @@ public class GameHandler
 			{
 				player.removePotionEffect(effect.getType());
 			}
-			if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			{
 				PlayerInventory pi = player.getInventory();
 				clearInventory(pi);
@@ -475,7 +468,7 @@ public class GameHandler
 			return;
 		if(players.isEmpty())
 		{
-			isWaiting = plugin.getConfig().getBoolean(Constants.AUTOSTART);
+			isWaiting = plugin.getConfiguration().getBoolean(ConfigEnum.AUTOSTART.toString());
 			return;
 		}
 		if(level == null)
@@ -515,11 +508,11 @@ public class GameHandler
 			level.resetSigns();
 			level.resetInactiveZSpawns();
 		}
-		for(Entity entity : plugin.getServer().getWorld(plugin.getConfig().getString(Constants.GAME_WORLD)).getEntities())
+		for(Entity entity : plugin.getServer().getWorld(level.getWorld()).getEntities())
 		{
 			if(CustomEntityWrapper.instanceOf(entity))
 				((LivingEntity) entity).setHealth(0);
-			else if(!(entity instanceof Player) && plugin.getConfig().getBoolean(Constants.WORLD_EXCLUSIVE))
+			else if(!(entity instanceof Player) && plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()))
 				entity.remove();
 		}
 		for(PlayerStats stats : playerStats.values())
@@ -530,7 +523,7 @@ public class GameHandler
 			Player player = stats.getPlayer();
 			if(player != null)
 			{
-				if(plugin.getConfig().getBoolean(Constants.SEPERATE_INVENTORY))
+				if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 					clearInventory(player.getInventory());
 				for(PotionEffect effect : player.getActivePotionEffects())
 				{

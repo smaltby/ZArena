@@ -331,4 +331,92 @@ public class Utils
 		}
 		return args;
 	}
+
+	/**
+	 * Convert to the new config setup
+	 * @param oldConfig old config
+	 * @param newConfig new config
+	 */
+	public static void convertToNewConfig(Configuration newConfig, Configuration oldConfig)
+	{
+		newConfig.set(ConfigEnum.AUTOSTART.toString(), oldConfig.getBoolean("Options.Auto-Start"));
+		newConfig.set(ConfigEnum.AUTORUN.toString(), oldConfig.getBoolean("Options.Auto-Run"));
+		newConfig.set(ConfigEnum.AUTOJOIN.toString(), oldConfig.getBoolean("Options.Auto-Join"));
+		newConfig.set(ConfigEnum.PLAYER_LIMIT.toString(), oldConfig.getInt("Options.Player Limit"));
+		newConfig.set(ConfigEnum.MOB_CAP.toString(), oldConfig.getInt("Entities.Mob Cap"));
+		newConfig.set(ConfigEnum.VOTING_LENGTH.toString(), oldConfig.getInt("Options.Voting Length"));
+		newConfig.set(ConfigEnum.WAVE_DELAY.toString(), oldConfig.getInt("Options.Wave Start Delay"));
+		newConfig.set(ConfigEnum.WORLD_EXCLUSIVE.toString(), oldConfig.getBoolean("Options.World Exclusive"));
+		newConfig.set(ConfigEnum.DISABLE_HUNGER.toString(), oldConfig.getBoolean("Options.Disable Hunger"));
+		newConfig.set(ConfigEnum.RESPAWN_EVERY_WAVES.toString(), oldConfig.getInt("Options.Respawn Every X Waves (0 to disable)"));
+		newConfig.set(ConfigEnum.RESPAWN_EVERY_TIME.toString(), oldConfig.getInt("Options.Respawn Every X Minutes (0 to disable)"));
+		newConfig.set(ConfigEnum.START_ITEMS.toString(), oldConfig.getStringList("Options.Start Items"));
+		newConfig.set(ConfigEnum.KILL_MONEY.toString(), oldConfig.getInt("Stats.Money on Kill"));
+		newConfig.set(ConfigEnum.MONEY_LOST.toString(), oldConfig.getDouble("Stats.Money Percent Lost on Death"));
+		newConfig.set(ConfigEnum.USE_VAULT.toString(), oldConfig.getBoolean("Stats.Use Vault Economy"));
+		
+		newConfig.set(ConfigEnum.HEALTH_STARTING.toString(), oldConfig.getDoubleList("Zombies.Health.Coefficients").get(2));
+		newConfig.set(ConfigEnum.HEALTH_INCREASE.toString(), oldConfig.getDoubleList("Zombies.Health.Coefficients").get(1));
+		String formulaType = oldConfig.getString("Zombies.Health.Formula Type [Quadratic|Logistic|Logarithmic]");
+		if(formulaType.equalsIgnoreCase("Logarithmic"))
+			newConfig.set(ConfigEnum.HEALTH_EXPOTENTIAL_INCREASE.toString(), 0.5);
+		else
+			newConfig.set(ConfigEnum.HEALTH_EXPOTENTIAL_INCREASE.toString(), oldConfig.getDoubleList("Zombies.Health.Coefficients").get(0));
+		if(formulaType.equalsIgnoreCase("Logistic"))
+		{
+			newConfig.set(ConfigEnum.HEALTH_LIMIT.toString(), oldConfig.getInt("Zombies.Health.Limit (Only applicaple for Logistic Forumula)"));
+			newConfig.set(ConfigEnum.HEALTH_SOFT_LIMIT.toString(), true);
+		} else
+		{
+			newConfig.set(ConfigEnum.HEALTH_LIMIT.toString(), 0);
+			newConfig.set(ConfigEnum.HEALTH_SOFT_LIMIT.toString(), false);
+		}
+
+		newConfig.set(ConfigEnum.QUANTITY_STARTING.toString(), oldConfig.getDoubleList("Zombies.Quantity.Coefficients").get(2));
+		newConfig.set(ConfigEnum.QUANTITY_INCREASE.toString(), oldConfig.getDoubleList("Zombies.Quantity.Coefficients").get(1));
+		formulaType = oldConfig.getString("Zombies.Quantity.Formula Type [Quadratic|Logistic|Logarithmic]");
+		if(formulaType.equalsIgnoreCase("Logarithmic"))
+			newConfig.set(ConfigEnum.QUANTITY_EXPOTENTIAL_INCREASE.toString(), 0.5);
+		else
+			newConfig.set(ConfigEnum.QUANTITY_EXPOTENTIAL_INCREASE.toString(), oldConfig.getDoubleList("Zombies.Quantity.Coefficients").get(0));
+		if(formulaType.equalsIgnoreCase("Logistic"))
+		{
+			newConfig.set(ConfigEnum.QUANTITY_LIMIT.toString(), oldConfig.getInt("Zombies.Quantity.Limit (Only applicaple for Logistic Forumula)"));
+			newConfig.set(ConfigEnum.QUANTITY_SOFT_LIMIT.toString(), true);
+		} else
+		{
+			newConfig.set(ConfigEnum.QUANTITY_LIMIT.toString(), 0);
+			newConfig.set(ConfigEnum.QUANTITY_SOFT_LIMIT.toString(), false);
+		}
+
+		newConfig.set(ConfigEnum.START_MONEY.toString(), oldConfig.getNode("Donator.Start Money"));
+		newConfig.set(ConfigEnum.EXTRA_VOTES.toString(), oldConfig.getNode("Donator.Extra Votes"));
+		newConfig.set(ConfigEnum.CUSTOM_ITEMS.toString(), oldConfig.getNode("SignCustomItems"));
+
+		newConfig.set(ConfigEnum.ALWAYS_NIGHT.toString(), oldConfig.getBoolean("Options.Always Night"));
+		newConfig.set(ConfigEnum.QUANTITY_ADJUST.toString(), oldConfig.getBoolean("Options.Adjust Quantity Based on Player Amount"));
+		newConfig.set(ConfigEnum.SEPERATE_INVENTORY.toString(), oldConfig.getBoolean("Options.Seperate Inventory"));
+		newConfig.set(ConfigEnum.DISABLE_JOIN_WITH_INV.toString(), oldConfig.getBoolean("Options.Disable Joining Game With Inventory"));
+		newConfig.set(ConfigEnum.SAVE_POSITION.toString(), oldConfig.getBoolean("Options.Save Position on Game Join"));
+		newConfig.set(ConfigEnum.GAME_LEAVE_WORLD.toString(), oldConfig.getString("Options.Game Leave World"));
+		newConfig.set(ConfigEnum.GAME_LEAVE_LOCATION.toString(), oldConfig.getDoubleList("Options.Game Leave Location"));
+		newConfig.set(ConfigEnum.XP_BAR_IS_MONEY.toString(), oldConfig.getBoolean("Options.XP Bar Shows Money"));
+		newConfig.set(ConfigEnum.BROADCAST_ALL.toString(), oldConfig.getBoolean("Options.Broadcast To All"));
+		newConfig.set(ConfigEnum.DISABLE_NON_ZA.toString(), oldConfig.getBoolean("Options.Disable Non ZArena Commands In Game"));
+		newConfig.set(ConfigEnum.ENABLE_KILLCOUNTER.toString(), oldConfig.getBoolean("Options.Enable Killcounter"));
+		newConfig.set(ConfigEnum.ENABLE_AFKKICKER.toString(), oldConfig.getBoolean("Options.Set AFK Players as Dead"));
+		newConfig.set(ConfigEnum.RESPAWN_REMINDER_DELAY.toString(), oldConfig.getInt("Options.Respawn Reminder Delay"));
+		newConfig.set(ConfigEnum.SHOP_HEADER.toString(), oldConfig.getString("Options.Shop Sign Header"));
+		newConfig.set(ConfigEnum.TOLL_HEADER.toString(), oldConfig.getString("Options.Tool Sign Header"));
+		newConfig.set(ConfigEnum.WOLF_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Wolf Spawn Chance"));
+		newConfig.set(ConfigEnum.SKELETON_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Skeleton Spawn Chance"));
+		newConfig.set(ConfigEnum.WOLF_WAVE_PERCENT_OCCUR.toString(), oldConfig.getDouble("Entities.Wolf Wave Chance"));
+		newConfig.set(ConfigEnum.SKELETON_WAVE_PERCENT_OCCUR.toString(), oldConfig.getDouble("Entities.Skeleton Wave Chance"));
+		newConfig.set(ConfigEnum.WOLF_WAVE_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Wolf Spawn Chance During Wolf Wave"));
+		newConfig.set(ConfigEnum.SKELETON_WAVE_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Skeleton Spawn Chance During Skeleton Wave"));
+		newConfig.set(ConfigEnum.DEFAULT_ZOMBIE.toString(), oldConfig.getString("Entities.Default Entity File Name"));
+		newConfig.set(ConfigEnum.DEFAULT_SKELETON.toString(), oldConfig.getString("Entities.Default Skeleton File Name"));
+		newConfig.set(ConfigEnum.DEFAULT_WOLF.toString(), oldConfig.getString("Entities.Default Wolf File Name"));
+		newConfig.set(ConfigEnum.DEFAULT_GAMEMODE.toString(), oldConfig.getString("Entities.Default Gamemode File Name"));
+	}
 }

@@ -1,90 +1,199 @@
-First Time Plugin Load: false
-Options:
-  Always Night: true
-  Auto-Start: true
-  Auto-Run: true
-  Auto-Join: false
-  Save Position on Game Join: true
-  Game World: world
-  Game Leave World: world
-  Game Leave Location:
-  - 0.0
-  - 64.0
-  - 0.0
-  Player Limit: 12
-  Adjust Quantity Based on Player Amount: true
-  Save Items: true
-  Voting Length: 30
-  XP Bar Shows Money: false
-  Broadcast To All: false
-  Seperate Inventory: true
-  Wave Start Delay: 10
-  World Exclusive: false
-  Disable Hunger: true
-  Disable Joining Game With Inventory: false
-  Disable Non ZArena Commands In Game: false
-  Enable Killcounter: true
-  Respawn Every X Waves (0 to disable): 3
-  Shop Sign Header: ZBuy
-  Toll Sign Header: ZPay
-  Start Items:
-  - wood axe
-Stats:
-  Money on Kill: 15
-  Money Percent Lost on Death: 0.2
-Entities:
-  Wolf Spawn Chance: 0.05
-  Skeleton Spawn Chance: 0.05
-  Wolf Wave Chance: 0.3
-  Skeleton Wave Chance: 0.2
-  Wolf Spawn Chance During Wolf Wave: 0.9
-  Skeleton Spawn Chance During Wolf Wave: 0.4
-  Default Entity File Name: NormalZombie.yml
-  Default Skeleton File Name: NormalSkeleton.yml
-  Default Wolf File Name: NormalWolf.yml
-  Entity File Name List:
-  - FastZombie.yml
-  - StrongZombie.yml
-  - FireZombie.yml
-  - GigaZombie.yml
-  - FastSkeleton.yml
-  - WitherSkeleton.yml
-  - HellHound.yml
-  - ZombiePigman.yml
-  - ZombieVillager.yml
-Zombies:
-  Health:
-    Formula Type [Quadratic|Logistic|Logarithmic]: Logarithmic
-    Limit (Only applicaple for Logistic Forumula): 0
-    Coefficients:
-    - 3.0
-    - 0.4
-    - 8.0
-  Quantity:
-    Formula Type [Quadratic|Logistic|Logarithmic]: Logistic
-    Limit (Only applicaple for Logistic Forumula): 60
-    Coefficients:
-    - 1.5
-    - 4.0
-    - 9.0
+#Should the game automatically start when the server starts?
+Auto-Start: true
+
+#Should the game automatically run? This means that after a game finishes, voting starts up automatically for the next game
+Auto-Run: true
+
+#Should players who join the server be automatically added into the game?
+Auto-Join: false
+
+#The maximum number of players allowed in the game at once
+Player Limit: 12
+
+#The maximum number of entities the plugin will have spawned in at once
+Mob Cap: 200
+
+#The length of time voting lasts, in seconds
+Voting Length: 30
+
+#The preparation time given to players before the next wave starts, in seconds
+Wave Start Delay: 10
+
+#Whether or not the world the game is running in exists solely to run the game. If true, when the game ends, all entities will be cleared from the world, ZArena broadcasts will go
+#to all players in the world, and non-ZArena entities will not be allowed to spawn in the world
+World Exclusive: false
+
+#Disable hunger for players in the game?
+Disable Hunger: true
+
+#How many waves it takes for players to respawn. 0 to disable.
+Respawn Every X Waves: 2
+
+#How many minutes it takes for players to respawn. 0 to disable.
+Respawn Every X Minutes: 0
+
+#A list of items that players start with. Can be empty.
+Start Items:
+- wood axe
+
+#The base amount of money gotten for each kill
+Money on Kill: 15
+
+#The percent of money lost upon death
+Money Percent Lost on Death: 0.2
+
+#Whether or not to use Vault economy with this plugin. Enabling this allows you to use money gained from killing zombies on stuff from other
+#plugins that are hooked into Vault. For example, you can get a better shop sign plugin if you don't like the way this plugin handles shop signs.
+#Note that this config option is ignored if you don't actually have the Vault plugin.
+Use Vault Economy: true
+
+#The base health of entities. 
+#Starting Health: The health entities start with on wave 1.
+#
+#Increase Per Wave: The amount that health increases per wave.
+#
+#Expotential Increase Per Wave: The amount health increases per wave to the power of whatever number you set it as. 
+#For example, if you set it to 2, that means health will increase by wave squared. If you set it to 3, health will
+#increase by wave cubed. It's reccomended to not set this number very high, as even setting it to two increases very fast.
+#Also note that if you set this to a number between 0 and 1, it will increase the amount of zombies quickly in lower waves,
+#but then slow down in the amount it increases in higher waves.
+#
+#Limit: The limit to the base health of entities. Set to 0 to disable.
+#
+#Soft Limit?: If this is set to true, the health will exceed the limit slowly.
+#
+#Custom Formula: If you want more control, you can use a formula to determine the health of entities. Use the variable 'x'
+#to represent the wave. If you enter in a custom formula, all other fields will be overridden by it. For more details on how
+#to make a custom formula, see here: 
+Health:
+  Starting Health: 8
+  Increase Per Wave: 0.5
+  Expotential Increase Per Wave: 0.5
+  Limit: -1
+  Soft Limit?: false
+  Custom Formula:
+
+#The number of entities per wave. All of the fields here act the same way that the ones for health did, only they modify the
+#quantity of entities as opposed to their health.
+Quantity:
+  Starting Quantity: 12
+  Increase Per Wave: 4
+  Expotential Increase Per Wave: 1.2
+  Limit: 150
+  Soft Limit?: true
+  Custom Formula:
+  
+#This plugin supports custom donator permissions. You can give extra money or votes to players with certain permissions.
+#Follow the format shown below to customize the donator permissions. If you can't figure it out, or are confused, see here:
 Donator:
   Start Money:
     Donator1:
       permission name: zarena.donator1
       value: 15
+    Donator2:
+      permission name: zarena.donator2
+      value: 60
   Extra Votes:
     Donator1:
       permission name: zarena.donator1
       value: 1
-SignCustomItems:
+    Donator2:
+      permission name: zarena.donator2
+      value: 2
+      
+#This plugin also supports custom items to be sold from shop signs. Follow the format shown below to add more custom items.
+#If you can't figure it out, or are confused, see here:
+#The plugin supports Vault, so if you don't like this plugins format for selling items, you can use buy signs from other plugins
+#if you have Vault enabled.
+Sign Custom Items:
   Healing Potion:
     type: 373
     amount: 1
     damage value: 8229
     id: 0
-Gamemodes:
-  Default Gamemode File Name: Normal.yml
-  Gamemode File Name List:
-  - Hardcore.yml
-  - Apocalypse.yml
-  - NoBuying.yml
+    
+#Below are some more advanced configuration options that you are less likely to use
+#-----------------------------------------------------------------------------------------------------------------------------
+#
+#Should it always be night in the world where the game is being played?
+Always Night: true
+
+#If true, the quantity of zombies per wave will be adjusted up if there are lots of players, and adjusted down if there are few
+#Note that the adjustments aren't huge.
+Adjust Quantity Based on Player Amount: true
+
+#Should a players inventory in game be seperated from the players inventory out of game?
+Seperate Inventory: true
+
+#If true, you can't join the game if you have inventory on you
+Disable Joining Game With Inventory: false
+
+#Should the players position be saved when they join the game? They will be returned to that position when they leave
+Save Position on Game Join: true
+
+#If the above is false, the player will be tp'd to the world and location defined below. These can be set from ingame using '/za setleavelocation'
+Game Leave World: world
+
+Game Leave Location:
+- 0.0
+- 64.0
+- 0.0
+
+#Should the XP bar of players in game be used to show how much money they have?
+XP Bar Shows Money: false
+
+#Should ZArena related broadcasts be sent to all players on the server? If false, broadcasts will only be sent to players in game
+Broadcast To All: false
+
+#If true, you can't use non /za commands while in game
+Disable Non ZArena Commands In Game: false
+
+#Should the built-in kill counter be enabled?
+Enable Killcounter: true
+
+#Players who are afk for more than two minutes will be set as dead. If they stop being afk and the game hasn't yet ended and they didn't die, they'll be
+#set back as alive again. The reason for this is there have been multiple complaints of players going afk in unreachable spots and holding up the game.
+#You can, of course, disable this if you find it annoying or have an alternate solution, though you really shouldn't be afk in the middle of an apocalypse...
+Set AFK Players as Dead: true
+
+#The delay, in seconds, between reminders of how long it is until you respawn. Only applicaple if respawning after x minutes is enabled.
+Respawn Reminder Delay: 30
+
+#The header for shop signs
+Shop Sign Header: ZBuy
+
+#The header for toll signs
+Toll Sign Header: ZPay
+
+#The chance of a wolf spawning when it is a normal wave
+Wolf Spawn Chance: 0.075
+
+#The chance of a skeleton spawning when it is a normal wave
+Skeleton Spawn Chance: 0.075
+
+#The chance of a wave being a wolf wave. Note that regardless of this value, there can't be more than one wolf wave every 5 waves.
+Wolf Wave Chance: 0.3
+
+#The chance of a wave being a skeleton wave. Note that regardless of this value, there can't be more than one skeleton wave every 5 waves.
+Skeleton Wave Chance: 0.2
+
+#The chance of a wolf spawning during a wolf wave
+Wolf Spawn Chance During Wolf Wave: 0.9
+
+#The chance of a skeleton spawning during a skeleton wave
+Skeleton Spawn Chance During Skeleton Wave: 0.4
+
+#The file name of the default entity. Should generally be a zombie.
+Default Entity File Name: NormalZombie.yml
+
+#The file name of the default skeleton. Must be a skeleton.
+Default Skeleton File Name: NormalSkeleton.yml
+
+#The file name of the default wolf. Must be a wolf.
+Default Wolf File Name: NormalWolf.yml
+
+#The file name of the default gamemode
+Default Gamemode File Name: Normal.yml
+
+#Do not change this. Ever.
+Version: 1

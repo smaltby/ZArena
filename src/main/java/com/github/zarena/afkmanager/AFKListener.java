@@ -1,8 +1,10 @@
 package com.github.zarena.afkmanager;
 
 import com.github.zarena.events.GameStopEvent;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.*;
 
 public class AFKListener implements Listener
@@ -66,5 +68,15 @@ public class AFKListener implements Listener
 	public void onGameStop(GameStopEvent event)
 	{
 		plugin.currentlyAFK.clear();
+	}
+
+	@EventHandler
+	public void onEntityDeath(EntityDeathEvent event)
+	{
+		if(event.getEntity() instanceof Player)
+		{
+			//Don't tell the plugin it's an action, or the player will be set as alive again
+			plugin.currentlyAFK.remove(((Player) event.getEntity()).getName());
+		}
 	}
 }

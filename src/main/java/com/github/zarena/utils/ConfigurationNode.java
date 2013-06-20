@@ -12,10 +12,12 @@ import java.util.TreeMap;
  */
 public class ConfigurationNode
 {
+	protected String name;
 	protected Map<String, Object> root;
 
-	protected ConfigurationNode(Map<String, Object> root)
+	protected ConfigurationNode(String name, Map<String, Object> root)
 	{
+		this.name = name;
 		this.root = root;
 	}
 
@@ -210,7 +212,7 @@ public class ConfigurationNode
 	 * @param def  default value
 	 * @return int or default
 	 */
-	public int getInt(String path, int def)
+	public Integer getInt(String path, Integer def)
 	{
 		Integer o = castInt(getProperty(path));
 
@@ -225,6 +227,20 @@ public class ConfigurationNode
 	}
 
 	/**
+	 * Gets an integer at a location. This will either return an integer
+	 * or null. If the object at the particular location is not
+	 * actually a integer, null will be returned. However, other
+	 * number types will be casted to an integer.
+	 *
+	 * @param path path to node (dot notation)
+	 * @return int or default
+	 */
+	public Integer getInt(String path)
+	{
+		return getInt(path, null);
+	}
+
+	/**
 	 * Gets a double at a location. This will either return an double
 	 * or the default value. If the object at the particular location is not
 	 * actually a double, the default value will be returned. However, other
@@ -234,7 +250,7 @@ public class ConfigurationNode
 	 * @param def  default value
 	 * @return double or default
 	 */
-	public double getDouble(String path, double def)
+	public Double getDouble(String path, Double def)
 	{
 		Double o = castDouble(getProperty(path));
 
@@ -249,6 +265,21 @@ public class ConfigurationNode
 	}
 
 	/**
+	 * Gets a double at a location. This will either return an double
+	 * or null. If the object at the particular location is not
+	 * actually a double, null will be returned. However, other
+	 * number types will be casted to an double.
+	 *
+	 * @param path path to node (dot notation)
+	 * @return double or default
+	 */
+	public Double getDouble(String path)
+	{
+		return getDouble(path, null);
+	}
+
+
+	/**
 	 * Gets a boolean at a location. This will either return an boolean
 	 * or the default value. If the object at the particular location is not
 	 * actually a boolean, the default value will be returned.
@@ -257,7 +288,7 @@ public class ConfigurationNode
 	 * @param def  default value
 	 * @return boolean or default
 	 */
-	public boolean getBoolean(String path, boolean def)
+	public Boolean getBoolean(String path, Boolean def)
 	{
 		Boolean o = castBoolean(getProperty(path));
 
@@ -269,6 +300,19 @@ public class ConfigurationNode
 		{
 			return o;
 		}
+	}
+
+	/**
+	 * Gets a boolean at a location. This will either return an boolean
+	 * or null. If the object at the particular location is not
+	 * actually a boolean, null will be returned.
+	 *
+	 * @param path path to node (dot notation)
+	 * @return boolean or default
+	 */
+	public Boolean getBoolean(String path)
+	{
+		return getBoolean(path, null);
 	}
 
 	/**
@@ -370,6 +414,22 @@ public class ConfigurationNode
 	}
 
 	/**
+	 * Gets a list of strings. Non-valid entries will not be in the list.
+	 * There will be no null slots. If the list is not defined, the
+	 * default will be returned. 'null' can be passed for the default
+	 * and an empty list will be returned instead. If an item in the list
+	 * is not a string, it will be converted to a string. The node must be
+	 * an actual list and not just a string.
+	 *
+	 * @param path path to node (dot notation)
+	 * @return list of strings
+	 */
+	public List<String> getStringList(String path)
+	{
+		return getStringList(path, null);
+	}
+
+	/**
 	 * Gets a list of integers. Non-valid entries will not be in the list.
 	 * There will be no null slots. If the list is not defined, the
 	 * default will be returned. 'null' can be passed for the default
@@ -405,6 +465,21 @@ public class ConfigurationNode
 	}
 
 	/**
+	 * Gets a list of integers. Non-valid entries will not be in the list.
+	 * There will be no null slots. If the list is not defined, the
+	 * default will be returned. 'null' can be passed for the default
+	 * and an empty list will be returned instead. The node must be
+	 * an actual list and not just an integer.
+	 *
+	 * @param path path to node (dot notation)
+	 * @return list of integers
+	 */
+	public List<Integer> getIntList(String path)
+	{
+		return getIntList(path, null);
+	}
+
+	/**
 	 * Gets a list of doubles. Non-valid entries will not be in the list.
 	 * There will be no null slots. If the list is not defined, the
 	 * default will be returned. 'null' can be passed for the default
@@ -430,6 +505,21 @@ public class ConfigurationNode
 				list.add(i);
 		}
 		return list;
+	}
+
+	/**
+	 * Gets a list of doubles. Non-valid entries will not be in the list.
+	 * There will be no null slots. If the list is not defined, the
+	 * default will be returned. 'null' can be passed for the default
+	 * and an empty list will be returned instead. The node must be
+	 * an actual list and cannot be just a double.
+	 *
+	 * @param path path to node (dot notation)
+	 * @return list of integers
+	 */
+	public List<Double> getDoubleList(String path)
+	{
+		return getDoubleList(path, null);
 	}
 
 	/**
@@ -461,6 +551,21 @@ public class ConfigurationNode
 	}
 
 	/**
+	 * Gets a list of booleans. Non-valid entries will not be in the list.
+	 * There will be no null slots. If the list is not defined, the
+	 * default will be returned. 'null' can be passed for the default
+	 * and an empty list will be returned instead. The node must be
+	 * an actual list and cannot be just a boolean,
+	 *
+	 * @param path path to node (dot notation)
+	 * @return list of integers
+	 */
+	public List<Boolean> getBooleanList(String path)
+	{
+		return getBooleanList(path, null);
+	}
+
+	/**
 	 * Gets a list of nodes. Non-valid entries will not be in the list.
 	 * There will be no null slots. If the list is not defined, the
 	 * default will be returned. 'null' can be passed for the default
@@ -478,13 +583,31 @@ public class ConfigurationNode
 		if (raw == null)
 			return def != null ? def : new ArrayList<ConfigurationNode>();
 
+		while(path.contains(".")) path = path.substring(path.indexOf('.') + 1);
+
 		List<ConfigurationNode> list = new ArrayList<ConfigurationNode>();
 		for (Object o : raw)
 		{
 			if (o instanceof Map)
-				list.add(new ConfigurationNode((Map<String, Object>) o));
+				list.add(new ConfigurationNode(path, (Map<String, Object>) o));
 		}
 		return list;
+	}
+
+	/**
+	 * Gets a list of nodes. Non-valid entries will not be in the list.
+	 * There will be no null slots. If the list is not defined, the
+	 * default will be returned. 'null' can be passed for the default
+	 * and an empty list will be returned instead. The node must be
+	 * an actual node and cannot be just a boolean,
+	 *
+	 * @param path path to node (dot notation)
+	 * @return list of integers
+	 */
+	@SuppressWarnings("unchecked")
+	public List<ConfigurationNode> getNodeList(String path)
+	{
+		return getNodeList(path, null);
 	}
 
 	/**
@@ -499,9 +622,10 @@ public class ConfigurationNode
 	public ConfigurationNode getNode(String path)
 	{
 		Object raw = getProperty(path);
+		while(path.contains(".")) path = path.substring(path.indexOf('.') + 1);
 
 		if (raw instanceof Map)
-			return new ConfigurationNode((Map<String, Object>) raw);
+			return new ConfigurationNode(path, (Map<String, Object>) raw);
 
 		return null;
 	}
@@ -526,7 +650,7 @@ public class ConfigurationNode
 			for (Map.Entry<String, Object> entry : ((Map<String, Object>) o).entrySet())
 			{
 				if (entry.getValue() instanceof Map)
-					nodes.put(entry.getKey(), new ConfigurationNode((Map<String, Object>) entry.getValue()));
+					nodes.put(entry.getKey(), new ConfigurationNode(entry.getKey(), (Map<String, Object>) entry.getValue()));
 			}
 			return nodes;
 		} else
@@ -629,5 +753,26 @@ public class ConfigurationNode
 
 			node = (Map<String, Object>) o;
 		}
+	}
+
+	/**
+	 * Checks if this node contains a key or not.
+	 * @param key The key to search for
+	 * @return true if contains key, else false
+	 */
+	public boolean contains(String key)
+	{
+		return getProperty(key) != null;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }
