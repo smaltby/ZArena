@@ -30,6 +30,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 	private ItemStack[] armor;
 	private GameMode oldGameMode;
 	private int oldLevel;
+	private double oldMoney;
 
 	public PlayerStats(Player player)
 	{
@@ -42,6 +43,11 @@ public class PlayerStats implements Comparable<PlayerStats>
 		armor = player.getInventory().getArmorContents();
 		oldGameMode = player.getGameMode();
 		oldLevel = player.getLevel();
+		if(usingVault() && ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()))
+		{
+			oldMoney = getEconomy().getBalance(player.getName());
+			getEconomy().withdrawPlayer(player.getName(), oldMoney);
+		}
 	}
 
 	public void addMoney(double money)
@@ -87,6 +93,11 @@ public class PlayerStats implements Comparable<PlayerStats>
 	public Location getOldLocation()
 	{
 		return oldLocation;
+	}
+
+	public double getOldMoney()
+	{
+		return oldMoney;
 	}
 
 	public Player getPlayer()

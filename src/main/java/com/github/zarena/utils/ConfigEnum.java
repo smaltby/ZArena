@@ -24,6 +24,7 @@ public enum ConfigEnum
 	VOTING_LENGTH("Voting Length"),
 	BROADCAST_ALL("Broadcast To All"),
 	SEPERATE_INVENTORY("Seperate Inventory"),
+	SEPERATE_MONEY("Seperate Money"),
 	GAME_LEAVE_WORLD("Game Leave World"),
 	GAME_LEAVE_LOCATION("Game Leave Location"),
 	WORLD_EXCLUSIVE("World Exclusive"),
@@ -58,7 +59,8 @@ public enum ConfigEnum
 	CUSTOM_ITEMS("Sign Custom Items"),
 	START_MONEY("Donator.Start Money"),
 	EXTRA_VOTES("Donator.Extra Votes"),
-	MOB_CAP("Mob Cap");
+	MOB_CAP("Mob Cap"),
+	KEEP_ITEMS_ACROSS_GAMES("Keep Items Across Games");
 
 	String path;
 	ConfigEnum(String path)

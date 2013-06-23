@@ -370,6 +370,10 @@ public class GameHandler
 				if(armorContents != null)
 					pi.setArmorContents(armorContents);
 			}
+			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()) && Bukkit.getPluginManager().getPlugin("Vault") != null)
+			{
+				plugin.getEconomy().depositPlayer(player.getName(), stats.getOldMoney());
+			}
 			player.teleport(getPlayersLeaveLocation(player));
 			player.setGameMode(stats.getOldGameMode());
 			player.setLevel(stats.getOldLevel());
@@ -530,7 +534,8 @@ public class GameHandler
 			Player player = stats.getPlayer();
 			if(player != null)
 			{
-				if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
+				if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString())
+						&& !plugin.getConfiguration().getBoolean(ConfigEnum.KEEP_ITEMS_ACROSS_GAMES.toString()))
 					clearInventory(player.getInventory());
 				for(PotionEffect effect : player.getActivePotionEffects())
 				{

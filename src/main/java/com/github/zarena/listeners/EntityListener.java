@@ -58,7 +58,7 @@ public class EntityListener implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR)
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onEntityDeath(EntityDeathEvent event)
 	{
 		Entity ent = event.getEntity();

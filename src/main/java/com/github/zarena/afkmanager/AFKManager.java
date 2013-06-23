@@ -42,10 +42,17 @@ public class AFKManager
 		while(i.hasNext())
 		{
 			String pName = i.next();
-			if(Bukkit.getPlayer(pName) == null) i.remove();
-			PlayerStats stats = ZArena.getInstance().getGameHandler().getPlayerStats(pName);
-			if(stats == null)
+			if(Bukkit.getPlayer(pName) == null)
+			{
+				i.remove();
 				continue;
+			}
+			PlayerStats stats = ZArena.getInstance().getGameHandler().getPlayerStats(pName);
+			if(stats == null || !stats.isAlive())
+			{
+				i.remove();
+				continue;
+			}
 			if(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - lastAction.get(pName)) > 120)
 			{
 				stats.setAlive(false);

@@ -122,8 +122,14 @@ Always Night: true
 #Note that the adjustments aren't huge.
 Adjust Quantity Based on Player Amount: true
 
+#If true, the player will keep his or her items across games. If you want to prevent lost inventory on death, you'll need to use another plugin.
+Keep Items Across Games: false
+
 #Should a players inventory in game be seperated from the players inventory out of game?
 Seperate Inventory: true
+
+#Should the players money in game be seperated from the players money out of game? Only applicable if Vault is enabled.
+Seperate Money: true
 
 #If true, you can't join the game if you have inventory on you
 Disable Joining Game With Inventory: false
