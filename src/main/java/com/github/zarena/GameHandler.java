@@ -486,6 +486,13 @@ public class GameHandler
 		}
 	}
 
+	public void setDefaultGamemode(Gamemode gamemode)
+	{
+		defaultGamemode = gamemode;
+		if(this.gamemode == null)
+			this.gamemode = gamemode;
+	}
+
 	/**
 	 * Stops the game
 	 */

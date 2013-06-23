@@ -343,17 +343,20 @@ public class Utils
 		newConfig.set(ConfigEnum.AUTORUN.toString(), oldConfig.getBoolean("Options.Auto-Run"));
 		newConfig.set(ConfigEnum.AUTOJOIN.toString(), oldConfig.getBoolean("Options.Auto-Join"));
 		newConfig.set(ConfigEnum.PLAYER_LIMIT.toString(), oldConfig.getInt("Options.Player Limit"));
-		newConfig.set(ConfigEnum.MOB_CAP.toString(), oldConfig.getInt("Entities.Mob Cap"));
+		if(oldConfig.contains("Entities.Mob Cap"))
+			newConfig.set(ConfigEnum.MOB_CAP.toString(), oldConfig.getInt("Entities.Mob Cap"));
 		newConfig.set(ConfigEnum.VOTING_LENGTH.toString(), oldConfig.getInt("Options.Voting Length"));
 		newConfig.set(ConfigEnum.WAVE_DELAY.toString(), oldConfig.getInt("Options.Wave Start Delay"));
 		newConfig.set(ConfigEnum.WORLD_EXCLUSIVE.toString(), oldConfig.getBoolean("Options.World Exclusive"));
 		newConfig.set(ConfigEnum.DISABLE_HUNGER.toString(), oldConfig.getBoolean("Options.Disable Hunger"));
 		newConfig.set(ConfigEnum.RESPAWN_EVERY_WAVES.toString(), oldConfig.getInt("Options.Respawn Every X Waves (0 to disable)"));
-		newConfig.set(ConfigEnum.RESPAWN_EVERY_TIME.toString(), oldConfig.getInt("Options.Respawn Every X Minutes (0 to disable)"));
+		if(oldConfig.contains("Options.Respawn Every X Minutes (0 to disable)"))
+			newConfig.set(ConfigEnum.RESPAWN_EVERY_TIME.toString(), oldConfig.getInt("Options.Respawn Every X Minutes (0 to disable)"));
 		newConfig.set(ConfigEnum.START_ITEMS.toString(), oldConfig.getStringList("Options.Start Items"));
 		newConfig.set(ConfigEnum.KILL_MONEY.toString(), oldConfig.getInt("Stats.Money on Kill"));
 		newConfig.set(ConfigEnum.MONEY_LOST.toString(), oldConfig.getDouble("Stats.Money Percent Lost on Death"));
-		newConfig.set(ConfigEnum.USE_VAULT.toString(), oldConfig.getBoolean("Stats.Use Vault Economy"));
+		if(oldConfig.contains("Stats.Use Vault Economy"))
+			newConfig.set(ConfigEnum.USE_VAULT.toString(), oldConfig.getBoolean("Stats.Use Vault Economy"));
 		
 		newConfig.set(ConfigEnum.HEALTH_STARTING.toString(), oldConfig.getDoubleList("Zombies.Health.Coefficients").get(2));
 		newConfig.set(ConfigEnum.HEALTH_INCREASE.toString(), oldConfig.getDoubleList("Zombies.Health.Coefficients").get(1));
@@ -389,9 +392,36 @@ public class Utils
 			newConfig.set(ConfigEnum.QUANTITY_SOFT_LIMIT.toString(), false);
 		}
 
-		newConfig.set(ConfigEnum.START_MONEY.toString(), oldConfig.getNode("Donator.Start Money"));
-		newConfig.set(ConfigEnum.EXTRA_VOTES.toString(), oldConfig.getNode("Donator.Extra Votes"));
-		newConfig.set(ConfigEnum.CUSTOM_ITEMS.toString(), oldConfig.getNode("SignCustomItems"));
+		if(oldConfig.contains("Donator.Start Money"))
+		{
+			newConfig.removeProperty("Donator.Start Money");
+			for(String nodeName : oldConfig.getKeys("Donator.Start Money"))
+			{
+				ConfigurationNode node = oldConfig.getNode("Donator.Start Money."+nodeName);
+				for(String key : node.getKeys())
+					newConfig.set(ConfigEnum.START_MONEY.toString()+"."+node.getName()+"."+key, node.getProperty(key));
+			}
+		}
+		if(oldConfig.contains("Donator.Extra Votes"))
+		{
+			newConfig.removeProperty("Donator.Extra Votes");
+			for(String nodeName : oldConfig.getKeys("Donator.Extra Votes"))
+			{
+				ConfigurationNode node = oldConfig.getNode("Donator.Extra Votes."+nodeName);
+				for(String key : node.getKeys())
+					newConfig.set(ConfigEnum.EXTRA_VOTES.toString()+"."+node.getName()+"."+key, node.getProperty(key));
+			}
+		}
+		if(oldConfig.contains("SignCustomItems"))
+		{
+			newConfig.removeProperty("SignCustomItems");
+			for(String nodeName : oldConfig.getKeys("SignCustomItems"))
+			{
+				ConfigurationNode node = oldConfig.getNode("SignCustomItems."+nodeName);
+				for(String key : node.getKeys())
+					newConfig.set(ConfigEnum.CUSTOM_ITEMS.toString()+"."+node.getName()+"."+key, node.getProperty(key));
+			}
+		}
 
 		newConfig.set(ConfigEnum.ALWAYS_NIGHT.toString(), oldConfig.getBoolean("Options.Always Night"));
 		newConfig.set(ConfigEnum.QUANTITY_ADJUST.toString(), oldConfig.getBoolean("Options.Adjust Quantity Based on Player Amount"));
@@ -404,19 +434,23 @@ public class Utils
 		newConfig.set(ConfigEnum.BROADCAST_ALL.toString(), oldConfig.getBoolean("Options.Broadcast To All"));
 		newConfig.set(ConfigEnum.DISABLE_NON_ZA.toString(), oldConfig.getBoolean("Options.Disable Non ZArena Commands In Game"));
 		newConfig.set(ConfigEnum.ENABLE_KILLCOUNTER.toString(), oldConfig.getBoolean("Options.Enable Killcounter"));
-		newConfig.set(ConfigEnum.ENABLE_AFKKICKER.toString(), oldConfig.getBoolean("Options.Set AFK Players as Dead"));
-		newConfig.set(ConfigEnum.RESPAWN_REMINDER_DELAY.toString(), oldConfig.getInt("Options.Respawn Reminder Delay"));
+		if(oldConfig.contains("Options.Set AFK Players as Dead"))
+			newConfig.set(ConfigEnum.ENABLE_AFKKICKER.toString(), oldConfig.getBoolean("Options.Set AFK Players as Dead"));
+		if(oldConfig.contains("Options.Respawn Reminder Delay (Seconds)"))
+			newConfig.set(ConfigEnum.RESPAWN_REMINDER_DELAY.toString(), oldConfig.getInt("Options.Respawn Reminder Delay (Seconds)"));
 		newConfig.set(ConfigEnum.SHOP_HEADER.toString(), oldConfig.getString("Options.Shop Sign Header"));
-		newConfig.set(ConfigEnum.TOLL_HEADER.toString(), oldConfig.getString("Options.Tool Sign Header"));
+		newConfig.set(ConfigEnum.TOLL_HEADER.toString(), oldConfig.getString("Options.Toll Sign Header"));
 		newConfig.set(ConfigEnum.WOLF_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Wolf Spawn Chance"));
 		newConfig.set(ConfigEnum.SKELETON_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Skeleton Spawn Chance"));
 		newConfig.set(ConfigEnum.WOLF_WAVE_PERCENT_OCCUR.toString(), oldConfig.getDouble("Entities.Wolf Wave Chance"));
 		newConfig.set(ConfigEnum.SKELETON_WAVE_PERCENT_OCCUR.toString(), oldConfig.getDouble("Entities.Skeleton Wave Chance"));
 		newConfig.set(ConfigEnum.WOLF_WAVE_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Wolf Spawn Chance During Wolf Wave"));
-		newConfig.set(ConfigEnum.SKELETON_WAVE_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Skeleton Spawn Chance During Skeleton Wave"));
+		newConfig.set(ConfigEnum.SKELETON_WAVE_PERCENT_SPAWN.toString(), oldConfig.getDouble("Entities.Skeleton Spawn Chance During Wolf Wave"));
 		newConfig.set(ConfigEnum.DEFAULT_ZOMBIE.toString(), oldConfig.getString("Entities.Default Entity File Name"));
 		newConfig.set(ConfigEnum.DEFAULT_SKELETON.toString(), oldConfig.getString("Entities.Default Skeleton File Name"));
 		newConfig.set(ConfigEnum.DEFAULT_WOLF.toString(), oldConfig.getString("Entities.Default Wolf File Name"));
-		newConfig.set(ConfigEnum.DEFAULT_GAMEMODE.toString(), oldConfig.getString("Entities.Default Gamemode File Name"));
+		newConfig.set(ConfigEnum.DEFAULT_GAMEMODE.toString(), oldConfig.getString("Gamemodes.Default Gamemode File Name"));
+
+		newConfig.save();
 	}
 }

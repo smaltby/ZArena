@@ -116,7 +116,7 @@ public class WaveHandler implements Runnable
 	private int calcInternal(int wave, double starting, double increasePerWave, double expotentialIncreasePerWave, int limit,
 							 boolean softLimit, String customFormula) throws UnparsableExpressionException, UnknownFunctionException
 	{
-		if(!customFormula.isEmpty())
+		if(customFormula != null && !customFormula.isEmpty())
 		{
 			Calculable calc = new ExpressionBuilder(customFormula)
 					.withVariable("x",wave)

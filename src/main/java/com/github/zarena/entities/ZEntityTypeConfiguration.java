@@ -82,13 +82,13 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 		{
 			//The default PathfinderTargetSelectors select all humans. We only want them selecting humans in the ZArena game
 			if(e.getValue() instanceof PathfinderTargetSelector)
-				e.setValue(new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange()));
+				e.setValue(new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange(), type.canSeeInvisible()));
 		}
 		//Entity wolves should be designed solely for combat
 		if(ent instanceof EntityWolf)
 		{
 			targetSelectors.put(1, new PathfinderGoalHurtByTarget(ent, true));
-			targetSelectors.put(2, new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange()));
+			targetSelectors.put(2, new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange(), type.canSeeInvisible()));
 		}
 		return targetSelectors;
 	}

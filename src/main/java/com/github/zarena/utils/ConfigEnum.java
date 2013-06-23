@@ -56,8 +56,8 @@ public enum ConfigEnum
 	MONEY_LOST("Money Percent Lost on Death"),
 	USE_VAULT("Use Vault Economy"),
 	CUSTOM_ITEMS("Sign Custom Items"),
-	START_MONEY("Start Money"),
-	EXTRA_VOTES("Extra Votes"),
+	START_MONEY("Donator.Start Money"),
+	EXTRA_VOTES("Donator.Extra Votes"),
 	MOB_CAP("Mob Cap");
 
 	String path;

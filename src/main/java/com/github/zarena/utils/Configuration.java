@@ -58,7 +58,7 @@ public class Configuration extends ConfigurationNode
 			{
 				if(line.startsWith("#"))
 					currentComment += line + "\n";
-				else if(line.matches("\\S+:.*"))
+				else if(line.matches("\\S.+:.*"))
 				{
 					//If the first key has passed and no header has been registered, then there is no header
 					headerDone = true;

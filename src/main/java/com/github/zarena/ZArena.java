@@ -99,7 +99,7 @@ public class ZArena extends JavaPlugin
 		} catch (IOException e)
 		{/* Failed to submit the stats :-( */}
 		//Load Vault economy
-		if(getConfiguration().getBoolean(ConfigEnum.USE_VAULT.toString()))
+		if(getConfiguration().getBoolean(ConfigEnum.USE_VAULT.toString()) && Bukkit.getPluginManager().getPlugin("Vault") != null)
 			setupEconomy();
 
 		//Register command executors
@@ -133,7 +133,6 @@ public class ZArena extends JavaPlugin
 		if(getConfiguration().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
 			kc.disable();
 		//Save stuff
-		saveConfig();
 		saveFiles();
 		//Reset static stuff
 		instance = null;
@@ -213,8 +212,9 @@ public class ZArena extends JavaPlugin
 			{
 				YamlConfiguration gamemodeConfig = YamlConfiguration.loadConfiguration(file);
 				Gamemode gamemode = new Gamemode(gamemodeConfig);
-				if(file.getName().equals(ConfigEnum.DEFAULT_GAMEMODE.toString()))
+				if(file.getName().equals(getConfiguration().getString(ConfigEnum.DEFAULT_GAMEMODE.toString())))
 				{
+					gameHandler.setDefaultGamemode(gamemode);
 					gameHandler.defaultGamemode = gamemode;
 					defaultGamemodeFound = true;
 				} else
@@ -225,7 +225,7 @@ public class ZArena extends JavaPlugin
 		if(!defaultGamemodeFound)
 		{
 			log(Level.WARNING, "ZArena: Default gamemode type file not found. Using default values");
-			gameHandler.defaultGamemode = new Gamemode(new YamlConfiguration());
+			gameHandler.setDefaultGamemode(new Gamemode(new YamlConfiguration()));
 		}
 	}
 
@@ -266,7 +266,6 @@ public class ZArena extends JavaPlugin
 							gameHandler.getWaveHandler().zombieTypes.add(entityConfig);
 							break;
 						case SKELETON:
-							entityConfig = new ZEntityTypeConfiguration(config);
 							gameHandler.getWaveHandler().skeletonTypes.add(entityConfig);
 							break;
 						case WOLF:

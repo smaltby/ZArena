@@ -146,7 +146,10 @@ public class ConfigurationNode
 			// Found our target!
 			if (i == parts.length - 1)
 			{
-				node.put(parts[i], value);
+				if(value != null)
+					node.put(parts[i], value);
+				else
+					node.remove(parts[i]);
 				return;
 			}
 

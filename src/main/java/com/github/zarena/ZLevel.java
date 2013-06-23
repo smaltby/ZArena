@@ -306,6 +306,7 @@ public class ZLevel implements Externalizable
 			ZArena.log(Level.WARNING, "An unsupported version of a ZLevel failed to load.");
 			ZArena.log(Level.WARNING, "The ZLevel: "+name+" may not be operational.");
 		}
+		world = iSpawn.getWorld();
 		resetInactiveZSpawns();
 	}
 

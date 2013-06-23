@@ -518,18 +518,18 @@ public class CommandHandler
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
 				int toSpawn = waveHandler.calcQuantity(checkWave);
-				amounts += toSpawn;
+				amounts += toSpawn + ", ";
 			}
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Zombie Amounts on the First 20 Waves"), amounts));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Zombie Amounts on the First 20 Waves"), amounts.substring(0, amounts.length() - 2)));
 			break;
 		case HEALTHPERWAVE:
 			String healthAmounts = "";
 			for(int checkWave = 1; checkWave <= 20; checkWave++)
 			{
 				int health = waveHandler.calcHealth(checkWave);
-				healthAmounts += health;
+				healthAmounts += health + ", ";
 			}
-			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Health of Normal Zombies on the First 20 Waves"), healthAmounts));
+			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Health of Normal Zombies on the First 20 Waves"), healthAmounts.substring(0, healthAmounts.length() - 2)));
 			break;
 		case WAVE:
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Wave"), wave));
