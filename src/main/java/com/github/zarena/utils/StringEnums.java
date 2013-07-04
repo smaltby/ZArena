@@ -7,7 +7,7 @@ public enum StringEnums
 	// Used in ZTollSign & CommandHandler
 	UO, USABLEONCE, OP, OPPOSITE, NR, NORESET,
 	// Used in CommandHandler
-	GENERAL, ZOMBIESPERWAVE, HEALTHPERWAVE, WAVE, SPAWNCHANCE, CHECKNEXTWAVE,
+	GENERAL, ZOMBIESPERWAVE, HEALTHPERWAVE, WAVE, SPAWNCHANCE, CHECKNEXTWAVE, SPAWNENTITY,
 	// Used in DSpawnCommands & ISpawnCommands & ZSpawnCommands
 	SET, JUMP,
 	// Used in ZSpawnCommands
@@ -22,5 +22,5 @@ public enum StringEnums
 	// Used in ZArena
 	ZOMBIE, SKELETON, WOLF, ZOMBIEPIGMAN,
 	// Used in KCCommands
-	TOP, /*SET,*/ SUB /*ADD*/;
+	TOP, /*SET,*/ SUB /*ADD*/
 }

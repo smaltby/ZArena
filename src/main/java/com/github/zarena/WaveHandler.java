@@ -9,28 +9,25 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
-import com.github.customentitylibrary.entities.CustomPigZombie;
-import com.github.customentitylibrary.entities.CustomSkeleton;
-import com.github.customentitylibrary.entities.CustomWolf;
-import com.github.customentitylibrary.entities.CustomZombie;
 
+import com.github.customentitylibrary.entities.CustomPigZombie;
 import com.github.zarena.utils.*;
 import de.congrace.exp4j.Calculable;
 import de.congrace.exp4j.ExpressionBuilder;
 import de.congrace.exp4j.UnknownFunctionException;
 import de.congrace.exp4j.UnparsableExpressionException;
+import net.minecraft.server.v1_6_R1.EntitySkeleton;
+import net.minecraft.server.v1_6_R1.EntityWolf;
+import net.minecraft.server.v1_6_R1.EntityZombie;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_6_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import com.github.zarena.entities.ZEntityType;
 import com.github.zarena.events.GameStopCause;
 import com.github.zarena.events.GameStopEvent;
 import com.github.zarena.events.WaveChangeEvent;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 public class WaveHandler implements Runnable
 {
@@ -68,6 +65,23 @@ public class WaveHandler implements Runnable
 		skeletonWave = false;
 		lastSkeletonWave = 0;
 		lastWolfWave = 0;
+	}
+
+	public void addType(ZEntityType type)
+	{
+		switch(StringEnums.valueOf(type.getPreferredType().toUpperCase()))
+		{
+			case ZOMBIE: case ZOMBIEPIGMAN:
+				zombieTypes.add(type);
+				break;
+			case SKELETON:
+				skeletonTypes.add(type);
+				break;
+			case WOLF:
+				wolfTypes.add(type);
+				break;
+			default:
+		}
 	}
 
 	private double calcChance(double priority, int wave)
@@ -175,25 +189,22 @@ public class WaveHandler implements Runnable
 
 	private CustomEntityWrapper chooseEntity(int wave, List<ZEntityType> types, List<ZEntityType> defaultTypes)
 	{
-		//This mass of code randomly selects a list of entities to spawn
-		List<ZEntityType> possibleTypes = new ArrayList<ZEntityType>();
-		for(ZEntityType type : types)
+		//This mass of code randomly selects an entity to spawn
+		ZEntityType type = null;
+		for(ZEntityType t : types)
 		{
-			if(type.getMinimumSpawnWave() <= wave)
+			if(t.getMinimumSpawnWave() <= wave)
 			{
-				double chance = calcChance(type.getSpawnPriority(), wave);
+				double chance = calcChance(t.getSpawnPriority(), wave);
 				if(rnd.nextDouble() < chance)
 				{
-					possibleTypes.add(type);
-					break;
+					if(type == null || t.getSpawnPriority() > type.getSpawnPriority())
+						type = t;
 				}
 			}
 		}
-		if(possibleTypes.isEmpty())
-			possibleTypes.add(defaultTypes.get(rnd.nextInt(defaultTypes.size())));
-
-		//Randomly select a type from all of the possible types to be spawned
-		ZEntityType type = possibleTypes.get(rnd.nextInt(possibleTypes.size()));
+		if(type == null)
+			type = defaultTypes.get(rnd.nextInt(defaultTypes.size()));
 
 		//And now spawn it
 		Location spawn = gameHandler.getLevel().getRandomZombieSpawn();
@@ -203,26 +214,27 @@ public class WaveHandler implements Runnable
 			gameHandler.stop();
 			return null;
 		}
+		net.minecraft.server.v1_6_R1.World nmsWorld = ((CraftWorld)spawn.getWorld()).getHandle();
 		CustomEntityWrapper customEnt;
 		if(type.getPreferredType().equalsIgnoreCase("zombiepigman"))
 		{
-			CustomPigZombie pig = new CustomPigZombie(spawn.getWorld());
+			CustomPigZombie pig = new CustomPigZombie(nmsWorld);
 			pig.angerLevel = 1;
 			customEnt = CustomEntityWrapper.spawnCustomEntity(pig, spawn, type);
 		} else if(type.getPreferredType().equalsIgnoreCase("zombie"))
 		{
-			customEnt = CustomEntityWrapper.spawnCustomEntity(new CustomZombie(spawn.getWorld()), spawn, type);
+			customEnt = CustomEntityWrapper.spawnCustomEntity(new EntityZombie(nmsWorld), spawn, type);
 		} else if(type.getPreferredType().equalsIgnoreCase("skeleton"))
 		{
-			customEnt = CustomEntityWrapper.spawnCustomEntity(new CustomSkeleton(spawn.getWorld()), spawn, type);
+			customEnt = CustomEntityWrapper.spawnCustomEntity(new EntitySkeleton(nmsWorld), spawn, type);
 		} else if(type.getPreferredType().equalsIgnoreCase("wolf"))
 		{
-			CustomWolf wolf = new CustomWolf(spawn.getWorld());
+			EntityWolf wolf = new EntityWolf(nmsWorld);
 			wolf.setAngry(true);
 			customEnt = CustomEntityWrapper.spawnCustomEntity(wolf, spawn, type);
 		} else
 		{
-			ZArena.log(Level.WARNING, "The type of the entity configuration called "+type.toString()+" does not correspond to spawnable entity.");
+			ZArena.log(Level.WARNING, "The type of the entity configuration called "+type.getName()+" does not correspond to spawnable entity.");
 			return null;
 		}
 		return customEnt;
@@ -398,7 +410,7 @@ public class WaveHandler implements Runnable
 					{
 						for(Player player : gameHandler.getPlayers())
 						{
-							int health = player.getHealth() + 1;
+							double health = player.getHealth() + 1;
 							if(health > 20)
 								health = 20;
 							if(health < 0)	//Somehow...this has happened several times during beta testing.
@@ -494,8 +506,6 @@ public class WaveHandler implements Runnable
 		if(plugin.getConfiguration().getBoolean(ConfigEnum.QUANTITY_ADJUST.toString()))
 			toSpawn *= 1.5/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-3) + .25);
 
-		zombieSpawnChance = 0.15 / (1 + Math.pow(Math.E, ((double) -1/4 * (modifiedWave / 2))));	//Logistic function
-
 		//Do what's required when a new waves occurs (which never happens in apocaylpse mode)
 		if(!gm.isApocalypse() && newWave)
 		{
@@ -539,10 +549,6 @@ public class WaveHandler implements Runnable
 				}
 			}
 		}
-
-		//Modify settings based on gamemode
-		if(gm.isApocalypse())
-			zombieSpawnChance /= 2;	//Lessen the spawn rate a bit for apocalypse, so you don't get overrun TOO quickly
 	}
 
 	/**
@@ -562,7 +568,7 @@ public class WaveHandler implements Runnable
 		Gamemode gm = gameHandler.getGameMode();
 		if(toSpawn <= 0 && !gm.isApocalypse())
 			return;
-		if(rnd.nextDouble() > zombieSpawnChance)
+		if(rnd.nextDouble() > 0.05)
 			return;
 		if(entities.size() >= plugin.getConfiguration().getInt(ConfigEnum.MOB_CAP.toString()))
 			return;
@@ -574,7 +580,7 @@ public class WaveHandler implements Runnable
 		modifiedWave *= gm.getDifficultyModifier();
 
 		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
-		CustomEntityWrapper customEnt = null;
+		CustomEntityWrapper customEnt;
 		if(wolfWave && rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.WOLF_WAVE_PERCENT_SPAWN.toString()))
 			customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
 		else if(skeletonWave && rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.SKELETON_WAVE_PERCENT_SPAWN.toString()))

@@ -1,16 +1,11 @@
 package com.github.zarena.entities;
 
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
+import java.util.ListIterator;
 
-import net.minecraft.server.v1_5_R3.EntityCreature;
-import net.minecraft.server.v1_5_R3.EntityLiving;
-import net.minecraft.server.v1_5_R3.EntityWolf;
-import net.minecraft.server.v1_5_R3.PathfinderGoal;
-import net.minecraft.server.v1_5_R3.PathfinderGoalHurtByTarget;
+import net.minecraft.server.v1_6_R1.*;
 import org.bukkit.configuration.file.FileConfiguration;
 
-import com.github.customentitylibrary.entities.EntityType;
 import com.github.customentitylibrary.entities.EntityTypeConfiguration;
 import com.github.customentitylibrary.pathfinders.PathfinderTargetSelector;
 import com.github.customentitylibrary.utils.DefaultPathfinders;
@@ -75,20 +70,22 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	}
 	
 	@Override
-	public Map<Integer, PathfinderGoal> getTargetSelectors(EntityLiving ent, EntityType type)
+	public List<PathfinderGoal> getTargetSelectors(EntityInsentient ent)
 	{
-		Map<Integer, PathfinderGoal> targetSelectors = DefaultPathfinders.getTargetSelectors(ent, this);
-		for(Entry<Integer, PathfinderGoal> e : targetSelectors.entrySet())
+		List<PathfinderGoal> targetSelectors = DefaultPathfinders.getTargetSelectors(ent, this);
+		ListIterator<PathfinderGoal> iter = targetSelectors.listIterator();
+		while(iter.hasNext())
 		{
+			PathfinderGoal g = iter.next();
 			//The default PathfinderTargetSelectors select all humans. We only want them selecting humans in the ZArena game
-			if(e.getValue() instanceof PathfinderTargetSelector)
-				e.setValue(new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange(), type.canSeeInvisible()));
+			if(g instanceof PathfinderTargetSelector)
+				iter.set(new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), getRange(), canSeeInvisible()));
 		}
 		//Entity wolves should be designed solely for combat
 		if(ent instanceof EntityWolf)
 		{
-			targetSelectors.put(1, new PathfinderGoalHurtByTarget(ent, true));
-			targetSelectors.put(2, new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), type.getRange(), type.canSeeInvisible()));
+			targetSelectors.set(3, new PathfinderGoalHurtByTarget((EntityCreature)ent, true));
+			targetSelectors.add(new PathfinderTargetSelector((EntityCreature) ent, new ZArenaPlayerSelector(), getRange(), canSeeInvisible()));
 		}
 		return targetSelectors;
 	}

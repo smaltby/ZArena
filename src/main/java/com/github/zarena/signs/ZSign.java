@@ -106,7 +106,7 @@ public abstract class ZSign implements Externalizable
 	public static Block getBlockOn(Location location)
 	{
 		org.bukkit.material.Sign s = (org.bukkit.material.Sign) location.getBlock().getState().getData();
-		if(((Sign)location.getBlock().getState()).getType() == Material.WALL_SIGN)
+		if(location.getBlock().getState().getType() == Material.WALL_SIGN)
 			return location.getBlock().getRelative(s.getAttachedFace());
 		return location.getBlock().getRelative(BlockFace.DOWN);
 	}

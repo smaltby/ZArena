@@ -40,7 +40,7 @@ public class CommandSenderWrapper
     /**
      * Returns the CommandSender that this class wraps
      *
-     * @return
+     * @return sender
      */
     public CommandSender getSender()
     {
@@ -108,12 +108,7 @@ public class CommandSenderWrapper
     	}
     	return 0;
     }
-    
-    /**
-     *
-     * @param node
-     * @return
-     */
+
     public boolean hasExternalPermissions(String node, boolean countOp)
     {
         return (!(this.getSender() instanceof Player)) || (this.getSender().isOp() && countOp) || this.getSender().hasPermission(node);

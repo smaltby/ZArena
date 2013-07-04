@@ -12,7 +12,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.Message;
 
 public class PlayerStats implements Comparable<PlayerStats>
@@ -143,7 +142,13 @@ public class PlayerStats implements Comparable<PlayerStats>
 
 	public void resetStats()
 	{
-		money = 0;
+		if(!ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.KEEP_MONEY_ACROSS_GAMES.toString()))
+		{
+			if(usingVault())
+				getEconomy().withdrawPlayer(player, getEconomy().getBalance(player));
+			else
+				money = 0;
+		}
 		points = 0;
 		deathWave = 0;
 		deathTime = System.currentTimeMillis();
@@ -203,7 +208,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 
 	private boolean usingVault()
 	{
-		return ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.USE_VAULT.toString()) && Bukkit.getPluginManager().getPlugin("Vault") != null;
+		return ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.USE_VAULT.toString()) && getEconomy() != null;
 	}
 
 	private Economy getEconomy()

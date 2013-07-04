@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map.Entry;
 
 
+import com.github.customentitylibrary.entities.CustomEntityWrapper;
+import com.github.zarena.entities.ZEntityType;
 import com.github.zarena.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -148,8 +150,8 @@ public class CommandHandler
 			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
 			return;
 		}
-		Location zSpawn = null;
-		String zSpawnName = null;
+		Location zSpawn;
+		String zSpawnName;
 		if(spawn.equalsIgnoreCase("%nearest%"))
 		{
 			zSpawnName = level.getNearestZombieSpawn(player.getLocation());
@@ -490,22 +492,22 @@ public class CommandHandler
 
 	public void sendInfo(String info) throws ArgumentCountException
 	{
-		if(!gameHandler.isRunning() && !gameHandler.isVoting())
-		{
-			senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
-			return;
-		}
 		ZLevel level = gameHandler.getLevel();
-		if(level == null)
-		{
-			senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
-			return;
-		}
 		WaveHandler waveHandler = gameHandler.getWaveHandler();
 		int wave = (gameHandler.getGameMode().isApocalypse()) ? waveHandler.getApocalypseWave() : waveHandler.getWave();
 		switch(StringEnums.valueOf(info.toUpperCase()))
 		{
 		case GENERAL:
+			if(!gameHandler.isRunning() && !gameHandler.isVoting())
+			{
+				senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
+				return;
+			}
+			if(level == null)
+			{
+				senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
+				return;
+			}
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Wave"), wave));
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Alive Count"), gameHandler.getAliveCount()));
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Remaining Zombies"), waveHandler.getRemainingZombies()));
@@ -532,14 +534,63 @@ public class CommandHandler
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Health of Normal Zombies on the First 20 Waves"), healthAmounts.substring(0, healthAmounts.length() - 2)));
 			break;
 		case WAVE:
+			if(!gameHandler.isRunning() && !gameHandler.isVoting())
+			{
+				senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
+				return;
+			}
+			if(level == null)
+			{
+				senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
+				return;
+			}
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Wave"), wave));
 			break;
 		case SPAWNCHANCE:
+			if(!gameHandler.isRunning() && !gameHandler.isVoting())
+			{
+				senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
+				return;
+			}
+			if(level == null)
+			{
+				senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
+				return;
+			}
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Spawn Chance"), waveHandler.getSpawnChance()));
 			break;
 		case CHECKNEXTWAVE:
+			if(!gameHandler.isRunning() && !gameHandler.isVoting())
+			{
+				senderWrapper.sendMessage(Message.GAME_MUST_BE_RUNNING.formatMessage());
+				return;
+			}
+			if(level == null)
+			{
+				senderWrapper.sendMessage(Message.NO_LEVEL_LOADED.formatMessage());
+				return;
+			}
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("To Spawn"), waveHandler.getRemainingZombies() - waveHandler.getEntites().size()));
 			senderWrapper.sendMessage(Message.INFO_ITEM.formatMessage(ChatHelper.messages.get("Alive"), waveHandler.getEntites().size()));
+			break;
+		case SPAWNENTITY:
+			if(command.hasArgAtIndex(3))
+			{
+				String entityName = command.getArgAtIndex(3);
+				boolean found = false;
+				for(ZEntityType type : gameHandler.getWaveHandler().getAllEntityTypes())
+				{
+					if(type.getName().replaceAll(" ", "").equalsIgnoreCase(entityName))
+					{
+						CustomEntityWrapper.spawnCustomEntity(type, senderWrapper.getPlayer().getLocation());
+						found = true;
+						break;
+					}
+				}
+				if(!found)
+					CustomEntityWrapper.spawnCustomEntity(gameHandler.getWaveHandler().getDefaultZombieType(), senderWrapper.getPlayer().getLocation());
+			} else
+				senderWrapper.sendMessage("/zarena dia spawnentity <entity_name>");
 			break;
 		default:
 			throw new ArgumentCountException(2);

@@ -35,7 +35,7 @@ public class ECommand
 
     /**
      * Parses the given command to make an MCTCommand that represents it
-     * @param slashCommand
+     * @param slashCommand command
      */
     public ECommand(String slashCommand)
     {
@@ -59,8 +59,8 @@ public class ECommand
 
     /**
      * Copies the passed args and flags into a new MCTCommand
-     * @param args
-     * @param flags
+     * @param args args
+     * @param flags flags
      */
     public ECommand(String[] args, String[] flags)
     {
@@ -77,8 +77,8 @@ public class ECommand
 
     /**
      * Checks whether or not the flag is present in the command.
-     * @param flag
-     * @return
+     * @param flag flag
+     * @return has flag
      */
     public boolean hasFlag(String flag)
     {

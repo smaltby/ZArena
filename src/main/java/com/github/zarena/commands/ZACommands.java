@@ -100,7 +100,7 @@ public class ZACommands implements CommandExecutor
 				handler.sendInfo("wave");
 				break;
 			case DIA: case DIAGNOSTIC:
-				helpMessage = "/zarena dia <general|healthperwave|zombiesperwave|wave|spawnchance|checknextwave>";
+				helpMessage = "/zarena dia <general|healthperwave|zombiesperwave|wave|spawnchance|checknextwave|spawnentity>";
 				handler.sendInfo(command.get(2));
 				break;
 			default:

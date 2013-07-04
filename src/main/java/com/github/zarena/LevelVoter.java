@@ -20,7 +20,6 @@ import com.github.zarena.events.LevelChangeCause;
 import com.github.zarena.events.LevelChangeEvent;
 import com.github.zarena.spout.SpoutHandler;
 import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.Message;
 
 public class LevelVoter implements Runnable

@@ -60,7 +60,8 @@ public enum ConfigEnum
 	START_MONEY("Donator.Start Money"),
 	EXTRA_VOTES("Donator.Extra Votes"),
 	MOB_CAP("Mob Cap"),
-	KEEP_ITEMS_ACROSS_GAMES("Keep Items Across Games");
+	KEEP_ITEMS_ACROSS_GAMES("Keep Items Across Games"),
+	KEEP_MONEY_ACROSS_GAMES("Keep Money Across Games");
 
 	String path;
 	ConfigEnum(String path)

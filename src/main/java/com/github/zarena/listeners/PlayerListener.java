@@ -24,7 +24,6 @@ import com.github.zarena.commands.CommandSenderWrapper;
 import com.github.zarena.signs.ZSign;
 import com.github.zarena.signs.ZTollSign;
 import com.github.zarena.utils.ChatHelper;
-import com.github.zarena.utils.Constants;
 import com.github.zarena.utils.Message;
 
 public class PlayerListener implements Listener

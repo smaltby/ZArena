@@ -64,7 +64,7 @@ Use Vault Economy: true
 #
 #Custom Formula: If you want more control, you can use a formula to determine the health of entities. Use the variable 'x'
 #to represent the wave. If you enter in a custom formula, all other fields will be overridden by it. For more details on how
-#to make a custom formula, see here: 
+#to make a custom formula, see here: http://dev.bukkit.org/bukkit-plugins/zarena/pages/custom-formulas/
 Health:
   Starting Health: 8
   Increase Per Wave: 0.5
@@ -77,14 +77,15 @@ Health:
 #quantity of entities as opposed to their health.
 Quantity:
   Starting Quantity: 12
-  Increase Per Wave: 4
-  Expotential Increase Per Wave: 1.2
+  Increase Per Wave: 3
+  Expotential Increase Per Wave: 1.1
   Limit: 150
   Soft Limit?: true
   Custom Formula:
   
 #This plugin supports custom donator permissions. You can give extra money or votes to players with certain permissions.
 #Follow the format shown below to customize the donator permissions. If you can't figure it out, or are confused, see here:
+#http://dev.bukkit.org/bukkit-plugins/zarena/pages/built-in-donator-perks/
 Donator:
   Start Money:
     Donator1:
@@ -102,7 +103,7 @@ Donator:
       value: 2
       
 #This plugin also supports custom items to be sold from shop signs. Follow the format shown below to add more custom items.
-#If you can't figure it out, or are confused, see here:
+#If you can't figure it out, or are confused, see here: http://dev.bukkit.org/bukkit-plugins/zarena/pages/custom-items/
 #The plugin supports Vault, so if you don't like this plugins format for selling items, you can use buy signs from other plugins
 #if you have Vault enabled.
 Sign Custom Items:
@@ -127,6 +128,9 @@ Keep Items Across Games: false
 
 #Should a players inventory in game be seperated from the players inventory out of game?
 Seperate Inventory: true
+
+#If true, the player will keep his or her money across games.
+Keep Money Across Games: false
 
 #Should the players money in game be seperated from the players money out of game? Only applicable if Vault is enabled.
 Seperate Money: true

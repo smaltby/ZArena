@@ -51,9 +51,11 @@ public class EntityListener implements Listener
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()) && plugin.getGameHandler().isRunning())
+		if(plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()) && plugin.getGameHandler().getLevelHandler().getLevels().size() > 0)
 		{
-			if(event.getLocation().getWorld().getName().equals(plugin.getGameHandler().getLevel().getWorld()) && event.getSpawnReason() != SpawnReason.CUSTOM)
+			String world = (plugin.getGameHandler().getLevel() != null) ? plugin.getGameHandler().getLevel().getWorld() :
+					plugin.getGameHandler().getLevelHandler().getLevels().get(0).getWorld();
+			if(event.getLocation().getWorld().getName().equals(world) && event.getSpawnReason() != SpawnReason.CUSTOM)
 				event.setCancelled(true);
 		}
 	}
@@ -104,7 +106,7 @@ public class EntityListener implements Listener
 					stats.addPoints(1);
 					stats.messageStats();
 					if(moneyModifier > 1)
-						ChatHelper.sendMessage(Message.BONUS_MONEY_KILL.formatMessage(moneyModifier, type.toString()), stats.getPlayer());
+						ChatHelper.sendMessage(Message.BONUS_MONEY_KILL.formatMessage(moneyModifier, type.getName()), stats.getPlayer());
 
 					//If the gamemode is no buying, there is a chance for the player to get an item drop from the killed zombie
 					if(gameHandler.getGameMode().isScavenger())
@@ -132,7 +134,7 @@ public class EntityListener implements Listener
 				{
 					stats.addMoney(((double) plugin.getConfiguration().getInt(ConfigEnum.KILL_MONEY.toString())) / 2 * moneyModifier);
 					stats.messageStats();
-					ChatHelper.sendMessage(Message.ASSIST_KILL.formatMessage(moneyModifier/2, type.toString()), stats.getPlayer());
+					ChatHelper.sendMessage(Message.ASSIST_KILL.formatMessage(moneyModifier/2, type.getName()), stats.getPlayer());
 				}
 			}
 		}
@@ -158,7 +160,7 @@ public class EntityListener implements Listener
 		{
 			Projectile pj = (Projectile) event.getDamager();
 			damager = pj.getShooter();
-			if(CustomEntityWrapper.instanceOf(damager) && CustomEntityWrapper.instanceOf(ent))	//If a custom mob shot another custom mob
+			if(damager != null && CustomEntityWrapper.instanceOf(damager) && CustomEntityWrapper.instanceOf(ent))	//If a custom mob shot another custom mob
 			{
 				event.setCancelled(true);
 				return;

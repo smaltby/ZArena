@@ -252,7 +252,7 @@ public class Gamemode
 		WaveHandler waveHandler = ZArena.getInstance().getGameHandler().getWaveHandler();
 		for(ZEntityType type : waveHandler.getAllEntityTypes())
 		{
-			if(type.toString().replaceAll(" ", "").equalsIgnoreCase(typeName))
+			if(type.getName().replaceAll(" ", "").equalsIgnoreCase(typeName))
 				return type;
 		}
 		return null;

@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 
-import com.github.zarena.utils.Constants;
-
 public class LevelHandler implements Externalizable
 {
 	private static final long serialVersionUID = "LEVELHANDLER".hashCode(); // DO NOT CHANGE
@@ -49,7 +47,7 @@ public class LevelHandler implements Externalizable
 		//We don't want to ever return null...so if the excludedLevels is a collection of all levels, screw it and just return any damn level
 		if(exludedLevels.containsAll(levels))
 			return levels.get(rnd.nextInt(levels.size()));
-		ZLevel level = null;
+		ZLevel level;
 		do
 		{
 			level = levels.get(rnd.nextInt(levels.size()));

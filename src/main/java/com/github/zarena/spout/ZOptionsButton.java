@@ -22,7 +22,7 @@ public class ZOptionsButton extends GenericButton
 	{
 		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(event.getPlayer().getName());
 		Button button = event.getButton();
-		boolean enableDisable = button.getText().endsWith("Enabled") ? false : true;
+		boolean enableDisable = !button.getText().endsWith("Enabled");
 		switch(StringEnums.valueOf(button.getText().replaceAll("(Enabled|Disabled|\\W)", "").trim().replaceAll(" ", "_").toUpperCase()))
 		{
 		case VOTING_POPUP:

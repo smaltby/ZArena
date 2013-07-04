@@ -35,13 +35,6 @@ public class LocationSer implements Externalizable
     {
     }
 
-    /**
-     *
-     * @param world
-     * @param x
-     * @param y
-     * @param z
-     */
     public LocationSer(String world, double x, double y, double z) {
         this.world = world;
         this.x = x;
@@ -57,10 +50,6 @@ public class LocationSer implements Externalizable
         return world;
     }
 
-    /**
-     *
-     * @param world
-     */
     public void setWorld(String world) {
         this.world = world;
     }
@@ -73,10 +62,6 @@ public class LocationSer implements Externalizable
         return x;
     }
 
-    /**
-     *
-     * @param x
-     */
     public void setX(double x) {
         this.x = x;
     }
@@ -89,10 +74,6 @@ public class LocationSer implements Externalizable
         return y;
     }
 
-    /**
-     *
-     * @param y
-     */
     public void setY(double y) {
         this.y = y;
     }
@@ -105,10 +86,6 @@ public class LocationSer implements Externalizable
         return z;
     }
 
-    /**
-     *
-     * @param z
-     */
     public void setZ(double z) {
         this.z = z;
     }
@@ -123,7 +100,7 @@ public class LocationSer implements Externalizable
         }
         final LocationSer other = (LocationSer) obj;
 
-        if (this.world != other.world && (this.world == null || !this.world.equals(other.world))) {
+        if (!this.world.equals(other.world)) {
             return false;
         }
         if (Double.doubleToLongBits(this.x) != Double.doubleToLongBits(other.x)) {
@@ -132,11 +109,8 @@ public class LocationSer implements Externalizable
         if (Double.doubleToLongBits(this.y) != Double.doubleToLongBits(other.y)) {
             return false;
         }
-        if (Double.doubleToLongBits(this.z) != Double.doubleToLongBits(other.z)) {
-            return false;
-        }
-        return true;
-    }
+		return Double.doubleToLongBits(this.z) == Double.doubleToLongBits(other.z);
+	}
 
     @Override
     public int hashCode() {
@@ -153,20 +127,10 @@ public class LocationSer implements Externalizable
         return "Location{" + "world=" + world + ",x=" + x + ",y=" + y + ",z=" + z + '}';
     }
 
-    /**
-     *
-     * @param loc
-     * @return
-     */
     public static LocationSer convertFromBukkitLocation(org.bukkit.Location loc) {
         return new LocationSer(loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ());
     }
 
-    /**
-     *
-     * @param loc
-     * @return
-     */
     public static org.bukkit.Location convertToBukkitLocation(LocationSer loc) {
         return new org.bukkit.Location(Bukkit.getServer().getWorld(loc.world), loc.getX(), loc.getY(), loc.getZ());
     }

@@ -94,6 +94,7 @@ public class Configuration extends ConfigurationNode
 					stream.close();
 			} catch (IOException e)
 			{
+				e.printStackTrace();
 			}
 		}
 	}
@@ -224,6 +225,7 @@ public class Configuration extends ConfigurationNode
 			return true;
 		} catch (IOException e)
 		{
+			e.printStackTrace();
 		} finally
 		{
 			try
@@ -232,6 +234,7 @@ public class Configuration extends ConfigurationNode
 					stream.close();
 			} catch (IOException e)
 			{
+				e.printStackTrace();
 			}
 		}
 

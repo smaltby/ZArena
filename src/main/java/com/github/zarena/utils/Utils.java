@@ -10,11 +10,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 
-import net.minecraft.server.v1_5_R3.MathHelper;
+import net.minecraft.server.v1_6_R1.MathHelper;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_5_R3.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -40,7 +40,7 @@ public class Utils
 			new BufferedReader(new InputStreamReader(System.in));
 			String s1 = "";
 			String s2 = "";
-			String y = "", z = "";
+			String y, z;
 
 			BufferedReader bfr1 = new BufferedReader(new FileReader(file1));
 
@@ -165,7 +165,8 @@ public class Utils
 			try
 			{
 				m = i.getType();
-			} catch(NullPointerException e) {
+			} catch(NullPointerException e)
+			{
 			}
 			if(m != null)
 			{
@@ -221,9 +222,9 @@ public class Utils
 		motionX /= 2.0D;
 		motionY /= 2.0D;
 		motionZ /= 2.0D;
-		motionX -= xPower / (double)horizontal * (double)vertical;
-		motionY += (double)vertical;
-		motionZ -= zPower / (double)horizontal * (double)vertical;
+		motionX -= xPower / horizontal * vertical;
+		motionY += vertical;
+		motionZ -= zPower / horizontal * vertical;
 		
 		motionX *= horizontalModifier;
 		motionY *= verticalModifier;
@@ -258,7 +259,7 @@ public class Utils
         byte[] buffer = new byte[1024];	//Create a buffer
 
         //Have the inputstream read the buffer and write it to it's new directory
-        int read = 0;
+        int read;
         while ((read = in.read(buffer)) > 0)
         	out.write(buffer, 0, read);
 

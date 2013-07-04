@@ -370,7 +370,7 @@ public class GameHandler
 				if(armorContents != null)
 					pi.setArmorContents(armorContents);
 			}
-			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()) && Bukkit.getPluginManager().getPlugin("Vault") != null)
+			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()) && ZArena.getInstance().getEconomy() != null)
 			{
 				plugin.getEconomy().depositPlayer(player.getName(), stats.getOldMoney());
 			}
@@ -518,13 +518,13 @@ public class GameHandler
 		{
 			level.resetSigns();
 			level.resetInactiveZSpawns();
-		}
-		for(Entity entity : plugin.getServer().getWorld(level.getWorld()).getEntities())
-		{
-			if(CustomEntityWrapper.instanceOf(entity))
-				((LivingEntity) entity).setHealth(0);
-			else if(!(entity instanceof Player) && plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()))
-				entity.remove();
+			for(Entity entity : plugin.getServer().getWorld(level.getWorld()).getEntities())
+			{
+				if(CustomEntityWrapper.instanceOf(entity))
+					((LivingEntity) entity).setHealth(0);
+				else if(!(entity instanceof Player) && plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()))
+					entity.remove();
+			}
 		}
 		for(PlayerStats stats : playerStats.values())
 		{

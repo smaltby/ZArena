@@ -260,19 +260,7 @@ public class ZArena extends JavaPlugin
 				}
 				else
 				{
-					switch(StringEnums.valueOf(entityConfig.getPreferredType().toUpperCase()))
-					{
-						case ZOMBIE: case ZOMBIEPIGMAN:
-							gameHandler.getWaveHandler().zombieTypes.add(entityConfig);
-							break;
-						case SKELETON:
-							gameHandler.getWaveHandler().skeletonTypes.add(entityConfig);
-							break;
-						case WOLF:
-							gameHandler.getWaveHandler().wolfTypes.add(entityConfig);
-							break;
-						default:
-					}
+					gameHandler.getWaveHandler().addType(entityConfig);
 				}
 			}
 		}
@@ -421,7 +409,7 @@ public class ZArena extends JavaPlugin
 				FileOutputStream output = new FileOutputStream(old);
 				byte[] buffer = new byte[1024];	//Create a buffer
 				//Have the inputstream read the buffer and write it to it's new directory
-				int read = 0;
+				int read;
 				while ((read = input.read(buffer)) > 0)
 					output.write(buffer, 0, read);
 				Utils.extractFromJar(new File(Constants.PLUGIN_FOLDER), "config.yml", true);
@@ -432,6 +420,20 @@ public class ZArena extends JavaPlugin
 			{
 				e.printStackTrace();
 			}
+		} else if(config.getInt(ConfigEnum.VERSION.toString()) == 1)
+		{
+			File entitiesFolder = new File(Constants.ENTITIES_FOLDER);
+			for(File file : entitiesFolder.listFiles())
+			{
+				if(file.getName().substring(file.getName().lastIndexOf('.')).equals(".yml"))
+				{
+					YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+					config.set("Speed", config.getDouble("Speed", .23) * 4.347826086956522);
+					try {config.save(file);} catch(IOException e) {e.printStackTrace();}
+				}
+			}
+			config.set(ConfigEnum.VERSION.toString(), 2);
+			config.save();
 		}
 		//Determine if any values are missing from the config
 		boolean somethingMissing = false;
@@ -451,7 +453,7 @@ public class ZArena extends JavaPlugin
 			File tempDefaults;
 			try
 			{
-				tempDefaults = File.createTempFile("defaults",".yml");
+				tempDefaults = File.createTempFile("defaults","yml");
 				tempDefaults.deleteOnExit();
 				InputStream in = ZArena.class.getResourceAsStream("/config.yml");	//Get inputstream from base folder
 				if (in == null)
@@ -461,7 +463,7 @@ public class ZArena extends JavaPlugin
 				byte[] buffer = new byte[1024];	//Create a buffer
 
 				//Have the inputstream read the buffer and write it to it's new directory
-				int read = 0;
+				int read;
 				while ((read = in.read(buffer)) > 0)
 					out.write(buffer, 0, read);
 
@@ -480,6 +482,8 @@ public class ZArena extends JavaPlugin
 				if(!config.contains(c.toString()))
 				{
 					config.set(c.toString(), defaults.getProperty(c.toString()));
+					if(!c.toString().contains("."))
+						config.setComment(c.toString(), defaults.getComments().get(c.toString()));
 				}
 			}
 		}

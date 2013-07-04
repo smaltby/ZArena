@@ -3,7 +3,7 @@
 
   <groupId>com.github.zarena</groupId>
   <artifactId>ZArena</artifactId>
-  <version>0.7</version>
+  <version>0.7.1</version>
   <packaging>jar</packaging>
 
   <name>ZArena</name>
@@ -36,9 +36,13 @@
   <dependencies>
     <dependency>
       <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
+      <version>1.6.1-R0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bukkit</groupId>
       <artifactId>craftbukkit</artifactId>
-      <version>1.5.2-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
+      <version>1.6.1-R0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>org.getspout</groupId>
@@ -108,6 +112,7 @@
               <finalName>${project.name}</finalName>
               <artifactSet>
                 <excludes>
+                  <exclude>org.bukkit:bukkit</exclude>
                   <exclude>org.bukkit:craftbukkit</exclude>
                   <exclude>org.getspout:spoutplugin</exclude>
                   <exclude>net.milkbowl.vault:Vault</exclude>
