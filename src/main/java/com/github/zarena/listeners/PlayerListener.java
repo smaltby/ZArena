@@ -110,8 +110,9 @@ public class PlayerListener implements Listener
 	{
 		if(plugin.getConfiguration().getBoolean(ConfigEnum.DISABLE_NON_ZA.toString()) && plugin.getGameHandler().getPlayers().contains(event.getPlayer()))
 		{
-			if(!event.getMessage().matches("zarena.*") && !event.getMessage().matches("za.*"))
+			if(!event.getMessage().matches("/zarena.*") && !event.getMessage().matches("/za.*"))
 			{
+				ZArena.log(event.getMessage());
 				event.setCancelled(true);
 			}
 		}

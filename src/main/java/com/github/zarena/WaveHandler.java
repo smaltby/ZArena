@@ -16,12 +16,12 @@ import de.congrace.exp4j.Calculable;
 import de.congrace.exp4j.ExpressionBuilder;
 import de.congrace.exp4j.UnknownFunctionException;
 import de.congrace.exp4j.UnparsableExpressionException;
-import net.minecraft.server.v1_6_R1.EntitySkeleton;
-import net.minecraft.server.v1_6_R1.EntityWolf;
-import net.minecraft.server.v1_6_R1.EntityZombie;
+import net.minecraft.server.v1_6_R2.EntitySkeleton;
+import net.minecraft.server.v1_6_R2.EntityWolf;
+import net.minecraft.server.v1_6_R2.EntityZombie;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_6_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.entity.Player;
 
 import com.github.zarena.entities.ZEntityType;
@@ -214,7 +214,7 @@ public class WaveHandler implements Runnable
 			gameHandler.stop();
 			return null;
 		}
-		net.minecraft.server.v1_6_R1.World nmsWorld = ((CraftWorld)spawn.getWorld()).getHandle();
+		net.minecraft.server.v1_6_R2.World nmsWorld = ((CraftWorld)spawn.getWorld()).getHandle();
 		CustomEntityWrapper customEnt;
 		if(type.getPreferredType().equalsIgnoreCase("zombiepigman"))
 		{
@@ -500,7 +500,7 @@ public class WaveHandler implements Runnable
 		}
 		//Calculate the waves settings
 		toSpawn = calcQuantity(wave);
-		health = calcHealth(health);
+		health = calcHealth(wave);
 		health *= gm.getHealthModifier();
 		toSpawn *= gm.getZombieAmountModifier();
 		if(plugin.getConfiguration().getBoolean(ConfigEnum.QUANTITY_ADJUST.toString()))
@@ -568,7 +568,7 @@ public class WaveHandler implements Runnable
 		Gamemode gm = gameHandler.getGameMode();
 		if(toSpawn <= 0 && !gm.isApocalypse())
 			return;
-		if(rnd.nextDouble() > 0.05)
+		if(rnd.nextDouble() > (gm.isApocalypse() ? 0.025 : 0.05))
 			return;
 		if(entities.size() >= plugin.getConfiguration().getInt(ConfigEnum.MOB_CAP.toString()))
 			return;
@@ -611,6 +611,11 @@ public class WaveHandler implements Runnable
 	 */
 	private void startWave()
 	{
+		if(wave == 1 && gameHandler.getGameMode().getInitialWave() != 1)
+		{
+			wave = gameHandler.getGameMode().getInitialWave();
+			setWaveSettings(false);
+		}
 		ChatHelper.broadcastMessage(Message.WAVE_START.formatMessage(wave, toSpawn, health), gameHandler.getBroadcastPlayers());
 		for(Player p : gameHandler.getPlayers())
 		{

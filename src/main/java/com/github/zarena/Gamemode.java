@@ -20,9 +20,8 @@ import com.github.zarena.utils.Utils;
 
 public class Gamemode
 {
-	private static List<Gamemode> gamemodes;	//Not initialized here for a reason specified at bottom of constructor
-
 	private String name;
+	private int initWave;
 	private boolean isApocalypse;
 	private boolean isScavenger;
 	private boolean isNoRegen;
@@ -42,6 +41,7 @@ public class Gamemode
 	public Gamemode(FileConfiguration config)
 	{
 		name = config.getString("Name", "Normal");
+		initWave = config.getInt("Initial Wave", 1);
 		isApocalypse = config.getBoolean("Apocalypse", false);
 		isScavenger = config.getBoolean("Scavenger", false);
 		isNoRegen = config.getBoolean("No Regen", false);
@@ -131,12 +131,6 @@ public class Gamemode
 		}
 		if(itemCostModifiers.isEmpty())
 			itemCostModifiers.put("ALL", 1.0);
-
-		//A weird way of ensuring the first created gamemode (the default one) isn't added to this list
-		if(gamemodes == null)
-			gamemodes = new ArrayList<Gamemode>();
-		else
-			gamemodes.add(this);
 	}
 
 	public boolean canBuyItem(String item)
@@ -241,6 +235,11 @@ public class Gamemode
 		return isSlowRegen;
 	}
 
+	public int getInitialWave()
+	{
+		return initWave;
+	}
+
 	@Override
 	public String toString()
 	{
@@ -278,7 +277,7 @@ public class Gamemode
 		Gamemode defaultGm = ZArena.getInstance().getGameHandler().defaultGamemode;
 		if(defaultGm.getName().replaceAll(" ", "").equalsIgnoreCase(name.replaceAll("_", "")))
 			return defaultGm;
-		for(Gamemode gm : gamemodes)
+		for(Gamemode gm : ZArena.getInstance().getGameHandler().gamemodes)
 		{
 			if(gm.getName().replaceAll(" ", "").equalsIgnoreCase(name.replaceAll("_", "")))
 				return gm;
@@ -301,11 +300,11 @@ public class Gamemode
 	public static Gamemode getRandomGamemode(List<Gamemode> excludes)
 	{
 		int totalWeight = 0;
-		for(Gamemode gm : gamemodes)
+		for(Gamemode gm : ZArena.getInstance().getGameHandler().gamemodes)
 			totalWeight += (int) (gm.weight * 10);
 
 		Gamemode[] weightedGameModes = new Gamemode[totalWeight];
-		for(Gamemode gm : gamemodes)
+		for(Gamemode gm : ZArena.getInstance().getGameHandler().gamemodes)
 		{
 			for(int weight = (int) (gm.weight * 10); weight > 0; weight--)
 			{
@@ -313,7 +312,7 @@ public class Gamemode
 				totalWeight--;
 			}
 		}
-		if(excludes.containsAll(gamemodes))
+		if(excludes.containsAll(ZArena.getInstance().getGameHandler().gamemodes))
 			return weightedGameModes[new Random().nextInt(weightedGameModes.length)];
 		Gamemode gamemode;
 		do

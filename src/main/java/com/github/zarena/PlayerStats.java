@@ -150,7 +150,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 				money = 0;
 		}
 		points = 0;
-		deathWave = 0;
+		deathWave = ZArena.getInstance().getGameHandler().getWaveHandler().getWave();
 		deathTime = System.currentTimeMillis();
 	}
 

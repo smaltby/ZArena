@@ -203,7 +203,8 @@ public class CommandHandler
 			if(stats.isAlive())
 				totalMessage += Message.PLAYERS_ALIVE_ITEM.formatMessage(stats.getPlayer().getName());
 		}
-		totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
+		if(!totalMessage.isEmpty())
+			totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
 		senderWrapper.sendMessage(totalMessage);
 	}
 
@@ -213,7 +214,8 @@ public class CommandHandler
 		String totalMessage = "";
 		for(Player player : gameHandler.getPlayers())
 			totalMessage += Message.PLAYERS_IN_SESSION_ITEM.formatMessage(player.getName());
-		totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
+		if(!totalMessage.isEmpty())
+			totalMessage = totalMessage.substring(0, totalMessage.length() - 2);
 		senderWrapper.sendMessage(totalMessage);
 	}
 
