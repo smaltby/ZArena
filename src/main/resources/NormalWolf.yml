@@ -3,7 +3,7 @@ Name: Normal Wolf
 Damage: 1
 HealthModifier: 0.8
 Range: 64
-Speed: 0.3
+Speed: 1.3
 WorthModifier: 1
 MinimumSpawnWave: 1
 SpawnPriority: 0

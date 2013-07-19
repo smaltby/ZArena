@@ -21,6 +21,7 @@ import net.minecraft.server.v1_6_R2.EntityWolf;
 import net.minecraft.server.v1_6_R2.EntityZombie;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
 import org.bukkit.entity.Player;
 
@@ -28,20 +29,25 @@ import com.github.zarena.entities.ZEntityType;
 import com.github.zarena.events.GameStopCause;
 import com.github.zarena.events.GameStopEvent;
 import com.github.zarena.events.WaveChangeEvent;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-public class WaveHandler implements Runnable
+public class WaveHandler implements Runnable, Listener
 {
 	private ZArena plugin;
 	private GameHandler gameHandler;
 
+	//Will be delegated to the config eventually
+	private static final double SPAWN_CHANCE = 0.05;
+
 	private double timeUntilNextWave;
-	private double zombieSpawnChance;
 	private Random rnd;
 	private int wave;
 	private int toSpawn;
 	private int health;
 	private List<CustomEntityWrapper> entities;
-	private int tickCount;
 	private boolean wolfWave;
 	private boolean skeletonWave;
 	private int lastWolfWave;
@@ -50,13 +56,18 @@ public class WaveHandler implements Runnable
 	ZEntityType defaultZombieType;
 	ZEntityType defaultSkeletonType;
 	ZEntityType defaultWolfType;
-	List<ZEntityType> zombieTypes = new ArrayList<ZEntityType>();
-	List<ZEntityType> skeletonTypes = new ArrayList<ZEntityType>();
-	List<ZEntityType> wolfTypes = new ArrayList<ZEntityType>();
+	private List<ZEntityType> zombieTypes = new ArrayList<ZEntityType>();
+	private List<ZEntityType> skeletonTypes = new ArrayList<ZEntityType>();
+	private List<ZEntityType> wolfTypes = new ArrayList<ZEntityType>();
+
+	private int taskID = -1;
+	private int seconds;
+	private int secondsWithFewEntities = 0;
 
 	public WaveHandler(GameHandler instance)
 	{
 		plugin = ZArena.getInstance();
+		Bukkit.getPluginManager().registerEvents(this, plugin);
 		gameHandler = instance;
 		rnd = new Random();
 		entities = new LinkedList<CustomEntityWrapper>();
@@ -84,6 +95,50 @@ public class WaveHandler implements Runnable
 		}
 	}
 
+	private void attemptSpawnEntity()
+	{
+		//Decide of we should be spawning an entity
+		Gamemode gm = gameHandler.getGameMode();
+		if(toSpawn <= 0 && !gm.isApocalypse())
+			return;
+		if(rnd.nextDouble() > (gm.isApocalypse() ? SPAWN_CHANCE /2 : SPAWN_CHANCE))
+			return;
+		if(entities.size() >= plugin.getConfig().getInt(ConfigEnum.MOB_CAP.toString()))
+			return;
+
+		//Get the modified wave, based on gamemode
+		int modifiedWave = wave;
+		if(gm.isApocalypse())
+			modifiedWave = getApocalypseWave();
+		modifiedWave *= gm.getDifficultyModifier();
+
+		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
+		CustomEntityWrapper customEnt;
+		if(wolfWave && rnd.nextDouble() < plugin.getConfig().getDouble(ConfigEnum.WOLF_WAVE_PERCENT_SPAWN.toString()))
+			customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
+		else if(skeletonWave && rnd.nextDouble() < plugin.getConfig().getDouble(ConfigEnum.SKELETON_WAVE_PERCENT_SPAWN.toString()))
+			customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
+		else
+		{
+			if(rnd.nextDouble() < plugin.getConfig().getDouble(ConfigEnum.WOLF_PERCENT_SPAWN.toString()) && (wave > 1 || gm.isApocalypse()))
+				customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
+			else if(rnd.nextDouble() < plugin.getConfig().getDouble(ConfigEnum.SKELETON_PERCENT_SPAWN.toString()) && (wave > 1 || gm.isApocalypse()))
+				customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
+			else
+				customEnt = chooseEntity(modifiedWave, zombieTypes, gm.getDefaultZombies());
+		}
+
+		if(customEnt == null)	//The chunk might not be loaded, or the event might have been cancelled
+			return;
+
+		//Set the entities health, decrement the toSpawn count, and add the entity to the list of entities.
+		//Note that the entity was already spawned in one of the chooseEntity methods above.
+		customEnt.setMaxHealth((int) (health * (((ZEntityType) customEnt.getType()).getHealthModifier())));
+		customEnt.restoreHealth();
+		toSpawn--;
+		entities.add(customEnt);
+	}
+
 	private double calcChance(double priority, int wave)
 	{
 		double reduce = 2 - .75 / (1 + Math.pow(Math.E, -(wave/3 - 3)));
@@ -100,7 +155,7 @@ public class WaveHandler implements Runnable
 
 	public int calcHealth(int wave)
 	{
-		Configuration c = plugin.getConfiguration();
+		FileConfiguration c = plugin.getConfig();
 		try
 		{
 			return calcInternal(wave, c.getDouble(ConfigEnum.HEALTH_STARTING.toString()), c.getDouble(ConfigEnum.HEALTH_INCREASE.toString()),
@@ -152,7 +207,7 @@ public class WaveHandler implements Runnable
 
 	public int calcQuantity(int wave)
 	{
-		Configuration c = plugin.getConfiguration();
+		FileConfiguration c = plugin.getConfig();
 		try
 		{
 			return calcInternal(wave, c.getDouble(ConfigEnum.QUANTITY_STARTING.toString()), c.getDouble(ConfigEnum.QUANTITY_INCREASE.toString()),
@@ -261,7 +316,7 @@ public class WaveHandler implements Runnable
 	 */
 	public int getApocalypseWave()
 	{
-		return (int) Math.ceil((Math.log(Math.pow((tickCount+1), 10)) + ((tickCount+1)/40))/30);	//Logarithmic function
+		return (int) Math.ceil((Math.log(Math.pow((seconds+1)/20, 10)) + ((seconds+1)))/30);	//Logarithmic function
 	}
 
 	/**
@@ -298,7 +353,7 @@ public class WaveHandler implements Runnable
 
 	public int getGameLength()
 	{
-		return tickCount / 20;
+		return seconds;
 	}
 
 	public int getRemainingZombies()
@@ -308,7 +363,7 @@ public class WaveHandler implements Runnable
 
 	public double getSpawnChance()
 	{
-		return zombieSpawnChance;
+		return SPAWN_CHANCE;
 	}
 
 	/**
@@ -352,22 +407,84 @@ public class WaveHandler implements Runnable
 		return wave;
 	}
 
-	private void incrementWave()
+	@EventHandler
+	public void onEntityDamageByEntity(EntityDamageByEntityEvent event)
 	{
-		wave++;
-		setWaveSettings();
-		WaveChangeEvent event = new WaveChangeEvent(wave - 1, wave);
-		Bukkit.getPluginManager().callEvent(event);
+		//Resets secondsWithFewEntities if one of the few remaining entities damages something, or gets damaged.
+		//This is so the wave doesn't randomly end while the entities are still fighting, which may happen if one
+		//of the remaining entities is a boss and can't be killed in merely 60 seconds
+		CustomEntityWrapper entity;
+		if(CustomEntityWrapper.instanceOf(event.getEntity()))
+			entity = CustomEntityWrapper.getCustomEntity(event.getEntity());
+		else if(CustomEntityWrapper.instanceOf(event.getDamager()))
+			entity = CustomEntityWrapper.getCustomEntity(event.getDamager());
+		else if(event.getDamager() instanceof Projectile && CustomEntityWrapper.instanceOf(((Projectile) event.getDamager()).getShooter()))
+			entity = CustomEntityWrapper.getCustomEntity(((Projectile) event.getDamager()).getShooter());
+		else
+			return;
+		if(entities.contains(entity))
+			secondsWithFewEntities = 0;
 	}
 
-	public void resetWave()
+	private void prepareNextWave()
 	{
-		wave = 1;
-		tickCount = 0;
-		lastWolfWave = 0;
-		lastSkeletonWave = 0;
-		entities.clear();
-		setWaveSettings();
+		Gamemode gm = gameHandler.getGameMode();
+
+		timeUntilNextWave = plugin.getConfig().getInt(ConfigEnum.WAVE_DELAY.toString());
+		secondsWithFewEntities = 0;
+		ChatHelper.broadcastMessage(Message.WAVE_START_IN.formatMessage(wave, timeUntilNextWave), gameHandler.getBroadcastPlayers());
+
+		//Calculate the waves settings
+		toSpawn = calcQuantity(wave);
+		health = calcHealth(wave);
+		health *= gm.getHealthModifier();
+		toSpawn *= gm.getZombieAmountModifier();
+		if(plugin.getConfig().getBoolean(ConfigEnum.QUANTITY_ADJUST.toString()))
+			toSpawn *= 1.5/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-3) + .25);
+
+		if(!gm.isApocalypse())
+		{
+			//Do calculations required for wolf and skeleton waves
+			lastSkeletonWave++;
+			lastWolfWave++;
+			if(skeletonWave)
+				skeletonWave = false;
+			if(wolfWave)
+				wolfWave = false;
+			else
+			{
+				if(rnd.nextDouble() < plugin.getConfig().getDouble(ConfigEnum.WOLF_WAVE_PERCENT_OCCUR.toString()) && lastWolfWave > 4)
+				{
+					wolfWave = true;
+					lastWolfWave = 0;
+					ChatHelper.broadcastMessage(Message.WOLF_WAVE_APPROACHING.formatMessage());
+				}
+				else if(rnd.nextDouble() < plugin.getConfig().getDouble(ConfigEnum.SKELETON_WAVE_PERCENT_OCCUR.toString()) && lastSkeletonWave > 4)
+				{
+					skeletonWave = true;
+					lastSkeletonWave = 0;
+					ChatHelper.broadcastMessage(Message.SKELETON_WAVE_APPROACHING.formatMessage());
+				}
+			}
+			//Respawn players, or inform them of when they will respawn, if applicable
+			if(plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString()) > 0)
+			{
+				for(PlayerStats stats : gameHandler.getPlayerStats().values())
+				{
+					if(!stats.isAlive())
+					{
+						int respawnEveryWaves = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
+						if(stats.getWavesSinceDeath() >= respawnEveryWaves)
+							gameHandler.respawnPlayer(stats.getPlayer());
+						else
+						{
+							ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES.formatMessage(stats.getPlayer().getName(),
+									respawnEveryWaves - stats.getWavesSinceDeath()), stats.getPlayer());
+						}
+					}
+				}
+			}
+		}
 	}
 
 	@Override
@@ -379,33 +496,33 @@ public class WaveHandler implements Runnable
 		{
 			if(timeUntilNextWave > 0)
 			{
-				timeUntilNextWave -= 0.05;
+				timeUntilNextWave--;
 				if(timeUntilNextWave <= 0)
 					startWave();
 			}
 			else
 			{
-				spawnEntity();
-				//Every second, update the player list and entity list, and check if we should start the next wave
-				if(tickCount % 20 == 0)
-				{
-					updateEntityList();
-					if(checkNextWave())
-						incrementWave();
-					//Sometimes, players escape the server without setting off any listeners...
-					for(String pName : gameHandler.getPlayerNames())
-					{
-						Player p = Bukkit.getPlayer(pName);
-						if(p == null || !p.isOnline())
-							gameHandler.removePlayer(pName);
-					}
-				}
+				//Hack to fix the spawn rate after I changed this run method to be called every second, as opposed to every minute
+				//Will be made less suckish when I add configuration options for spawn rate in the config
+				for(int i = 0; i < 20; i++)
+					attemptSpawnEntity();
+				updateEntityList();
+				if(checkNextWave())
+					setWave(wave + 1);
+
+				//Often, entities get stuck. If there are only a few entities left, and players alive don't deal any damage
+				//in the past minute, we can assume an entity is stuck (or the players left alive are pansies and are avoding them)
+				//Note that the secondsWithFewEntities is reset when one of the entities is damaged, or deals damage
+				if(entities.size() <= 3)
+					secondsWithFewEntities++;
+				if(secondsWithFewEntities > 60)
+					setWave(wave + 1);
 				//Every five seconds, regenerate players healths if the gamemode says we should, and reset the wave settings if
 				//we're in an apocalypse
-				if(tickCount % 100 == 0)
+				if(seconds % 5 == 0)
 				{
 					if(gameHandler.getGameMode().isApocalypse())
-						setWaveSettings(false);
+						health = calcHealth(getApocalypseWave());
 					if(gameHandler.getGameMode().isSlowRegen())
 					{
 						for(Player player : gameHandler.getPlayers())
@@ -413,17 +530,21 @@ public class WaveHandler implements Runnable
 							double health = player.getHealth() + 1;
 							if(health > 20)
 								health = 20;
-							if(health < 0)	//Somehow...this has happened several times during beta testing.
-								health = 0;
 							player.setHealth(health);
 						}
 					}
 				}
 
 				//Ever 4 minutes, set the time to the beginning of night so we never end up in daytime (assuming the config says to do this)
-				if(tickCount % 4800 == 0)
+				if(seconds % 240 == 0)
 					Bukkit.getServer().getWorld(gameHandler.getLevel().getWorld()).setTime(38000);
-				tickCount++;
+			}
+			//Sometimes, players escape the server without setting off any listeners...
+			for(String pName : gameHandler.getPlayerNames())
+			{
+				Player p = Bukkit.getPlayer(pName);
+				if(p == null || !p.isOnline())
+					gameHandler.removePlayer(pName);
 			}
 			//Is the alive count less than 0? Yes? Well then end the bloody game!
 			if(gameHandler.getAliveCount() <= 0)
@@ -431,45 +552,42 @@ public class WaveHandler implements Runnable
 				GameStopEvent event = new GameStopEvent(GameStopCause.ALL_DEAD);
 				Bukkit.getServer().getPluginManager().callEvent(event);
 				gameHandler.stop();
-				if(plugin.getConfiguration().getBoolean(ConfigEnum.AUTORUN.toString()))
-					gameHandler.getLevelVoter().startVoting();
+				if(plugin.getConfig().getBoolean(ConfigEnum.AUTORUN.toString()))
+					gameHandler.getLevelVoter().start();
 			}
 			//If the config has it so players respawn after a set amount of minutes...then respawn players after a
 			//set amount of minutes!
-			if(tickCount % 20 == 0)
+			if(plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) > 0)
 			{
-				if(plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) > 0)
+				for(PlayerStats stats : gameHandler.getPlayerStats().values())
 				{
-					for(PlayerStats stats : gameHandler.getPlayerStats().values())
+					if(!stats.isAlive())
 					{
-						if(!stats.isAlive())
+						if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
+							gameHandler.respawnPlayer(stats.getPlayer());
+						if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
+							gameHandler.respawnPlayer(stats.getPlayer());
+						else if(stats.getTimeSinceDeath() % plugin.getConfig().getInt(ConfigEnum.RESPAWN_REMINDER_DELAY.toString()) == 0)
 						{
-							if(stats.getTimeSinceDeath() >= plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
-								gameHandler.respawnPlayer(stats.getPlayer());
-							if(stats.getTimeSinceDeath() >= plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
-								gameHandler.respawnPlayer(stats.getPlayer());
-							else if(stats.getTimeSinceDeath() % plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_REMINDER_DELAY.toString()) == 0)
-							{
-								int secondsUntilSpawn = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60 - stats.getTimeSinceDeath();
-								int minutesUntilSpawn = (int)TimeUnit.SECONDS.toMinutes(secondsUntilSpawn);
-								secondsUntilSpawn = secondsUntilSpawn % 60;
-								String message = "";
-								if(minutesUntilSpawn != 0) message += minutesUntilSpawn + "min ";
-								if(secondsUntilSpawn != 0) message += secondsUntilSpawn + "sec ";
-								if(!message.isEmpty())
-									ChatHelper.sendMessage(Message.RESPAWN_IN_TIME.formatMessage(stats.getPlayer().getName(),
-										message), stats.getPlayer());
-							}
+							int secondsUntilSpawn = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60 - stats.getTimeSinceDeath();
+							int minutesUntilSpawn = (int)TimeUnit.SECONDS.toMinutes(secondsUntilSpawn);
+							secondsUntilSpawn = secondsUntilSpawn % 60;
+							String message = "";
+							if(minutesUntilSpawn != 0) message += minutesUntilSpawn + "min ";
+							if(secondsUntilSpawn != 0) message += secondsUntilSpawn + "sec ";
+							if(!message.isEmpty())
+								ChatHelper.sendMessage(Message.RESPAWN_IN_TIME.formatMessage(stats.getPlayer().getName(),
+									message), stats.getPlayer());
 						}
 					}
 				}
 			}
+			seconds++;
 		}
 	}
 
 	/**
-	 * Sets the wave manually to a specified number. May cause unforseen errors that aren't caused by using the
-	 * internal increment wave method.
+	 * Sets the wave. Make cause unforseen errors if not called internally.
 	 * @param wave	wave
 	 */
 	public void setWave(int wave)
@@ -477,133 +595,18 @@ public class WaveHandler implements Runnable
 		WaveChangeEvent event = new WaveChangeEvent(this.wave, wave);
 		Bukkit.getPluginManager().callEvent(event);
 		this.wave = wave;
-		setWaveSettings(false);
+		prepareNextWave();
 	}
 
-	/**
-	 * Set the wave settings for this particular wave.
-	 * @param newWave	whether or not the settings are being set because of a new wave
-	 */
-	private void setWaveSettings(boolean newWave)
+	public void start()
 	{
-		Gamemode gm = gameHandler.getGameMode();
-		int modifiedWave = wave;
-		if(gm.isApocalypse())
-			modifiedWave = getApocalypseWave();
-		if(modifiedWave < 1)
-			modifiedWave = 1;
-
-		if(newWave)
-		{
-			timeUntilNextWave = plugin.getConfiguration().getInt(ConfigEnum.WAVE_DELAY.toString());
-			ChatHelper.broadcastMessage(Message.WAVE_START_IN.formatMessage(modifiedWave, timeUntilNextWave), gameHandler.getBroadcastPlayers());
-		}
-		//Calculate the waves settings
-		toSpawn = calcQuantity(wave);
-		health = calcHealth(wave);
-		health *= gm.getHealthModifier();
-		toSpawn *= gm.getZombieAmountModifier();
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.QUANTITY_ADJUST.toString()))
-			toSpawn *= 1.5/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-3) + .25);
-
-		//Do what's required when a new waves occurs (which never happens in apocaylpse mode)
-		if(!gm.isApocalypse() && newWave)
-		{
-			lastSkeletonWave++;
-			lastWolfWave++;
-			if(skeletonWave)
-				skeletonWave = false;
-			if(wolfWave)
-				wolfWave = false;
-			else
-			{
-				if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.WOLF_WAVE_PERCENT_OCCUR.toString()) && lastWolfWave > 4)
-				{
-					wolfWave = true;
-					lastWolfWave = 0;
-					ChatHelper.broadcastMessage(Message.WOLF_WAVE_APPROACHING.formatMessage());
-				}
-				else if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.SKELETON_WAVE_PERCENT_OCCUR.toString()) && lastSkeletonWave > 4)
-				{
-					skeletonWave = true;
-					lastSkeletonWave = 0;
-					ChatHelper.broadcastMessage(Message.SKELETON_WAVE_APPROACHING.formatMessage());
-				}
-			}
-			//Respawn players, or inform them of when they will respawn, if applicable
-			if(plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString()) > 0)
-			{
-				for(PlayerStats stats : gameHandler.getPlayerStats().values())
-				{
-					if(!stats.isAlive())
-					{
-						int respawnEveryWaves = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
-						if(stats.getWavesSinceDeath() >= respawnEveryWaves)
-							gameHandler.respawnPlayer(stats.getPlayer());
-						else
-						{
-							ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES.formatMessage(stats.getPlayer().getName(),
-										respawnEveryWaves - stats.getWavesSinceDeath()), stats.getPlayer());
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Set the wave settings for this particular wave.
-	 */
-	private void setWaveSettings()
-	{
-		this.setWaveSettings(true);
-	}
-
-	/**
-	 * Decides which type of entity should be spawned, and spawns it.
-	 */
-	private void spawnEntity()
-	{
-		//Decide of we should be spawning an entity
-		Gamemode gm = gameHandler.getGameMode();
-		if(toSpawn <= 0 && !gm.isApocalypse())
-			return;
-		if(rnd.nextDouble() > (gm.isApocalypse() ? 0.025 : 0.05))
-			return;
-		if(entities.size() >= plugin.getConfiguration().getInt(ConfigEnum.MOB_CAP.toString()))
-			return;
-
-		//Get the modified wave, based on gamemode
-		int modifiedWave = wave;
-		if(gm.isApocalypse())
-			modifiedWave = getApocalypseWave();
-		modifiedWave *= gm.getDifficultyModifier();
-
-		//Decide what kind of entity to spawn. If it's a wolf wave/skeleton wave, spawn based on that. Else, spawn normally.
-		CustomEntityWrapper customEnt;
-		if(wolfWave && rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.WOLF_WAVE_PERCENT_SPAWN.toString()))
-			customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
-		else if(skeletonWave && rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.SKELETON_WAVE_PERCENT_SPAWN.toString()))
-			customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
-		else
-		{
-			if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.WOLF_PERCENT_SPAWN.toString()) && (wave > 1 || gm.isApocalypse()))
-				customEnt = chooseEntity(modifiedWave, wolfTypes, gm.getDefaultWolves());
-			else if(rnd.nextDouble() < plugin.getConfiguration().getDouble(ConfigEnum.SKELETON_PERCENT_SPAWN.toString()) && (wave > 1 || gm.isApocalypse()))
-				customEnt = chooseEntity(modifiedWave, skeletonTypes, gm.getDefaultSkeletons());
-			else
-				customEnt = chooseEntity(modifiedWave, zombieTypes, gm.getDefaultZombies());
-		}
-
-		if(customEnt == null)	//The chunk might not be loaded, or the event might have been cancelled
-			return;
-
-		//Set the entities health, decrement the toSpawn count, and add the entity to the list of entities.
-		//Note that the entity was already spawned in one of the chooseEntity methods above.
-		customEnt.setMaxHealth((int) (health * (((ZEntityType) customEnt.getType()).getHealthModifier())));
-		customEnt.restoreHealth();
-		toSpawn--;
-		entities.add(customEnt);
+		wave = gameHandler.getGameMode().getInitialWave();
+		seconds = 0;
+		lastWolfWave = 0;
+		lastSkeletonWave = 0;
+		entities.clear();
+		prepareNextWave();
+		taskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(ZArena.getInstance(), this, 0L, 20L);
 	}
 
 	/**
@@ -611,11 +614,6 @@ public class WaveHandler implements Runnable
 	 */
 	private void startWave()
 	{
-		if(wave == 1 && gameHandler.getGameMode().getInitialWave() != 1)
-		{
-			wave = gameHandler.getGameMode().getInitialWave();
-			setWaveSettings(false);
-		}
 		ChatHelper.broadcastMessage(Message.WAVE_START.formatMessage(wave, toSpawn, health), gameHandler.getBroadcastPlayers());
 		for(Player p : gameHandler.getPlayers())
 		{
@@ -623,6 +621,14 @@ public class WaveHandler implements Runnable
 			if(!gm.isNoRegen())
 				p.setHealth(20);
 		}
+		//Teleport enemies that were stuck in the last wave to a zombie spawn
+		for(CustomEntityWrapper entity : entities) entity.getEntity().getBukkitEntity().teleport(gameHandler.getLevel().getRandomZombieSpawn());
+	}
+
+	public void stop()
+	{
+		if(taskID != -1)
+			Bukkit.getScheduler().cancelTask(taskID);
 	}
 
 	/**

@@ -3,7 +3,7 @@ Name: Fire Zombie
 Damage: 2
 HealthModifier: 5
 Range: 64
-Speed: 0.3
+Speed: 1.3
 WorthModifier: 4
 MinimumSpawnWave: 5
 SpawnPriority: 4

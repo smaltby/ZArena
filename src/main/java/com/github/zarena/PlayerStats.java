@@ -42,7 +42,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 		armor = player.getInventory().getArmorContents();
 		oldGameMode = player.getGameMode();
 		oldLevel = player.getLevel();
-		if(usingVault() && ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()))
+		if(usingVault() && ZArena.getInstance().getConfig().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()))
 		{
 			oldMoney = getEconomy().getBalance(player.getName());
 			getEconomy().withdrawPlayer(player.getName(), oldMoney);
@@ -55,7 +55,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 			getEconomy().depositPlayer(player, money);
 		else
 			this.money += money;
-		if(ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
+		if(ZArena.getInstance().getConfig().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
 			getPlayer().setLevel((int) getMoney());
 	}
 
@@ -142,7 +142,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 
 	public void resetStats()
 	{
-		if(!ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.KEEP_MONEY_ACROSS_GAMES.toString()))
+		if(!ZArena.getInstance().getConfig().getBoolean(ConfigEnum.KEEP_MONEY_ACROSS_GAMES.toString()))
 		{
 			if(usingVault())
 				getEconomy().withdrawPlayer(player, getEconomy().getBalance(player));
@@ -169,7 +169,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 			if(this.money < 0)
 				this.money = 0;
 		}
-		if(ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
+		if(ZArena.getInstance().getConfig().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
 			getPlayer().setLevel((int) getMoney());
 	}
 
@@ -208,7 +208,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 
 	private boolean usingVault()
 	{
-		return ZArena.getInstance().getConfiguration().getBoolean(ConfigEnum.USE_VAULT.toString()) && getEconomy() != null;
+		return ZArena.getInstance().getConfig().getBoolean(ConfigEnum.USE_VAULT.toString()) && getEconomy() != null;
 	}
 
 	private Economy getEconomy()

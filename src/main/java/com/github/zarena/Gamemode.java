@@ -56,21 +56,21 @@ public class Gamemode
 		if(config.contains("Default Zombie"))
 			defaultsNames = config.getStringList("Default Zombie");
 		if(defaultsNames.isEmpty())
-			defaultsNames.add(config.getString("Default Zombie", ZArena.getInstance().getConfiguration().getString(ConfigEnum.DEFAULT_ZOMBIE.toString())));
+			defaultsNames.add(config.getString("Default Zombie", ZArena.getInstance().getConfig().getString(ConfigEnum.DEFAULT_ZOMBIE.toString())));
 
 		defaultZombies.addAll(handleConversion(defaultsNames));
 
 		if(config.contains("Default Wolf"))
 			defaultsNames = config.getStringList("Default Wolf");
 		if(defaultsNames.isEmpty())
-			defaultsNames.add(config.getString("Default Wolf", ZArena.getInstance().getConfiguration().getString(ConfigEnum.DEFAULT_WOLF.toString())));
+			defaultsNames.add(config.getString("Default Wolf", ZArena.getInstance().getConfig().getString(ConfigEnum.DEFAULT_WOLF.toString())));
 
 		defaultWolves.addAll(handleConversion(defaultsNames));
 
 		if(config.contains("Default Skeleton"))
 			defaultsNames = config.getStringList("Default Skeleton");
 		if(defaultsNames.isEmpty())
-			defaultsNames.add(config.getString("Default Skeleton", ZArena.getInstance().getConfiguration().getString(ConfigEnum.DEFAULT_SKELETON.toString())));
+			defaultsNames.add(config.getString("Default Skeleton", ZArena.getInstance().getConfig().getString(ConfigEnum.DEFAULT_SKELETON.toString())));
 
 		defaultSkeletons.addAll(handleConversion(defaultsNames));
 

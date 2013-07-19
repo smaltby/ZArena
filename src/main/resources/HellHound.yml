@@ -3,7 +3,7 @@ Name: Hell Hound
 Damage: 2
 HealthModifier: 1.5
 Range: 64
-Speed: 0.3
+Speed: 1.3
 WorthModifier: 2
 MinimumSpawnWave: 4
 SpawnPriority: 3

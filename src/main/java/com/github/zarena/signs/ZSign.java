@@ -46,8 +46,8 @@ public abstract class ZSign implements Externalizable
 	public static ZSign attemptCreateSign(ZLevel level, Location location, Player player, String[] lines)
 	{
 		String firstLine = lines[0];
-		String shopHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.SHOP_HEADER.toString(), "ZBuy");
-		String tollHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.TOLL_HEADER.toString(), "ZPay");
+		String shopHeader = ZArena.getInstance().getConfig().getString(ConfigEnum.SHOP_HEADER.toString(), "ZBuy");
+		String tollHeader = ZArena.getInstance().getConfig().getString(ConfigEnum.TOLL_HEADER.toString(), "ZPay");
 		if(firstLine.equals(shopHeader) || firstLine.equals(tollHeader))
 		{
 			if(ZArena.getInstance().getGameHandler().getLevel() == null)
@@ -75,8 +75,8 @@ public abstract class ZSign implements Externalizable
 	
 	public static ZSign attemptCreateSign(ZLevel level, Location location, String[] lines)
 	{
-		String shopHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.SHOP_HEADER.toString(), "ZBuy");
-		String tollHeader = ZArena.getInstance().getConfiguration().getString(ConfigEnum.TOLL_HEADER.toString(), "ZPay");
+		String shopHeader = ZArena.getInstance().getConfig().getString(ConfigEnum.SHOP_HEADER.toString(), "ZBuy");
+		String tollHeader = ZArena.getInstance().getConfig().getString(ConfigEnum.TOLL_HEADER.toString(), "ZPay");
 		String firstLine = lines[0];
 		if(firstLine.equals(shopHeader) || firstLine.equals(tollHeader))
 		{

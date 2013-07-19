@@ -3,7 +3,7 @@ Name: Wither Skeleton
 Damage: 4
 HealthModifier: 5
 Range: 64
-Speed: 0.3
+Speed: 1.25
 WorthModifier: 4
 MinimumSpawnWave: 4
 SpawnPriority: 3

@@ -39,9 +39,6 @@ public class GameHandler
 	private LevelHandler levelHandler;
 	private LevelVoter levelVoter;
 
-	private int waveTaskID;
-	protected int voterTaskID; 	//protected to allow easy access from level voter
-
 	private boolean isRunning;
 	protected boolean isVoting; //protected to allow easy access from level voter
 	private boolean isWaiting;
@@ -60,7 +57,7 @@ public class GameHandler
 		plugin = ZArena.getInstance();
 		isRunning = false;
 		isVoting = false;
-		isWaiting = plugin.getConfiguration().getBoolean(ConfigEnum.AUTOSTART.toString());
+		isWaiting = plugin.getConfig().getBoolean(ConfigEnum.AUTOSTART.toString());
 		waveHandler = new WaveHandler(this);
 		levelVoter = new LevelVoter(this);
 		players = new ArrayList<String>();
@@ -73,7 +70,7 @@ public class GameHandler
 	 */
 	public void addPlayer(Player player)
 	{
-		if(players.size() >= plugin.getConfiguration().getInt(ConfigEnum.PLAYER_LIMIT.toString()))
+		if(players.size() >= plugin.getConfig().getInt(ConfigEnum.PLAYER_LIMIT.toString()))
 		{
 			ChatHelper.sendMessage(Message.GAME_FULL.formatMessage(), player);
 			return;
@@ -85,7 +82,7 @@ public class GameHandler
 		PlayerStats stats = new PlayerStats(player);
 		playerStats.put(player.getName(), stats);
 
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
+		if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			clearInventory(player.getInventory());
 
 		player.setGameMode(org.bukkit.GameMode.ADVENTURE);
@@ -99,14 +96,14 @@ public class GameHandler
 			{
 				//Send messages informing the player when he will next respawn, if applicable
                 boolean respawningEnabled = false;
-				int respawnEveryTime = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString());
+				int respawnEveryTime = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString());
 				if(respawnEveryTime != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_TIME_AFTER_JOIN.formatMessage(player.getName(),
 												respawnEveryTime + "min"), player);
                     respawningEnabled = true;
 				}
-				int respawnEveryWaves = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
+				int respawnEveryWaves = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
 				if(respawnEveryWaves != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES_AFTER_JOIN.formatMessage(stats.getPlayer().getName(),
@@ -132,7 +129,7 @@ public class GameHandler
 				player.teleport(player.getWorld().getSpawnLocation());
 			ChatHelper.sendMessage(Message.VOTE_START.formatMessage(), player);
 			ChatHelper.sendMessage(levelVoter.getVoteMessage(), player);
-			ChatHelper.sendMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfiguration().getInt(ConfigEnum.VOTING_LENGTH.toString())), player);
+			ChatHelper.sendMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(ConfigEnum.VOTING_LENGTH.toString())), player);
 		}
 		else
 		{
@@ -145,7 +142,7 @@ public class GameHandler
 
 	private void addStartItems(PlayerInventory inv)
 	{
-		for(String item : plugin.getConfiguration().getStringList(ConfigEnum.START_ITEMS.toString()))
+		for(String item : plugin.getConfig().getStringList(ConfigEnum.START_ITEMS.toString()))
 		{
 			ZSignCustomItem customItem = ZSignCustomItem.getCustomItem(item.split("\\s"));
 			if(customItem != null)
@@ -189,7 +186,7 @@ public class GameHandler
 			player.removePotionEffect(effect.getType());
 		}
 		PlayerInventory pi = player.getInventory();
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
+		if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			clearInventory(pi);
 		addStartItems(pi);
 	}
@@ -217,9 +214,9 @@ public class GameHandler
 	public List<Player> getBroadcastPlayers()
 	{
 		List<Player> toBroadcast = new ArrayList<Player>();
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.BROADCAST_ALL.toString(), false))
+		if(plugin.getConfig().getBoolean(ConfigEnum.BROADCAST_ALL.toString(), false))
 			toBroadcast = Arrays.asList(Bukkit.getOnlinePlayers());
-		else if(plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString(), false))
+		else if(plugin.getConfig().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString(), false))
 		{
 			for(Player p : Bukkit.getServer().getOnlinePlayers())
 			{
@@ -268,14 +265,14 @@ public class GameHandler
 
 	public Location getPlayersLeaveLocation(Player player)
 	{
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.SAVE_POSITION.toString()))
+		if(plugin.getConfig().getBoolean(ConfigEnum.SAVE_POSITION.toString()))
 		{
 			Location oldLocation = getPlayerStats(player).getOldLocation();
 			if(oldLocation != null)
 				return oldLocation;
 		}
-		World world = Bukkit.createWorld(new WorldCreator(plugin.getConfiguration().getString(ConfigEnum.GAME_LEAVE_WORLD.toString(), "world")));
-		List<Double> locXYZ = plugin.getConfiguration().getDoubleList(ConfigEnum.GAME_LEAVE_LOCATION.toString());
+		World world = Bukkit.createWorld(new WorldCreator(plugin.getConfig().getString(ConfigEnum.GAME_LEAVE_WORLD.toString(), "world")));
+		List<Double> locXYZ = plugin.getConfig().getDoubleList(ConfigEnum.GAME_LEAVE_LOCATION.toString());
         return new Location(world, locXYZ.get(0), locXYZ.get(1), locXYZ.get(2));
 	}
 
@@ -359,7 +356,7 @@ public class GameHandler
 		if(players.contains(player.getName()))
 		{
 			PlayerStats stats = getPlayerStats(player);
-			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
+			if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			{
 				clearInventory(player.getInventory());
 				PlayerInventory pi = player.getInventory();
@@ -370,7 +367,7 @@ public class GameHandler
 				if(armorContents != null)
 					pi.setArmorContents(armorContents);
 			}
-			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()) && ZArena.getInstance().getEconomy() != null)
+			if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()) && ZArena.getInstance().getEconomy() != null)
 			{
 				plugin.getEconomy().depositPlayer(player.getName(), stats.getOldMoney());
 			}
@@ -396,7 +393,7 @@ public class GameHandler
 			{
 				player.removePotionEffect(effect.getType());
 			}
-			if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
+			if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			{
 				PlayerInventory pi = player.getInventory();
 				clearInventory(pi);
@@ -472,11 +469,11 @@ public class GameHandler
 			return;
 		if(players.isEmpty())
 		{
-			isWaiting = plugin.getConfiguration().getBoolean(ConfigEnum.AUTOSTART.toString());
+			isWaiting = plugin.getConfig().getBoolean(ConfigEnum.AUTOSTART.toString());
 			return;
 		}
 		if(level == null)
-			levelVoter.startVoting();
+			levelVoter.start();
 		else
 		{
 			for(PlayerStats stats : playerStats.values())
@@ -485,8 +482,7 @@ public class GameHandler
 			}
 
 			isRunning = true;
-			waveHandler.resetWave();
-			waveTaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, waveHandler, 1L, 1L);
+			waveHandler.start();
 		}
 	}
 
@@ -505,12 +501,9 @@ public class GameHandler
 		if(!isRunning && !isVoting)
 			return;
 		if(isRunning)
-			Bukkit.getScheduler().cancelTask(waveTaskID);
+			waveHandler.stop();
 		if(isVoting)
-		{
-			Bukkit.getScheduler().cancelTask(voterTaskID);
-			levelVoter.resetVoting();
-		}
+			levelVoter.stop();
 		isRunning = false;
 		isWaiting = false;
 		isVoting = false;
@@ -522,7 +515,7 @@ public class GameHandler
 			{
 				if(CustomEntityWrapper.instanceOf(entity))
 					((LivingEntity) entity).setHealth(0);
-				else if(!(entity instanceof Player) && plugin.getConfiguration().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()))
+				else if(!(entity instanceof Player) && plugin.getConfig().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()))
 					entity.remove();
 			}
 		}
@@ -534,8 +527,8 @@ public class GameHandler
 			Player player = stats.getPlayer();
 			if(player != null)
 			{
-				if(plugin.getConfiguration().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString())
-						&& !plugin.getConfiguration().getBoolean(ConfigEnum.KEEP_ITEMS_ACROSS_GAMES.toString()))
+				if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString())
+						&& !plugin.getConfig().getBoolean(ConfigEnum.KEEP_ITEMS_ACROSS_GAMES.toString()))
 					clearInventory(player.getInventory());
 				for(PotionEffect effect : player.getActivePotionEffects())
 				{
@@ -543,7 +536,7 @@ public class GameHandler
 				}
 			}
 		}
-		if(gamemode != null && gamemode.isApocalypse())
+		if(gamemode.isApocalypse())
 			ChatHelper.broadcastMessage(Message.GAME_END_APOCALYPSE_MESSAGE.formatMessage(waveHandler.getGameLength()), getBroadcastPlayers());
 		else
 			ChatHelper.broadcastMessage(Message.GAME_END_MESSAGE.formatMessage(waveHandler.getWave()), getBroadcastPlayers());

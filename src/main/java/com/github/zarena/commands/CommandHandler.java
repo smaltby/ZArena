@@ -85,7 +85,7 @@ public class CommandHandler
 			return;
 		}
 		Player player = senderWrapper.getPlayer();
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.DISABLE_JOIN_WITH_INV.toString()))
+		if(plugin.getConfig().getBoolean(ConfigEnum.DISABLE_JOIN_WITH_INV.toString()))
 		{
 			boolean isClear = true;
 			for(ItemStack item : player.getInventory().getContents())
@@ -707,11 +707,11 @@ public class CommandHandler
 		}
 		Player player = senderWrapper.getPlayer();
 		List<Double> locXYZ = new ArrayList<Double>();
-		plugin.getConfiguration().set(ConfigEnum.GAME_LEAVE_WORLD.toString(), player.getWorld().getName());
+		plugin.getConfig().set(ConfigEnum.GAME_LEAVE_WORLD.toString(), player.getWorld().getName());
 		locXYZ.add(player.getLocation().getX());
 		locXYZ.add(player.getLocation().getY());
 		locXYZ.add(player.getLocation().getZ());
-		plugin.getConfiguration().set(ConfigEnum.GAME_LEAVE_LOCATION.toString(), locXYZ);
+		plugin.getConfig().set(ConfigEnum.GAME_LEAVE_LOCATION.toString(), locXYZ);
 		senderWrapper.sendMessage(Message.LEAVE_LOCATION_SET.formatMessage());
 	}
 

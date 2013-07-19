@@ -1,19 +1,13 @@
 package com.github.zarena.utils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 
 
 import net.minecraft.server.v1_6_R2.MathHelper;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -395,32 +389,32 @@ public class Utils
 
 		if(oldConfig.contains("Donator.Start Money"))
 		{
-			newConfig.removeProperty("Donator.Start Money");
-			for(String nodeName : oldConfig.getKeys("Donator.Start Money"))
+			newConfig.set("Donator.Start Money", null);
+			for(String nodeName : oldConfig.getConfigurationSection("Donator.Start Money").getKeys(false))
 			{
-				ConfigurationNode node = oldConfig.getNode("Donator.Start Money."+nodeName);
-				for(String key : node.getKeys())
-					newConfig.set(ConfigEnum.START_MONEY.toString()+"."+node.getName()+"."+key, node.getProperty(key));
+				ConfigurationSection node = oldConfig.getConfigurationSection("Donator.Start Money." + nodeName);
+				for(String key : node.getKeys(false))
+					newConfig.set(ConfigEnum.START_MONEY.toString()+"."+node.getName()+"."+key, node.get(key));
 			}
 		}
 		if(oldConfig.contains("Donator.Extra Votes"))
 		{
-			newConfig.removeProperty("Donator.Extra Votes");
-			for(String nodeName : oldConfig.getKeys("Donator.Extra Votes"))
+			newConfig.set("Donator.Extra Votes", null);
+			for(String nodeName : oldConfig.getConfigurationSection("Donator.Extra Votes").getKeys(false))
 			{
-				ConfigurationNode node = oldConfig.getNode("Donator.Extra Votes."+nodeName);
-				for(String key : node.getKeys())
-					newConfig.set(ConfigEnum.EXTRA_VOTES.toString()+"."+node.getName()+"."+key, node.getProperty(key));
+				ConfigurationSection node = oldConfig.getConfigurationSection("Donator.Extra Votes." + nodeName);
+				for(String key : node.getKeys(false))
+					newConfig.set(ConfigEnum.EXTRA_VOTES.toString()+"."+node.getName()+"."+key, node.get(key));
 			}
 		}
 		if(oldConfig.contains("SignCustomItems"))
 		{
-			newConfig.removeProperty("SignCustomItems");
-			for(String nodeName : oldConfig.getKeys("SignCustomItems"))
+			newConfig.set("SignCustomItems", null);
+			for(String nodeName : oldConfig.getConfigurationSection("SignCustomItems").getKeys(false))
 			{
-				ConfigurationNode node = oldConfig.getNode("SignCustomItems."+nodeName);
-				for(String key : node.getKeys())
-					newConfig.set(ConfigEnum.CUSTOM_ITEMS.toString()+"."+node.getName()+"."+key, node.getProperty(key));
+				ConfigurationSection node = oldConfig.getConfigurationSection("SignCustomItems." + nodeName);
+				for(String key : node.getKeys(false))
+					newConfig.set(ConfigEnum.CUSTOM_ITEMS.toString()+"."+node.getName()+"."+key, node.get(key));
 			}
 		}
 
@@ -451,7 +445,24 @@ public class Utils
 		newConfig.set(ConfigEnum.DEFAULT_SKELETON.toString(), oldConfig.getString("Entities.Default Skeleton File Name"));
 		newConfig.set(ConfigEnum.DEFAULT_WOLF.toString(), oldConfig.getString("Entities.Default Wolf File Name"));
 		newConfig.set(ConfigEnum.DEFAULT_GAMEMODE.toString(), oldConfig.getString("Gamemodes.Default Gamemode File Name"));
+	}
 
-		newConfig.save();
+	public static InputStream cloneStream(InputStream stream)
+	{
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+		byte[] buffer = new byte[1024];
+		int len;
+		try
+		{
+			while ((len = stream.read(buffer)) > -1 )
+				baos.write(buffer, 0, len);
+			baos.flush();
+		} catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+
+		return new ByteArrayInputStream(baos.toByteArray());
 	}
 }

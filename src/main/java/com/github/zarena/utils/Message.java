@@ -149,7 +149,7 @@ public enum Message
 	public String formatMessage(Object... args)
 	{
 		if(args.length != params.length)
-			ZArena.log(Level.SEVERE, "Yo, the length of args and params don't match. What the fuck man, this isn't complicated. Look to the enum "+this+" and fix this shit.");
+			ZArena.log(Level.SEVERE, "Yo, the length of args and params don't match. Look to the enum "+this+" and fix it. (Or send this message to the dev so he can fix it)");
 		String messageCopy = message;
 		if(messageCopy.equals("<disabled>"))
 			return "";
@@ -183,21 +183,17 @@ public enum Message
         //Reload the config from the plugins default resources, and restore the users preferences
         if(outOfSync)
         {
-			File file;
-            try
-            {
-                file = Utils.extractFromJar(new File(Constants.PLUGIN_FOLDER), "language.yml", true);
-            } catch(IOException e)
-            {
-                e.printStackTrace();
-				return;
-            }
-			Configuration language = new Configuration(file);
+			File file = new File(Constants.PLUGIN_FOLDER);
+			Configuration language = Configuration.loadConfiguration(ZArena.class.getResourceAsStream("/language.yml"));
 			for(Map.Entry<String, String> e : ChatHelper.messages.entrySet())
-			{
 				language.set(e.getKey(), e.getValue());
+			try
+			{
+				language.save(file);
+			} catch(IOException e)
+			{
+				e.printStackTrace();
 			}
-			language.save();
         }
 	}
 }

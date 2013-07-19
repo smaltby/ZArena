@@ -54,14 +54,14 @@ public class PlayerListener implements Listener
 			{
                 boolean respawningEnabled = false;
 				//Send messages informing the player when he will next respawn, if applicable
-				int respawnEveryTime = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString());
+				int respawnEveryTime = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString());
 				if(respawnEveryTime != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_TIME_AFTER_DEATH.formatMessage(event.getPlayer().getName(),
 												respawnEveryTime + "min"), event.getPlayer());
                     respawningEnabled = true;
 				}
-				int respawnEveryWaves = plugin.getConfiguration().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
+				int respawnEveryWaves = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
 				if(respawnEveryWaves != 0)
 				{
 					ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES_AFTER_DEATH.formatMessage(event.getPlayer().getName(),
@@ -80,7 +80,7 @@ public class PlayerListener implements Listener
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerJoin(final PlayerJoinEvent event)
 	{
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.AUTOJOIN.toString()))
+		if(plugin.getConfig().getBoolean(ConfigEnum.AUTOJOIN.toString()))
 		{
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable()	//Add a delay in case the player is in a different world from the game world
 			{
@@ -108,7 +108,7 @@ public class PlayerListener implements Listener
 	@EventHandler
 	public void onCommandPreprocess(PlayerCommandPreprocessEvent event)
 	{
-		if(plugin.getConfiguration().getBoolean(ConfigEnum.DISABLE_NON_ZA.toString()) && plugin.getGameHandler().getPlayers().contains(event.getPlayer()))
+		if(plugin.getConfig().getBoolean(ConfigEnum.DISABLE_NON_ZA.toString()) && plugin.getGameHandler().getPlayers().contains(event.getPlayer()))
 		{
 			if(!event.getMessage().matches("/zarena.*") && !event.getMessage().matches("/za.*"))
 			{

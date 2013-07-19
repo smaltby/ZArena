@@ -4,7 +4,7 @@ Damage: 5
 ArmorPiercing: 5
 HealthModifier: 14
 Range: 64
-Speed: 0.35
+Speed: 1.4
 WorthModifier: 10
 MinimumSpawnWave: 9
 SpawnChance: 7

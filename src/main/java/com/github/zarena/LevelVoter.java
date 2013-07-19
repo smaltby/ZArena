@@ -32,6 +32,7 @@ public class LevelVoter implements Runnable
 	private Map<Player, Integer> mappedVotes;
 	private int[] votes;
 	private String[] currentVoteMessage;
+	private int taskID = -1;
 	
 	public LevelVoter(GameHandler instance)
 	{
@@ -70,7 +71,7 @@ public class LevelVoter implements Runnable
 		mappedVotes.put(player, vote);
 		if(mappedVotes.size() == gameHandler.getPlayers().size())	//If everyone voted
 		{
-			Bukkit.getScheduler().cancelTask(gameHandler.voterTaskID);
+			Bukkit.getScheduler().cancelTask(taskID);
 			run();
 		}
 		ChatHelper.sendMessage(Message.VOTE_SUCCESSFUL.formatMessage(), player);
@@ -84,7 +85,7 @@ public class LevelVoter implements Runnable
 	/**
 	 * Start the vote. Choose the levels and gamemodes to be voted on.
 	 */
-	public void startVoting()
+	public void start()
 	{
 		gameHandler.isVoting = true;
 		int maps = gameHandler.getLevelHandler().getLevels().size();
@@ -122,7 +123,7 @@ public class LevelVoter implements Runnable
 			currentVoteMessage[b-1] = ChatHelper.broadcastMessage(Message.VOTE_OPTION.formatMessage(b, levelName, gmName), gameHandler.getBroadcastPlayers());
 			b++;
 		}
-		ChatHelper.broadcastMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfiguration().getInt(ConfigEnum.VOTING_LENGTH.toString())),
+		ChatHelper.broadcastMessage(Message.VOTE_ENDS_IN.formatMessage(plugin.getConfig().getInt(ConfigEnum.VOTING_LENGTH.toString())),
 				gameHandler.getBroadcastPlayers());
 		
 		//Send vote screens to spout players with the option enabled
@@ -135,11 +136,11 @@ public class LevelVoter implements Runnable
 		}
 		if(plugin.isSpoutEnabled())
 			SpoutHandler.openVotingScreens(optionsArray);
-		gameHandler.voterTaskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this,
-				plugin.getConfiguration().getInt(ConfigEnum.VOTING_LENGTH.toString()) * 20);
+		taskID = plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, this,
+				plugin.getConfig().getInt(ConfigEnum.VOTING_LENGTH.toString()) * 20);
 	}
 
-	public void resetVoting()
+	public void reset()
 	{
 		options.clear();
 		mappedVotes.clear();
@@ -181,10 +182,20 @@ public class LevelVoter implements Runnable
 			}
 			b++;
 		}
-		resetVoting();
+		reset();
 		GameStartEvent event = new GameStartEvent(GameStartCause.VOTE);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		//Run the next game with the chosen level/gamemode
 		gameHandler.start();
+	}
+
+	/**
+	 * Stops voting, and resets all votes.
+	 */
+	public void stop()
+	{
+		if(taskID != -1)
+			Bukkit.getScheduler().cancelTask(taskID);
+		reset();
 	}
 }

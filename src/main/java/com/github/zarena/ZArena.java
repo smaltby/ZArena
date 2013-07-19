@@ -12,6 +12,7 @@ import com.github.zarena.utils.*;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -66,12 +67,12 @@ public class ZArena extends JavaPlugin
 			spoutEnabled = true;
 			SpoutHandler.enable();
 		}
-		if(getConfiguration().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
+		if(getConfig().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
 		{
 			kc = new KillCounter();
 			kc.enable();
 		}
-		if(getConfiguration().getBoolean(ConfigEnum.ENABLE_AFKKICKER.toString()))
+		if(getConfig().getBoolean(ConfigEnum.ENABLE_AFKKICKER.toString()))
 		{
 			new AFKManager().enable();
 		}
@@ -99,7 +100,7 @@ public class ZArena extends JavaPlugin
 		} catch (IOException e)
 		{/* Failed to submit the stats :-( */}
 		//Load Vault economy
-		if(getConfiguration().getBoolean(ConfigEnum.USE_VAULT.toString()) && Bukkit.getPluginManager().getPlugin("Vault") != null)
+		if(getConfig().getBoolean(ConfigEnum.USE_VAULT.toString()) && Bukkit.getPluginManager().getPlugin("Vault") != null)
 			setupEconomy();
 
 		//Register command executors
@@ -130,7 +131,7 @@ public class ZArena extends JavaPlugin
 		GameStopEvent event = new GameStopEvent(GameStopCause.SERVER_STOP);
 		Bukkit.getServer().getPluginManager().callEvent(event);
 		gameHandler.stop();
-		if(getConfiguration().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
+		if(getConfig().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
 			kc.disable();
 		//Save stuff
 		saveFiles();
@@ -139,12 +140,8 @@ public class ZArena extends JavaPlugin
 		spoutEnabled = false;
 	}
 
+	@Override
 	public FileConfiguration getConfig()
-	{
-		throw new UnsupportedOperationException("Please use getConfiguration as opposed to getConfig");
-	}
-
-	public Configuration getConfiguration()
 	{
 		return config;
 	}
@@ -176,20 +173,20 @@ public class ZArena extends JavaPlugin
 
 	private void loadDonatorInfo()
 	{
-		ConfigurationNode startMoney = getConfiguration().getNode(ConfigEnum.START_MONEY.toString());
-		for(String donatorSectionString : startMoney.getKeys())
+		ConfigurationSection startMoney = getConfig().getConfigurationSection(ConfigEnum.START_MONEY.toString());
+		for(String donatorSectionString : startMoney.getKeys(false))
 		{
-			ConfigurationNode donatorSection = startMoney.getNode(donatorSectionString);
+			ConfigurationSection donatorSection = startMoney.getConfigurationSection(donatorSectionString);
 			if(!donatorSection.contains("permission name") || !donatorSection.contains("value"))
 				return;
 			String permissionName = donatorSection.getString("permission name");
 			int value = donatorSection.getInt("value");
 			Permissions.startMoneyPermissions.put(permissionName, value);
 		}
-		ConfigurationNode extraVotes = getConfiguration().getNode(ConfigEnum.EXTRA_VOTES.toString());
-		for(String donatorSectionString : extraVotes.getKeys())
+		ConfigurationSection extraVotes = getConfig().getConfigurationSection(ConfigEnum.EXTRA_VOTES.toString());
+		for(String donatorSectionString : extraVotes.getKeys(false))
 		{
-			ConfigurationNode donatorSection = extraVotes.getNode(donatorSectionString);
+			ConfigurationSection donatorSection = extraVotes.getConfigurationSection(donatorSectionString);
 			if(!donatorSection.contains("permission name") || !donatorSection.contains("value"))
 				return;
 			String permissionName = donatorSection.getString("permission name");
@@ -212,7 +209,7 @@ public class ZArena extends JavaPlugin
 			{
 				YamlConfiguration gamemodeConfig = YamlConfiguration.loadConfiguration(file);
 				Gamemode gamemode = new Gamemode(gamemodeConfig);
-				if(file.getName().equals(getConfiguration().getString(ConfigEnum.DEFAULT_GAMEMODE.toString())))
+				if(file.getName().equals(getConfig().getString(ConfigEnum.DEFAULT_GAMEMODE.toString())))
 				{
 					gameHandler.setDefaultGamemode(gamemode);
 					gameHandler.defaultGamemode = gamemode;
@@ -245,15 +242,15 @@ public class ZArena extends JavaPlugin
 				YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 				ZEntityTypeConfiguration entityConfig = new ZEntityTypeConfiguration(config);
 				try {config.save(file);} catch(IOException e) {e.printStackTrace();}
-				if(file.getName().equals(getConfiguration().getString(ConfigEnum.DEFAULT_ZOMBIE.toString())))
+				if(file.getName().equals(getConfig().getString(ConfigEnum.DEFAULT_ZOMBIE.toString())))
 				{
 					gameHandler.getWaveHandler().defaultZombieType = entityConfig;
 					defaultZombieFound = true;
-				} else if(file.getName().equals(getConfiguration().getString(ConfigEnum.DEFAULT_WOLF.toString())))
+				} else if(file.getName().equals(getConfig().getString(ConfigEnum.DEFAULT_WOLF.toString())))
 				{
 					gameHandler.getWaveHandler().defaultWolfType = entityConfig;
 					defaultWolfFound = true;
-				} else if(file.getName().equals(getConfiguration().getString(ConfigEnum.DEFAULT_SKELETON.toString())))
+				} else if(file.getName().equals(getConfig().getString(ConfigEnum.DEFAULT_SKELETON.toString())))
 				{
 					gameHandler.getWaveHandler().defaultSkeletonType = entityConfig;
 					defaultSkeletonFound = true;
@@ -342,10 +339,10 @@ public class ZArena extends JavaPlugin
 
 	private void loadZSignCustomItems()
 	{
-		ConfigurationNode customItems = getConfiguration().getNode(ConfigEnum.CUSTOM_ITEMS.toString());
-		for(String customItemString : customItems.getKeys())
+		ConfigurationSection customItems = getConfig().getConfigurationSection(ConfigEnum.CUSTOM_ITEMS.toString());
+		for(String customItemString : customItems.getKeys(false))
 		{
-			ConfigurationNode customItem = customItems.getNode(customItemString);
+			ConfigurationSection customItem = customItems.getConfigurationSection(customItemString);
 			if(!customItem.contains("type")) //The type is a necessary paramater of the custom item.
 				continue;
 			int type = customItem.getInt("type");
@@ -397,7 +394,7 @@ public class ZArena extends JavaPlugin
 		File configFile = new File(Constants.PLUGIN_FOLDER+"/config.yml");
 		if(!configFile.exists())
 			loadPluginFirstTime();
-		config = new Configuration(configFile);
+		config = Configuration.loadConfiguration(configFile);
 		//If true, update from old config to new config
 		if(!config.contains(ConfigEnum.VERSION.toString()))
 		{
@@ -413,9 +410,10 @@ public class ZArena extends JavaPlugin
 				while ((read = input.read(buffer)) > 0)
 					output.write(buffer, 0, read);
 				Utils.extractFromJar(new File(Constants.PLUGIN_FOLDER), "config.yml", true);
-				Configuration newConfig = new Configuration(configFile);
-				Configuration oldConfig = new Configuration(old);
+				Configuration newConfig = Configuration.loadConfiguration(configFile);
+				Configuration oldConfig = Configuration.loadConfiguration(old);
 				Utils.convertToNewConfig(newConfig, oldConfig);
+				newConfig.save(old);
 			} catch(IOException e)
 			{
 				e.printStackTrace();
@@ -433,7 +431,13 @@ public class ZArena extends JavaPlugin
 				}
 			}
 			config.set(ConfigEnum.VERSION.toString(), 2);
-			config.save();
+			try
+			{
+				config.save(configFile);
+			} catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		//Determine if any values are missing from the config
 		boolean somethingMissing = false;
@@ -449,50 +453,16 @@ public class ZArena extends JavaPlugin
 		//plugin's jar file
 		if(somethingMissing)
 		{
-			//Load the default config.yml to a temporary file
-			File tempDefaults;
-			try
-			{
-				tempDefaults = File.createTempFile("defaults","yml");
-				tempDefaults.deleteOnExit();
-				InputStream in = ZArena.class.getResourceAsStream("/config.yml");	//Get inputstream from base folder
-				if (in == null)
-					throw new FileNotFoundException("config.yml could not be found.");
+			Map<String, Object> oldValues = config.getValues(true);
+			//Set the config back to the default so we preserve the correct order of stuff
+			config = Configuration.loadConfiguration(ZArena.class.getResourceAsStream("/config.yml"));
 
-				FileOutputStream out = new FileOutputStream(tempDefaults);
-				byte[] buffer = new byte[1024];	//Create a buffer
+			//Set back all of the user defined values
+			for(Map.Entry<String, Object> e : oldValues.entrySet())
+				config.set(e.getKey(), e.getValue());
 
-				//Have the inputstream read the buffer and write it to it's new directory
-				int read;
-				while ((read = in.read(buffer)) > 0)
-					out.write(buffer, 0, read);
-
-				//Close up everything
-				in.close();
-				out.flush();
-				out.close();
-			} catch(Exception e)
-			{
-				e.printStackTrace();
-				return;
-			}
-			Configuration defaults = new Configuration(tempDefaults);
-			for(ConfigEnum c : ConfigEnum.values())
-			{
-				if(!config.contains(c.toString()))
-				{
-					config.set(c.toString(), defaults.getProperty(c.toString()));
-					if(!c.toString().contains("."))
-						config.setComment(c.toString(), defaults.getComments().get(c.toString()));
-				}
-			}
+			saveConfig();
 		}
-	}
-
-	@Override
-	public void saveConfig()
-	{
-		config.save();
 	}
 
 	private void saveFiles()

@@ -34,7 +34,7 @@ public class CommandHandler
 		if(amount < 0)
 			senderWrapper.sendMessage(Message.ADD_KILLS_MUST_BE_GREATER_THAN0.formatMessage());
 		kc.setKills(name, kc.getKills(name) + amount);
-		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(kc.getKills(name)));
+		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(name, kc.getKills(name)));
 	}
 
 	public void sendTopPlayers()
@@ -62,7 +62,7 @@ public class CommandHandler
 		if(amount < 0)
 			senderWrapper.sendMessage(Message.SET_KILLS_MUST_BE_GREATER_OR_EQUAL_TO0.formatMessage());
 		kc.setKills(name, amount);
-		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(kc.getKills(name)));
+		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(name, kc.getKills(name)));
 		
 	}
 
@@ -89,6 +89,6 @@ public class CommandHandler
 		if(amount < 0)
 			senderWrapper.sendMessage(Message.SUB_KILLS_MUST_BE_GREATER_THAN0.formatMessage());
 		kc.setKills(name, kc.getKills(name) - amount);
-		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(kc.getKills(name)));
+		senderWrapper.sendMessage(Message.KILLS_SET.formatMessage(name, kc.getKills(name)));
 	}
 }

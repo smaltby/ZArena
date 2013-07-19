@@ -3,7 +3,7 @@ Name: Normal Zombie
 Damage: 2
 HealthModifier: 1
 Range: 64
-Speed: 0.25
+Speed: 1.1
 WorthModifier: 1
 MinimumSpawnWave: 1
 SpawnPriority: 0
