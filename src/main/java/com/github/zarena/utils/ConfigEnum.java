@@ -61,7 +61,8 @@ public enum ConfigEnum
 	EXTRA_VOTES("Donator.Extra Votes"),
 	MOB_CAP("Mob Cap"),
 	KEEP_ITEMS_ACROSS_GAMES("Keep Items Across Games"),
-	KEEP_MONEY_ACROSS_GAMES("Keep Money Across Games");
+	KEEP_MONEY_ACROSS_GAMES("Keep Money Across Games"),
+	NEXT_WAVE_IF_ENTITY_STUCK("Start Next Wave If An Entity Is Stuck");
 
 	String path;
 	ConfigEnum(String path)

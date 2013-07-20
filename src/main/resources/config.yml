@@ -158,6 +158,10 @@ Broadcast To All: false
 #If true, you can't use non /za commands while in game
 Disable Non ZArena Commands In Game: false
 
+#If true, the game will start the next wave is there are less than 3 entities, and none of those entities have damaged a player,
+#or been damaged in a minute. The game assumes they are stuck, teleports them to a random zombie spawn, and starts the next wave.
+Start Next Wave If An Entity Is Stuck: true
+
 #Should the built-in kill counter be enabled?
 Enable Killcounter: true
 

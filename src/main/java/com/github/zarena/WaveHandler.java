@@ -513,10 +513,13 @@ public class WaveHandler implements Runnable, Listener
 				//Often, entities get stuck. If there are only a few entities left, and players alive don't deal any damage
 				//in the past minute, we can assume an entity is stuck (or the players left alive are pansies and are avoding them)
 				//Note that the secondsWithFewEntities is reset when one of the entities is damaged, or deals damage
-				if(entities.size() <= 3)
-					secondsWithFewEntities++;
-				if(secondsWithFewEntities > 60)
-					setWave(wave + 1);
+				if(plugin.getConfig().getBoolean(ConfigEnum.NEXT_WAVE_IF_ENTITY_STUCK.toString()))
+				{
+					if(entities.size() <= 3)
+						secondsWithFewEntities++;
+					if(secondsWithFewEntities > 60)
+						setWave(wave + 1);
+				}
 				//Every five seconds, regenerate players healths if the gamemode says we should, and reset the wave settings if
 				//we're in an apocalypse
 				if(seconds % 5 == 0)
