@@ -16,6 +16,7 @@ import de.congrace.exp4j.Calculable;
 import de.congrace.exp4j.ExpressionBuilder;
 import de.congrace.exp4j.UnknownFunctionException;
 import de.congrace.exp4j.UnparsableExpressionException;
+import net.minecraft.server.v1_6_R2.EntityLiving;
 import net.minecraft.server.v1_6_R2.EntitySkeleton;
 import net.minecraft.server.v1_6_R2.EntityWolf;
 import net.minecraft.server.v1_6_R2.EntityZombie;
@@ -23,6 +24,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import com.github.zarena.entities.ZEntityType;
@@ -418,9 +420,14 @@ public class WaveHandler implements Runnable, Listener
 			entity = CustomEntityWrapper.getCustomEntity(event.getEntity());
 		else if(CustomEntityWrapper.instanceOf(event.getDamager()))
 			entity = CustomEntityWrapper.getCustomEntity(event.getDamager());
-		else if(event.getDamager() instanceof Projectile && CustomEntityWrapper.instanceOf(((Projectile) event.getDamager()).getShooter()))
-			entity = CustomEntityWrapper.getCustomEntity(((Projectile) event.getDamager()).getShooter());
-		else
+		else if(event.getDamager() instanceof Projectile)
+		{
+			LivingEntity shooter = ((Projectile) event.getDamager()).getShooter();
+			if(shooter != null && CustomEntityWrapper.instanceOf(shooter))
+				entity = CustomEntityWrapper.getCustomEntity(shooter);
+			else
+				return;
+		} else
 			return;
 		if(entities.contains(entity))
 			secondsWithFewEntities = 0;
