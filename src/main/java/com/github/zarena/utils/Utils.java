@@ -3,12 +3,13 @@ package com.github.zarena.utils;
 import java.io.*;
 
 
-import net.minecraft.server.v1_6_R2.MathHelper;
+import net.minecraft.server.v1_6_R2.*;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_6_R2.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_6_R2.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -447,22 +448,95 @@ public class Utils
 		newConfig.set(ConfigEnum.DEFAULT_GAMEMODE.toString(), oldConfig.getString("Gamemodes.Default Gamemode File Name"));
 	}
 
-	public static InputStream cloneStream(InputStream stream)
+	public static CraftInventoryPlayer loadOfflinePlayerInventory(String playerName) throws IOException
 	{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		NBTTagList list = (NBTTagList) getOfflinePlayerTagValue(playerName, "Inventory");
+		net.minecraft.server.v1_6_R2.PlayerInventory pi = new net.minecraft.server.v1_6_R2.PlayerInventory(null);
+		pi.b(list);
+		return new CraftInventoryPlayer(pi);
+	}
 
-		byte[] buffer = new byte[1024];
-		int len;
+	public static void saveOfflinePlayerInventory(String playerName, CraftInventoryPlayer ci) throws IOException
+	{
+		setOfflinePlayerTagValue(playerName, "Inventory", ci.getInventory().a(new NBTTagList()));
+	}
+
+	public static Object getOfflinePlayerTagValue(String playerName, String tagName) throws IOException
+	{
+		String pathToPlayerFile = "world"+File.separator+"players"+File.separator+playerName+".dat";
+		FileInputStream is = null;
 		try
 		{
-			while ((len = stream.read(buffer)) > -1 )
-				baos.write(buffer, 0, len);
-			baos.flush();
-		} catch(IOException e)
-		{
-			e.printStackTrace();
-		}
+			is = new FileInputStream(pathToPlayerFile);
+			NBTTagCompound compound = NBTCompressedStreamTools.a(is);
 
-		return new ByteArrayInputStream(baos.toByteArray());
+			switch(compound.get(tagName).getTypeId())
+			{
+				case 0: return null;
+				case 1: return compound.getByte(tagName);
+				case 2: return compound.getShort(tagName);
+				case 3: return compound.getInt(tagName);
+				case 4: return compound.getLong(tagName);
+				case 5: return compound.getFloat(tagName);
+				case 6: return compound.getDouble(tagName);
+				case 7: return compound.getByteArray(tagName);
+				case 8: return compound.getString(tagName);
+				case 9: return compound.getList(tagName);
+				case 10: return compound.getCompound(tagName);
+				case 11: return compound.getIntArray(tagName);
+				default: return null;
+			}
+		} finally
+		{
+			if(is != null)
+				is.close();
+		}
+	}
+
+	public static void setOfflinePlayerTagValue(String playerName, String tagName, Object tagValue) throws IOException
+	{
+		String pathToPlayerFile = "world"+File.separator+"players"+File.separator+playerName+".dat";
+		FileInputStream is = null;
+		FileOutputStream os = null;
+		try
+		{
+			is = new FileInputStream(pathToPlayerFile);
+			NBTTagCompound compound = NBTCompressedStreamTools.a(is);
+
+			if(tagValue instanceof Boolean || tagValue.getClass().isAssignableFrom(boolean.class))
+				compound.setBoolean(tagName, (Boolean) tagValue);
+			else if(tagValue instanceof Byte || tagValue.getClass().isAssignableFrom(byte.class))
+				compound.setByte(tagName, (Byte) tagValue);
+			else if(tagValue instanceof Short || tagValue.getClass().isAssignableFrom(short.class))
+				compound.setShort(tagName, (Short) tagValue);
+			else if(tagValue instanceof Integer || tagValue.getClass().isAssignableFrom(int.class))
+				compound.setInt(tagName, (Integer) tagValue);
+			else if(tagValue instanceof Long || tagValue.getClass().isAssignableFrom(long.class))
+				compound.setLong(tagName, (Long) tagValue);
+			else if(tagValue instanceof Float || tagValue.getClass().isAssignableFrom(float.class))
+				compound.setFloat(tagName, (Float) tagValue);
+			else if(tagValue instanceof Double || tagValue.getClass().isAssignableFrom(double.class))
+				compound.setDouble(tagName, (Double) tagValue);
+			else if(tagValue instanceof byte[])
+				compound.setByteArray(tagName, (byte[]) tagValue);
+			else if(tagValue instanceof String)
+				compound.setString(tagName, (String) tagValue);
+			else if(tagValue instanceof NBTTagCompound)
+				compound.setCompound(tagName, (NBTTagCompound) tagValue);
+			else if(tagValue instanceof int[])
+				compound.setIntArray(tagName, (int[]) tagValue);
+			else if(tagValue instanceof NBTBase)
+				compound.set(tagName, (NBTBase) tagValue);
+			else
+				throw new IllegalArgumentException("The type of the new value must be an NBT supported type.");
+			os = new FileOutputStream(pathToPlayerFile);
+			NBTCompressedStreamTools.a(compound, os);
+		} finally
+		{
+			if(is != null)
+				is.close();
+			if(os != null)
+				os.close();
+		}
 	}
 }

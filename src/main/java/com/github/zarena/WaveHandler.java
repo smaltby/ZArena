@@ -16,7 +16,6 @@ import de.congrace.exp4j.Calculable;
 import de.congrace.exp4j.ExpressionBuilder;
 import de.congrace.exp4j.UnknownFunctionException;
 import de.congrace.exp4j.UnparsableExpressionException;
-import net.minecraft.server.v1_6_R2.EntityLiving;
 import net.minecraft.server.v1_6_R2.EntitySkeleton;
 import net.minecraft.server.v1_6_R2.EntityWolf;
 import net.minecraft.server.v1_6_R2.EntityZombie;
@@ -24,6 +23,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -538,17 +538,18 @@ public class WaveHandler implements Runnable, Listener
 						for(Player player : gameHandler.getPlayers())
 						{
 							double health = player.getHealth() + 1;
-							if(health > 20)
-								health = 20;
+							if(health > player.getMaxHealth())
+								health = player.getMaxHealth();
 							player.setHealth(health);
+							((CraftPlayer) player).getHandle().triggerHealthUpdate();
 						}
 					}
 				}
-
-				//Ever 4 minutes, set the time to the beginning of night so we never end up in daytime (assuming the config says to do this)
-				if(seconds % 240 == 0)
-					Bukkit.getServer().getWorld(gameHandler.getLevel().getWorld()).setTime(38000);
 			}
+			//Ever minute, set the time to the beginning of night so we never end up in daytime (assuming the config says to do this)
+			if(seconds % 60 == 0)
+				Bukkit.getServer().getWorld(gameHandler.getLevel().getWorld()).setTime(39000);
+
 			//Sometimes, players escape the server without setting off any listeners...
 			for(String pName : gameHandler.getPlayerNames())
 			{
@@ -556,15 +557,17 @@ public class WaveHandler implements Runnable, Listener
 				if(p == null || !p.isOnline())
 					gameHandler.removePlayer(pName);
 			}
+
 			//Is the alive count less than 0? Yes? Well then end the bloody game!
 			if(gameHandler.getAliveCount() <= 0)
 			{
+				gameHandler.stop();
 				GameStopEvent event = new GameStopEvent(GameStopCause.ALL_DEAD);
 				Bukkit.getServer().getPluginManager().callEvent(event);
-				gameHandler.stop();
 				if(plugin.getConfig().getBoolean(ConfigEnum.AUTORUN.toString()))
 					gameHandler.getLevelVoter().start();
 			}
+
 			//If the config has it so players respawn after a set amount of minutes...then respawn players after a
 			//set amount of minutes!
 			if(plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) > 0)
@@ -602,10 +605,18 @@ public class WaveHandler implements Runnable, Listener
 	 */
 	public void setWave(int wave)
 	{
-		WaveChangeEvent event = new WaveChangeEvent(this.wave, wave);
-		Bukkit.getPluginManager().callEvent(event);
+		int previousWave = this.wave;
 		this.wave = wave;
+		List<String> formerlyAlive = new ArrayList<String>();
+		for(PlayerStats stats : gameHandler.getPlayerStats().values()) if(stats.isAlive()) formerlyAlive.add(stats.getPlayer().getName());
 		prepareNextWave();
+
+		List<Player> respawned = new ArrayList<Player>();
+		for(PlayerStats stats : gameHandler.getPlayerStats().values())
+			if(stats.isAlive() && !formerlyAlive.contains(stats.getPlayer().getName()))
+				respawned.add(stats.getPlayer());
+		WaveChangeEvent event = new WaveChangeEvent(previousWave, wave, respawned);
+		Bukkit.getPluginManager().callEvent(event);
 	}
 
 	public void start()
@@ -629,7 +640,10 @@ public class WaveHandler implements Runnable, Listener
 		{
 			Gamemode gm = gameHandler.getGameMode();
 			if(!gm.isNoRegen())
-				p.setHealth(20);
+			{
+				p.setHealth(p.getMaxHealth());
+				((CraftPlayer) p).getHandle().triggerHealthUpdate();
+			}
 		}
 		//Teleport enemies that were stuck in the last wave to a zombie spawn
 		for(CustomEntityWrapper entity : entities) entity.getEntity().getBukkitEntity().teleport(gameHandler.getLevel().getRandomZombieSpawn());

@@ -12,10 +12,14 @@ import com.github.zarena.utils.*;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -49,6 +53,7 @@ public class ZArena extends JavaPlugin
 	private PlayerOptionsHandler playerOptionsHandler;
 
 	private Configuration config;
+	protected Configuration statsBackup;
 
 	private boolean spoutEnabled = false;
 
@@ -82,6 +87,15 @@ public class ZArena extends JavaPlugin
 		loadZSignCustomItems();
 
 		gameHandler = new GameHandler(); //Create the Game Handler...needs to be done so early because stuff below rely on it
+
+		//If the server crashed, load backups of players data
+		try
+		{
+			loadBackups();
+		} catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 
 		//Load more stuff
 		loadEntityTypes();
@@ -128,13 +142,24 @@ public class ZArena extends JavaPlugin
 
 	public void onDisable()
 	{
+		gameHandler.stop();
 		GameStopEvent event = new GameStopEvent(GameStopCause.SERVER_STOP);
 		Bukkit.getServer().getPluginManager().callEvent(event);
-		gameHandler.stop();
 		if(getConfig().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
 			kc.disable();
 		//Save stuff
 		saveFiles();
+		//Being as though the onDisable method got sucessfully called, we can clear the stat backups, as this isn't a crash
+		try
+		{
+			File statsBackupFile = new File(Constants.BACKUP_PATH);
+			PrintWriter writer = new PrintWriter(statsBackupFile);
+			writer.print("");
+			writer.close();
+		} catch(FileNotFoundException e)
+		{
+			ZArena.log(Level.WARNING, "Stats backup file was never properly created.");
+		}
 		//Reset static stuff
 		instance = null;
 		spoutEnabled = false;
@@ -169,6 +194,55 @@ public class ZArena extends JavaPlugin
 	public boolean isSpoutEnabled()
 	{
 		return spoutEnabled;
+	}
+
+	private void loadBackups() throws IOException
+	{
+		File statsBackupFile = new File(Constants.BACKUP_PATH);
+		if(!statsBackupFile.exists())
+			statsBackupFile.createNewFile();
+		statsBackup = Configuration.loadConfiguration(statsBackupFile);
+
+		for(String key : statsBackup.getKeys(false))
+		{
+			ConfigurationSection section = statsBackup.getConfigurationSection(key);
+
+			//Load location
+			World world = Bukkit.getWorld(section.getString("world"));
+			if(world == null)
+				world = Bukkit.getWorlds().get(0);
+			Location loc = new Location(world, section.getDouble("x"), section.getDouble("y"), section.getDouble("z"));
+
+			//Load inventory
+			ItemStack[] items = new ItemStack[0];
+			if(section.getConfigurationSection("items") != null)
+			{
+				items = new ItemStack[section.getConfigurationSection("items").getKeys(false).size()];
+				int index = 0;
+				for(String itemKey : section.getConfigurationSection("items").getKeys(false))
+					items[index++] = ItemStack.deserialize(section.getConfigurationSection("items."+itemKey).getValues(true));
+			}
+
+			//Load armor
+			ItemStack[] armor = new ItemStack[0];
+			if(section.getConfigurationSection("armor") != null)
+			{
+				armor = new ItemStack[section.getConfigurationSection("armor").getKeys(false).size()];
+				int index = 0;
+				for(String itemKey : section.getConfigurationSection("armor").getKeys(false))
+					armor[index++] = ItemStack.deserialize(section.getConfigurationSection("armor."+itemKey).getValues(true));
+			}
+
+			//Load gamemode, level, and money
+			GameMode gm = GameMode.getByValue(section.getInt("gamemode"));
+			int level = section.getInt("level");
+			double money = section.getDouble("money");
+
+			//Restore pre game join stuff to player
+			PlayerStats stats = new PlayerStats(key, loc, items, armor, gm, level, money);
+			gameHandler.getPlayerStats().put(key, stats);
+			gameHandler.removePlayer(key);
+		}
 	}
 
 	private void loadDonatorInfo()

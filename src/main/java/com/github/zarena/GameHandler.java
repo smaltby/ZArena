@@ -16,11 +16,12 @@ import java.util.logging.Level;
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import com.github.zarena.utils.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.WorldCreator;
+import net.minecraft.server.v1_6_R2.NBTTagDouble;
+import net.minecraft.server.v1_6_R2.NBTTagList;
+import org.bukkit.*;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_6_R2.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -81,6 +82,8 @@ public class GameHandler
 		players.add(player.getName());
 		PlayerStats stats = new PlayerStats(player);
 		playerStats.put(player.getName(), stats);
+		//Backup the players previous stats, so if the server crashes, they can be restored from the file
+		backupStats(stats);
 
 		if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			clearInventory(player.getInventory());
@@ -175,7 +178,8 @@ public class GameHandler
 			player.teleport(level.getInitialSpawn());
 		else
 			player.teleport(player.getWorld().getSpawnLocation());
-		player.setHealth(20);
+		player.setHealth(player.getMaxHealth());
+		((CraftPlayer) player).getHandle().triggerHealthUpdate();
 		player.setFoodLevel(20);
 		player.setSaturation(20);
 
@@ -189,6 +193,39 @@ public class GameHandler
 		if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			clearInventory(pi);
 		addStartItems(pi);
+	}
+
+	private void backupStats(PlayerStats stats)
+	{
+		Configuration config = plugin.statsBackup;
+		ConfigurationSection playerSection = config.createSection(stats.getPlayer().getName());
+		Location oldLocation = stats.getOldLocation();
+		playerSection.set("world", oldLocation.getWorld().getName());
+		playerSection.set("x", oldLocation.getX());
+		playerSection.set("y", oldLocation.getY());
+		playerSection.set("z", oldLocation.getZ());
+		int index = 0;
+		for(ItemStack item : stats.getInventoryContents())
+		{
+			if(item != null)
+				playerSection.set("items."+(index++), item.serialize());
+		}
+		index = 0;
+		for(ItemStack armor : stats.getInventoryArmor())
+		{
+			if(armor != null)
+				playerSection.set("armor."+(index++), armor.serialize());
+		}
+		playerSection.set("gamemode", stats.getOldGameMode().getValue());
+		playerSection.set("money", stats.getOldMoney());
+		playerSection.set("level", stats.getOldLevel());
+		try
+		{
+			plugin.statsBackup.save(Constants.BACKUP_PATH);
+		} catch(IOException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	public void clearInventory(PlayerInventory inv)
@@ -220,8 +257,15 @@ public class GameHandler
 		{
 			for(Player p : Bukkit.getServer().getOnlinePlayers())
 			{
-				if(p.getWorld().getName().equals(level.getWorld()))
-					toBroadcast.add(p);
+				if(level != null)
+				{
+					if(p.getWorld().getName().equals(level.getWorld()))
+						toBroadcast.add(p);
+				} else
+				{
+					if(p.getWorld().getName().equals(levelHandler.getLevels().get(0).getWorld()))
+						toBroadcast.add(p);
+				}
 			}
 		} else
 			toBroadcast = getPlayers();
@@ -258,16 +302,18 @@ public class GameHandler
 		List<Player> playerInstances = new ArrayList<Player>();
 		for(String playerName : players)
 		{
-			playerInstances.add(Bukkit.getPlayer(playerName));
+			Player player = Bukkit.getPlayer(playerName);
+			if(player != null)
+				playerInstances.add(player);
 		}
 		return playerInstances;
 	}
 
-	public Location getPlayersLeaveLocation(Player player)
+	public Location getPlayersLeaveLocation(String playerName)
 	{
 		if(plugin.getConfig().getBoolean(ConfigEnum.SAVE_POSITION.toString()))
 		{
-			Location oldLocation = getPlayerStats(player).getOldLocation();
+			Location oldLocation = getPlayerStats(playerName).getOldLocation();
 			if(oldLocation != null)
 				return oldLocation;
 		}
@@ -334,16 +380,57 @@ public class GameHandler
 	}
 
 	/**
-	 * Removes a player from the game. DOES NOT RESTORE PLAYER'S PRE JOIN STATUS. Only use when the player managed to get off the server without being detected.
-	 * @param player name of player to remove
-	 * TODO: Make it so that the player has his status returned to him the next time he joins the server.
+	 * Removes a player from the game. Only use when the player managed to get off the server without being detected.
+	 * @param playerName name of player to remove
 	 */
-	public void removePlayer(String player)
+	public void removePlayer(String playerName)
 	{
-		if(players.contains(player))
+		try
 		{
-			players.remove(player);
-			playerStats.remove(player);
+			PlayerStats stats = getPlayerStats(playerName);
+			if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
+			{
+				//Set inventory using NBT tags
+				CraftInventoryPlayer pi = Utils.loadOfflinePlayerInventory(playerName);
+				clearInventory(pi);
+				ItemStack[] contents = stats.getInventoryContents();
+				if(contents != null)
+					pi.setContents(contents);
+				ItemStack[] armorContents = stats.getInventoryArmor();
+				if(armorContents != null)
+					pi.setArmorContents(armorContents);
+				Utils.saveOfflinePlayerInventory(playerName, pi);
+			}
+			if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_MONEY.toString()) && ZArena.getInstance().getEconomy() != null)
+			{
+				plugin.getEconomy().depositPlayer(playerName, stats.getOldMoney());
+			}
+			//Set location using NBT tags
+			Location leaveLocation = getPlayersLeaveLocation(playerName);
+			NBTTagList nbtLocation = new NBTTagList();
+			nbtLocation.add(new NBTTagDouble("x", leaveLocation.getX()));
+			nbtLocation.add(new NBTTagDouble("y", leaveLocation.getY()));
+			nbtLocation.add(new NBTTagDouble("z", leaveLocation.getZ()));
+			Utils.setOfflinePlayerTagValue(playerName, "Pos", nbtLocation);
+
+			//Set gamemode and level using NBT tags
+			Utils.setOfflinePlayerTagValue(playerName, "playerGameType", stats.getOldGameMode().getValue());
+			Utils.setOfflinePlayerTagValue(playerName, "XpLevel", stats.getOldLevel());
+		} catch(IOException e)
+		{
+			ZArena.log(Level.SEVERE, "Failed to properly remove "+playerName+" from the game. This player may have lost items, exp, and/or money.");
+		} finally
+		{
+			players.remove(playerName);
+			playerStats.remove(playerName);
+			plugin.statsBackup.set(playerName, null);
+			try
+			{
+				plugin.statsBackup.save(Constants.BACKUP_PATH);
+			} catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -371,12 +458,20 @@ public class GameHandler
 			{
 				plugin.getEconomy().depositPlayer(player.getName(), stats.getOldMoney());
 			}
-			player.teleport(getPlayersLeaveLocation(player));
+			player.teleport(getPlayersLeaveLocation(player.getName()));
 			player.setGameMode(stats.getOldGameMode());
 			player.setLevel(stats.getOldLevel());
 
 			players.remove(player.getName());
 			playerStats.remove(player.getName());
+			plugin.statsBackup.set(player.getName(), null);
+			try
+			{
+				plugin.statsBackup.save(Constants.BACKUP_PATH);
+			} catch(IOException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -386,7 +481,8 @@ public class GameHandler
 		{
 			getPlayerStats(player).setAlive(true);
 			player.teleport(level.getInitialSpawn());
-			player.setHealth(20);
+			player.setHealth(player.getMaxHealth());
+			((CraftPlayer) player).getHandle().triggerHealthUpdate();
 			player.setFoodLevel(20);
 			player.setSaturation(20);
 			for(PotionEffect effect : player.getActivePotionEffects())

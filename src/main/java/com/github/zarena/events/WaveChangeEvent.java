@@ -1,7 +1,10 @@
 package com.github.zarena.events;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+
+import java.util.List;
 
 public class WaveChangeEvent extends Event
 {
@@ -9,11 +12,13 @@ public class WaveChangeEvent extends Event
 	
 	private int oldWave;
 	private int newWave;
-	
-	public WaveChangeEvent(int oldWave, int newWave)
+	private List<Player> respawned;
+
+	public WaveChangeEvent(int oldWave, int newWave, List<Player> respawned)
 	{
 		this.oldWave = oldWave;
 		this.newWave = newWave;
+		this.respawned = respawned;
 	}
 	
 	public int getOldWave()
@@ -24,6 +29,11 @@ public class WaveChangeEvent extends Event
 	public int getNewWave()
 	{
 		return newWave;
+	}
+
+	public List<Player> getNewlyRespawned()
+	{
+		return respawned;
 	}
 	
 	@Override

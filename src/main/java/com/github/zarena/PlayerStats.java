@@ -49,6 +49,30 @@ public class PlayerStats implements Comparable<PlayerStats>
 		}
 	}
 
+	public PlayerStats(String player, Location location, ItemStack[] items, ItemStack[] armor, GameMode gameMode, int level, double money)
+	{
+		this.player = player;
+		alive = false;
+		resetStats();
+
+		oldLocation = location;
+		this.items = items;
+		this.armor = armor;
+		oldGameMode = gameMode;
+		oldLevel = level;
+		oldMoney = money;
+	}
+
+	public void setMoney(double money)
+	{
+		if(usingVault())
+			getEconomy().depositPlayer(player, money - getEconomy().getBalance(player));
+		else
+			this.money = (float) money;
+		if(ZArena.getInstance().getConfig().getBoolean(ConfigEnum.XP_BAR_IS_MONEY.toString()))
+			getPlayer().setLevel((int) getMoney());
+	}
+
 	public void addMoney(double money)
 	{
 		if(usingVault())

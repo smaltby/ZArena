@@ -794,9 +794,9 @@ public class CommandHandler
 			senderWrapper.sendMessage(Message.GAME_ALREADY_RUNNING.formatMessage());
 			return;
 		}
+		gameHandler.start();
 		GameStartEvent event = new GameStartEvent(GameStartCause.FORCE);
 		Bukkit.getServer().getPluginManager().callEvent(event);
-		gameHandler.start();
 		senderWrapper.sendMessage(Message.GAME_STARTED.formatMessage());
 	}
 
@@ -807,9 +807,9 @@ public class CommandHandler
 			senderWrapper.sendMessage(Message.INSUFFICIENT_PERMISSIONS.formatMessage());
 			return;
 		}
+		gameHandler.stop();
 		GameStopEvent event = new GameStopEvent(GameStopCause.FORCE);
 		Bukkit.getServer().getPluginManager().callEvent(event);
-		gameHandler.stop();
 		senderWrapper.sendMessage(Message.GAME_STOPPED.formatMessage());
 	}
 

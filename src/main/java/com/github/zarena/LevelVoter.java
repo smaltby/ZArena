@@ -183,10 +183,10 @@ public class LevelVoter implements Runnable
 			b++;
 		}
 		reset();
-		GameStartEvent event = new GameStartEvent(GameStartCause.VOTE);
-		Bukkit.getServer().getPluginManager().callEvent(event);
 		//Run the next game with the chosen level/gamemode
 		gameHandler.start();
+		GameStartEvent event = new GameStartEvent(GameStartCause.VOTE);
+		Bukkit.getServer().getPluginManager().callEvent(event);
 	}
 
 	/**
