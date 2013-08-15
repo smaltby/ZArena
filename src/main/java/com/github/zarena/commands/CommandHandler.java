@@ -362,12 +362,12 @@ public class CommandHandler
 			return;
 		}
 		Location zSpawn = level.getZombieSpawn(zSpawnerName);
-		LocationSer zSpawnSer = LocationSer.convertFromBukkitLocation(zSpawn);
 		if(zSpawn == null)
 		{
 			senderWrapper.sendMessage(Message.ZSPAWN_NOT_FOUND.formatMessage());
 			return;
 		}
+		LocationSer zSpawnSer = LocationSer.convertFromBukkitLocation(zSpawn);
 		if(sign.zSpawns.contains(zSpawnSer))
 		{
 			sign.zSpawns.remove(zSpawnSer);

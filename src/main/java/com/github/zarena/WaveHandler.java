@@ -250,7 +250,7 @@ public class WaveHandler implements Runnable, Listener
 		ZEntityType type = null;
 		for(ZEntityType t : types)
 		{
-			if(t.getMinimumSpawnWave() <= wave)
+			if(t.getMinimumSpawnWave() <= wave && t.getMaximumSpawnWave() >= wave)
 			{
 				double chance = calcChance(t.getSpawnPriority(), wave);
 				if(rnd.nextDouble() < chance)
@@ -294,6 +294,7 @@ public class WaveHandler implements Runnable, Listener
 			ZArena.log(Level.WARNING, "The type of the entity configuration called "+type.getName()+" does not correspond to spawnable entity.");
 			return null;
 		}
+		ChatHelper.broadcastMessage(type.getBroadcastOnSpawn(), gameHandler.getBroadcastPlayers());
 		return customEnt;
 	}
 

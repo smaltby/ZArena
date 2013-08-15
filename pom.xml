@@ -4,7 +4,7 @@
 
     <groupId>com.github.zarena</groupId>
     <artifactId>ZArena</artifactId>
-    <version>0.7.3</version>
+    <version>0.7.5</version>
     <packaging>jar</packaging>
 
     <name>ZArena</name>
@@ -33,19 +33,20 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bukkit_version>1.6.2-R0.2-SNAPSHOT</bukkit_version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.6.2-R0.1-SNAPSHOT</version>
+            <version>${bukkit_version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.6.2-R0.1-SNAPSHOT</version>
+            <version>${bukkit_version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

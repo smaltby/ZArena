@@ -9,6 +9,10 @@ public interface ZEntityType extends EntityType
 	public double getHealthModifier();
 	
 	public int getMinimumSpawnWave();
+
+	public int getMaximumSpawnWave();
 	
 	public double getSpawnPriority();
+
+	public String getBroadcastOnSpawn();
 }

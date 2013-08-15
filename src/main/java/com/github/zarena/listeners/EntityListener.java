@@ -48,7 +48,7 @@ public class EntityListener implements Listener
 		pm.registerEvents(this, plugin);
 	}
 
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
 		if(plugin.getConfig().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()) && plugin.getGameHandler().getLevelHandler().getLevels().size() > 0)
@@ -57,6 +57,8 @@ public class EntityListener implements Listener
 					plugin.getGameHandler().getLevelHandler().getLevels().get(0).getWorld();
 			if(event.getLocation().getWorld().getName().equals(world) && event.getSpawnReason() != SpawnReason.CUSTOM)
 				event.setCancelled(true);
+			else
+				event.setCancelled(false);	//Override cancellations by plugins such as world guard
 		}
 	}
 

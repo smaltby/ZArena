@@ -15,13 +15,16 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	double worthModifier;
 	double healthModifier;
 	int minSpawnWave;
+	int maxSpawnWave;
 	double priority;
+	String broadcast;
 	public ZEntityTypeConfiguration(FileConfiguration config)
 	{
 		super(config);
 		worthModifier = config.getDouble("WorthModifier", 1.0);
 		healthModifier = config.getDouble("HealthModifier", 1.0);
 		minSpawnWave = config.getInt("MinimumSpawnWave", 1);
+		maxSpawnWave = config.getInt("MaximumSpawnWave", Integer.MAX_VALUE);
 		if(config.contains("SpawnChance"))
 		{
 			int convertedPriority = 20;
@@ -43,6 +46,7 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 			config.set("SpawnChance", null);
 		} 
 		priority = config.getDouble("SpawnPriority", 5.0);
+		broadcast = config.getString("BroadcastOnSpawn", "");
 	}
 	
 	@Override
@@ -62,13 +66,25 @@ public class ZEntityTypeConfiguration extends EntityTypeConfiguration implements
 	{
 		return minSpawnWave;
 	}
-	
+
+	@Override
+	public int getMaximumSpawnWave()
+	{
+		return maxSpawnWave;
+	}
+
 	@Override
 	public double getSpawnPriority()
 	{
 		return priority;
 	}
-	
+
+	@Override
+	public String getBroadcastOnSpawn()
+	{
+		return broadcast;
+	}
+
 	@Override
 	public List<PathfinderGoal> getTargetSelectors(EntityInsentient ent)
 	{

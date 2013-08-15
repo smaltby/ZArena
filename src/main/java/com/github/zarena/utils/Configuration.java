@@ -56,7 +56,7 @@ public class Configuration extends FileConfiguration
 			{
 				//If the first key has passed and no header has been registered, then there is no header
 				headerDone = true;
-				if(currentComment.length() < 0)
+				if(currentComment.length() <= 0)
 					continue;
 				//Substring to remove trailing new line
 				setComment(line.substring(0, line.indexOf(':')), currentComment.substring(0, currentComment.length() - 1));
