@@ -597,7 +597,31 @@ public class GameHandler
 		if(!isRunning && !isVoting)
 			return;
 		if(isRunning)
+		{
+			//Update achievements data, if enabled
+			if(plugin.isAchievementsEnabled())
+			{
+				for(PlayerStats stats : getPlayerStats().values())
+				{
+					if(!stats.isAlive())
+						continue;
+					String playerName = stats.getPlayer().getName();
+					String pluginName = "ZArena";
+					if(getGameMode().isApocalypse())
+					{
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInMap:"+getLevel().getName(), waveHandler.getGameLength());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInGamemode:"+getGameMode().getName(), waveHandler.getGameLength());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTime", waveHandler.getGameLength());
+					} else
+					{
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInMap:"+getLevel().getName(), waveHandler.getWave());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInGamemode:"+getGameMode().getName(), waveHandler.getWave());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWave", waveHandler.getWave());
+					}
+				}
+			}
 			waveHandler.stop();
+		}
 		if(isVoting)
 			levelVoter.stop();
 		isRunning = false;

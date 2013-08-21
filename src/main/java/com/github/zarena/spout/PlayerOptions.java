@@ -189,7 +189,7 @@ public class PlayerOptions implements Externalizable
 			name.shiftYPos(-86 + index * 15);
 			name.shiftXPos(-75);
 			
-			GenericLabel kills = new GenericLabel(stats.getPoints() + "");
+			GenericLabel kills = new GenericLabel(stats.getKills() + "");
 			kills.setAnchor(WidgetAnchor.CENTER_CENTER);
 			kills.setAlign(WidgetAnchor.TOP_CENTER);
 			kills.setHeight(11);

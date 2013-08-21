@@ -777,7 +777,7 @@ public class CommandHandler
 		{
 			Player player = entry.getValue().getPlayer();
 			PlayerStats stats = entry.getValue();
-			statsString += Message.GAME_STATS_ITEM.formatMessage(player.getName(), stats.getMoney(), stats.getPoints());
+			statsString += Message.GAME_STATS_ITEM.formatMessage(player.getName(), stats.getMoney(), stats.getKills());
 		}
 		senderWrapper.sendMessage(statsString);
 	}

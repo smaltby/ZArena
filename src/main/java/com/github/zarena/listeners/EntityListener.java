@@ -7,6 +7,7 @@ import java.util.Random;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
+import com.github.zarena.killcounter.KillCounter;
 import com.github.zarena.utils.*;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -48,16 +49,16 @@ public class EntityListener implements Listener
 		pm.registerEvents(this, plugin);
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onCreatureSpawn(CreatureSpawnEvent event)
 	{
 		if(plugin.getConfig().getBoolean(ConfigEnum.WORLD_EXCLUSIVE.toString()) && plugin.getGameHandler().getLevelHandler().getLevels().size() > 0)
 		{
-			String world = (plugin.getGameHandler().getLevel() != null) ? plugin.getGameHandler().getLevel().getWorld() :
+			String world = plugin.getGameHandler().getLevel() != null ? plugin.getGameHandler().getLevel().getWorld() :
 					plugin.getGameHandler().getLevelHandler().getLevels().get(0).getWorld();
 			if(event.getLocation().getWorld().getName().equals(world) && event.getSpawnReason() != SpawnReason.CUSTOM)
 				event.setCancelled(true);
-			else
+			else if(event.getSpawnReason() == SpawnReason.CUSTOM)
 				event.setCancelled(false);	//Override cancellations by plugins such as world guard
 		}
 	}
@@ -105,7 +106,7 @@ public class EntityListener implements Listener
 				if(stats != null && stats.isAlive())
 				{
 					stats.addMoney(plugin.getConfig().getInt(ConfigEnum.KILL_MONEY.toString()) * moneyModifier);
-					stats.addPoints(1);
+					stats.addKills(1, type.getName());
 					stats.messageStats();
 					if(moneyModifier > 1)
 						ChatHelper.sendMessage(Message.BONUS_MONEY_KILL.formatMessage(moneyModifier, type.getName()), stats.getPlayer());
@@ -123,6 +124,23 @@ public class EntityListener implements Listener
 
 						if(Math.random() <= itemChance)
 							giveRandomItem(stats.getPlayer(), weight);
+					}
+
+					//Update achievements data, if enabled
+					if(plugin.isAchievementsEnabled())
+					{
+						String playerName = bestAttacker.getName();
+						String pluginName = "ZArena";
+						plugin.getAchievementsAPI().setData(playerName, pluginName, "kills", KillCounter.instance.getKills(bestAttacker.getName()));
+						plugin.getAchievementsAPI().incrementData(playerName, pluginName, "kills:" + type.getName(), 1);
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "killsInOneGame", stats.getKills());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "killsInOneGame:" + type.getName(), stats.getKills(type.getName()));
+
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestMoneyInMap:" + gameHandler.getLevel().getName(), stats.getMoney());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestMoneyInGamemode:" + gameHandler.getGameMode().getName(), stats.getMoney());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestMoney", stats.getMoney());
+
+						plugin.getAchievementsAPI().setData(playerName, pluginName, "rank", KillCounter.instance.indexOf(playerName));
 					}
 				}
 			}

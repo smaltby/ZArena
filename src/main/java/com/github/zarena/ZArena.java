@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.github.achievementsx.AchievementsAPI;
+import com.github.achievementsx.AchievementsX;
 import com.github.customentitylibrary.CustomEntityLibrary;
 
 import com.github.zarena.afkmanager.AFKManager;
@@ -52,6 +54,9 @@ public class ZArena extends JavaPlugin
 	private GameHandler gameHandler; //Game handler
 	private PlayerOptionsHandler playerOptionsHandler;
 
+	private AchievementsAPI achievements;
+	private boolean achievementsEnabled = false;
+
 	private Configuration config;
 	protected Configuration statsBackup;
 
@@ -66,11 +71,17 @@ public class ZArena extends JavaPlugin
 		PluginManager pm = Bukkit.getServer().getPluginManager();
 		//Enable stuff
 		CustomEntityLibrary.enable(this);
-		Plugin p = pm.getPlugin("Spout");
-		if(p != null)
+		Plugin spoutP = pm.getPlugin("Spout");
+		if(spoutP != null)
 		{
 			spoutEnabled = true;
 			SpoutHandler.enable();
+		}
+		Plugin achievementsP = pm.getPlugin("AchievementsX");
+		if(achievementsP != null)
+		{
+			achievementsEnabled = true;
+			achievements = AchievementsX.getAchievementsAPI();
 		}
 		if(getConfig().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
 		{
@@ -165,6 +176,11 @@ public class ZArena extends JavaPlugin
 		spoutEnabled = false;
 	}
 
+	public AchievementsAPI getAchievementsAPI()
+	{
+		return achievements;
+	}
+
 	@Override
 	public FileConfiguration getConfig()
 	{
@@ -189,6 +205,11 @@ public class ZArena extends JavaPlugin
 	public static ZArena getInstance()
 	{
 		return instance;
+	}
+
+	public boolean isAchievementsEnabled()
+	{
+		return achievementsEnabled;
 	}
 
 	public boolean isSpoutEnabled()

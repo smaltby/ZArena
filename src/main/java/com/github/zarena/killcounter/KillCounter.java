@@ -112,7 +112,7 @@ public class KillCounter
 	{
 		if(!killsPlayers.contains(playerName))
 			return -1;
-		return killsPlayers.indexOf(playerName);	// Shitty conversions galore
+		return killsPlayers.indexOf(playerName);
 	}
 	
 	public int mapSize()

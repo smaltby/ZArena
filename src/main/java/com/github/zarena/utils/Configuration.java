@@ -1,6 +1,5 @@
 package com.github.zarena.utils;
 
-import com.github.zarena.ZArena;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;

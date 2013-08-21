@@ -559,7 +559,7 @@ public class WaveHandler implements Runnable, Listener
 					gameHandler.removePlayer(pName);
 			}
 
-			//Is the alive count less than 0? Yes? Well then end the bloody game!
+			//Is the alive count equal to 0? Yes? Well then end the bloody game!
 			if(gameHandler.getAliveCount() <= 0)
 			{
 				gameHandler.stop();
@@ -648,12 +648,31 @@ public class WaveHandler implements Runnable, Listener
 		}
 		//Teleport enemies that were stuck in the last wave to a zombie spawn
 		for(CustomEntityWrapper entity : entities) entity.getEntity().getBukkitEntity().teleport(gameHandler.getLevel().getRandomZombieSpawn());
+
+		//Update achievements data, if enabled
+		if(plugin.isAchievementsEnabled())
+		{
+			for(PlayerStats stats : gameHandler.getPlayerStats().values())
+			{
+				if(!stats.isAlive())
+					continue;
+				String playerName = stats.getPlayer().getName();
+				String pluginName = "ZArena";
+				if(!gameHandler.getGameMode().isApocalypse())
+				{
+					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "wavesInMap:"+gameHandler.getLevel().getName(), 1);
+					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "wavesInGamemode:"+gameHandler.getGameMode().getName(), 1);
+					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "waves", 1);
+				}
+			}
+		}
 	}
 
 	public void stop()
 	{
 		if(taskID != -1)
 			Bukkit.getScheduler().cancelTask(taskID);
+
 	}
 
 	/**

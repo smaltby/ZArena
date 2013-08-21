@@ -3,6 +3,8 @@ package com.github.zarena;
 import com.github.zarena.utils.ConfigEnum;
 import net.milkbowl.vault.economy.Economy;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
@@ -18,7 +20,8 @@ public class PlayerStats implements Comparable<PlayerStats>
 {
 	private String player;
 	private float money;
-	private int points;
+	private int kills;
+	private Map<String, Integer> killsPerType = new HashMap<String, Integer>();	//Recorded for achievement purposes
 	private boolean alive;
 	private int deathWave;
 	private long deathTime;
@@ -83,9 +86,10 @@ public class PlayerStats implements Comparable<PlayerStats>
 			getPlayer().setLevel((int) getMoney());
 	}
 
-	public void addPoints(int points)
+	public void addKills(int kills, String type)
 	{
-		this.points += points;
+		this.kills += kills;
+		killsPerType.put(type, killsPerType.containsKey(type) ? killsPerType.get(type) + kills : kills);
 	}
 
 	public ItemStack[] getInventoryArmor()
@@ -128,9 +132,14 @@ public class PlayerStats implements Comparable<PlayerStats>
 		return Bukkit.getPlayer(player);
 	}
 
-	public int getPoints()
+	public int getKills()
 	{
-		return points;
+		return kills;
+	}
+
+	public int getKills(String type)
+	{
+		return killsPerType.containsKey(type) ? killsPerType.get(type) : 0;
 	}
 
 	/**
@@ -155,7 +164,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 
 	public void messageStats()
 	{
-		ChatHelper.sendMessage(Message.SEND_STATS.formatMessage(getMoney(), getPoints()), getPlayer());
+		ChatHelper.sendMessage(Message.SEND_STATS.formatMessage(getMoney(), getKills()), getPlayer());
 	}
 
 	public void registerDeath()
@@ -173,7 +182,7 @@ public class PlayerStats implements Comparable<PlayerStats>
 			else
 				money = 0;
 		}
-		points = 0;
+		kills = 0;
 		deathWave = ZArena.getInstance().getGameHandler().getWaveHandler().getWave();
 		deathTime = System.currentTimeMillis();
 	}
@@ -197,17 +206,17 @@ public class PlayerStats implements Comparable<PlayerStats>
 			getPlayer().setLevel((int) getMoney());
 	}
 
-	public void subPoints(int points)
+	public void subKills(int kills)
 	{
-		this.points -= points;
+		this.kills -= kills;
 	}
 
 	@Override
 	public int compareTo(PlayerStats stats)
 	{
-		if(stats.getPoints() > this.getPoints())
+		if(stats.getKills() > this.getKills())
 			return 1;
-		else if(stats.getPoints() == this.getPoints())
+		else if(stats.getKills() == this.getKills())
 		{
 			if(stats.getMoney() > this.getMoney())
 				return 1;
