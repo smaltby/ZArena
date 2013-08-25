@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import com.github.customentitylibrary.entities.CustomPigZombie;
+import com.github.zarena.events.*;
 import com.github.zarena.utils.*;
 import de.congrace.exp4j.Calculable;
 import de.congrace.exp4j.ExpressionBuilder;
@@ -28,13 +29,11 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import com.github.zarena.entities.ZEntityType;
-import com.github.zarena.events.GameStopCause;
-import com.github.zarena.events.GameStopEvent;
-import com.github.zarena.events.WaveChangeEvent;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class WaveHandler implements Runnable, Listener
 {
@@ -44,7 +43,7 @@ public class WaveHandler implements Runnable, Listener
 	//Will be delegated to the config eventually
 	private static final double SPAWN_CHANCE = 0.05;
 
-	private double timeUntilNextWave;
+	private int timeUntilNextWave;
 	private Random rnd;
 	private int wave;
 	private int toSpawn;
@@ -483,8 +482,11 @@ public class WaveHandler implements Runnable, Listener
 					{
 						int respawnEveryWaves = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_WAVES.toString());
 						if(stats.getWavesSinceDeath() >= respawnEveryWaves)
-							gameHandler.respawnPlayer(stats.getPlayer());
-						else
+						{
+							PlayerRespawnInGameEvent event = new PlayerRespawnInGameEvent(stats.getPlayer(), gameHandler.getStartItems(), PlayerRespawnCause.RESPAWN_WAVE);
+							if(!event.isCancelled())
+								gameHandler.respawnPlayer(stats.getPlayer(), event.getStartItems());
+						} else
 						{
 							ChatHelper.sendMessage(Message.RESPAWN_IN_WAVES.formatMessage(stats.getPlayer().getName(),
 									respawnEveryWaves - stats.getWavesSinceDeath()), stats.getPlayer());
@@ -528,12 +530,34 @@ public class WaveHandler implements Runnable, Listener
 					if(secondsWithFewEntities > 60)
 						setWave(wave + 1);
 				}
-				//Every five seconds, regenerate players healths if the gamemode says we should, and reset the wave settings if
-				//we're in an apocalypse
+				//Every five seconds, regenerate players healths if the gamemode says we should, reset the wave settings if
+				//we're in an apocalypse, and update achievements if enabled
 				if(seconds % 5 == 0)
 				{
 					if(gameHandler.getGameMode().isApocalypse())
+					{
 						health = calcHealth(getApocalypseWave());
+						//Update achievements data, if enabled
+						if(plugin.isAchievementsEnabled())
+						{
+							for(PlayerStats stats : gameHandler.getPlayerStats().values())
+							{
+								if(!stats.isAlive())
+									continue;
+								String playerName = stats.getPlayer().getName();
+								String pluginName = "ZArena";
+								if(gameHandler.getGameMode().isApocalypse())
+								{
+									if(!stats.hasDied())
+									{
+										plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInMap:"+gameHandler.getLevel().getName(), getGameLength());
+										plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInGamemode:"+gameHandler.getGameMode().getName(), getGameLength());
+										plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTime", getGameLength());
+									}
+								}
+							}
+						}
+					}
 					if(gameHandler.getGameMode().isSlowRegen())
 					{
 						for(Player player : gameHandler.getPlayers())
@@ -578,10 +602,12 @@ public class WaveHandler implements Runnable, Listener
 					if(!stats.isAlive())
 					{
 						if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
-							gameHandler.respawnPlayer(stats.getPlayer());
-						if(stats.getTimeSinceDeath() >= plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60)
-							gameHandler.respawnPlayer(stats.getPlayer());
-						else if(stats.getTimeSinceDeath() % plugin.getConfig().getInt(ConfigEnum.RESPAWN_REMINDER_DELAY.toString()) == 0)
+						{
+							PlayerRespawnInGameEvent event = new PlayerRespawnInGameEvent(stats.getPlayer(), gameHandler.getStartItems(), PlayerRespawnCause.RESPAWN_TIME);
+							Bukkit.getPluginManager().callEvent(event);
+							if(!event.isCancelled())
+								gameHandler.respawnPlayer(stats.getPlayer(), event.getStartItems());
+						} else if(stats.getTimeSinceDeath() % plugin.getConfig().getInt(ConfigEnum.RESPAWN_REMINDER_DELAY.toString()) == 0)
 						{
 							int secondsUntilSpawn = plugin.getConfig().getInt(ConfigEnum.RESPAWN_EVERY_TIME.toString()) * 60 - stats.getTimeSinceDeath();
 							int minutesUntilSpawn = (int)TimeUnit.SECONDS.toMinutes(secondsUntilSpawn);
@@ -608,16 +634,12 @@ public class WaveHandler implements Runnable, Listener
 	{
 		int previousWave = this.wave;
 		this.wave = wave;
-		List<String> formerlyAlive = new ArrayList<String>();
-		for(PlayerStats stats : gameHandler.getPlayerStats().values()) if(stats.isAlive()) formerlyAlive.add(stats.getPlayer().getName());
 		prepareNextWave();
 
-		List<Player> respawned = new ArrayList<Player>();
-		for(PlayerStats stats : gameHandler.getPlayerStats().values())
-			if(stats.isAlive() && !formerlyAlive.contains(stats.getPlayer().getName()))
-				respawned.add(stats.getPlayer());
-		WaveChangeEvent event = new WaveChangeEvent(previousWave, wave, respawned);
+		WaveChangeEvent event = new WaveChangeEvent(previousWave, wave, timeUntilNextWave);
 		Bukkit.getPluginManager().callEvent(event);
+		timeUntilNextWave = event.getSecondsUntilStart();
+		this.wave = event.getNewWave();
 	}
 
 	public void start()
@@ -649,6 +671,10 @@ public class WaveHandler implements Runnable, Listener
 		//Teleport enemies that were stuck in the last wave to a zombie spawn
 		for(CustomEntityWrapper entity : entities) entity.getEntity().getBukkitEntity().teleport(gameHandler.getLevel().getRandomZombieSpawn());
 
+		//Call event
+		WaveStartEvent event = new WaveStartEvent(wave);
+		Bukkit.getPluginManager().callEvent(event);
+
 		//Update achievements data, if enabled
 		if(plugin.isAchievementsEnabled())
 		{
@@ -663,6 +689,14 @@ public class WaveHandler implements Runnable, Listener
 					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "wavesInMap:"+gameHandler.getLevel().getName(), 1);
 					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "wavesInGamemode:"+gameHandler.getGameMode().getName(), 1);
 					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "waves", 1);
+					//Only do these stats if the player hasn't died because it's unfair if the player respawns on wave 20 or something, lives for 20 seconds,
+					//but still gets his/her highest wave set to 20
+					if(!stats.hasDied())
+					{
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInMap:"+gameHandler.getLevel().getName(), getWave());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInGamemode:"+gameHandler.getGameMode().getName(), getWave());
+						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWave", getWave());
+					}
 				}
 			}
 		}

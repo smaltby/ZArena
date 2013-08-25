@@ -157,6 +157,11 @@ public class PlayerStats implements Comparable<PlayerStats>
 		return ZArena.getInstance().getGameHandler().getWaveHandler().getWave() - deathWave;
 	}
 
+	public boolean hasDied()
+	{
+		return deathWave > 1;
+	}
+
 	public boolean isAlive()
 	{
 		return alive;

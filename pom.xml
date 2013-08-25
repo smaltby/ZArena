@@ -4,7 +4,7 @@
 
     <groupId>com.github.zarena</groupId>
     <artifactId>ZArena</artifactId>
-    <version>0.7.5</version>
+    <version>0.8</version>
     <packaging>jar</packaging>
 
     <name>ZArena</name>
@@ -23,7 +23,7 @@
         </repository>
         <repository>
             <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+            <url>http://ci.milkbowl.net/plugin/repository/everything/</url>
         </repository>
         <repository>
             <id>exp4j-repo</id>

@@ -15,6 +15,8 @@ import java.util.logging.Level;
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
+import com.github.zarena.events.PlayerRespawnCause;
+import com.github.zarena.events.PlayerRespawnInGameEvent;
 import com.github.zarena.utils.*;
 import net.minecraft.server.v1_6_R2.NBTTagDouble;
 import net.minecraft.server.v1_6_R2.NBTTagList;
@@ -94,8 +96,12 @@ public class GameHandler
 		if(isRunning)
 		{
 			if(wave == 1 && !(gamemode.isApocalypse()))
-				addToGame(stats);
-			else
+			{
+				PlayerRespawnInGameEvent event = new PlayerRespawnInGameEvent(stats.getPlayer(), getStartItems(), PlayerRespawnCause.GAME_START);
+				Bukkit.getPluginManager().callEvent(event);
+				if(!event.isCancelled())
+					addToGame(stats, event.getStartItems());
+			} else
 			{
 				//Send messages informing the player when he will next respawn, if applicable
                 boolean respawningEnabled = false;
@@ -143,30 +149,12 @@ public class GameHandler
 		}
 	}
 
-	private void addStartItems(PlayerInventory inv)
-	{
-		for(String item : plugin.getConfig().getStringList(ConfigEnum.START_ITEMS.toString()))
-		{
-			ZSignCustomItem customItem = ZSignCustomItem.getCustomItem(item.split("\\s"));
-			if(customItem != null)
-			{
-				inv.addItem(customItem.getItem());
-				continue;
-			}
-			ItemStack itemStack = new ItemStack(Material.getMaterial(item.replaceAll(" ", "_").toUpperCase()));
-			inv.addItem(itemStack);
-		}
-		for(ItemStack item : gamemode.getStartItems())
-		{
-			inv.addItem(item);
-		}
-	}
-
 	/**
 	 * Prepares everything about a player and his/her stats in preperation for joining a game
 	 * @param stats the stats to reset, and the stats to get the player from who is then prepared for the game
+	 * @param startItems items to start with
 	 */
-	private void addToGame(PlayerStats stats)
+	private void addToGame(PlayerStats stats, List<ItemStack> startItems)
 	{
 		stats.resetStats();
 		stats.setAlive(true);
@@ -192,7 +180,8 @@ public class GameHandler
 		PlayerInventory pi = player.getInventory();
 		if(plugin.getConfig().getBoolean(ConfigEnum.SEPERATE_INVENTORY.toString()))
 			clearInventory(pi);
-		addStartItems(pi);
+		for(ItemStack item : startItems)
+			pi.addItem(item);
 	}
 
 	private void backupStats(PlayerStats stats)
@@ -337,6 +326,27 @@ public class GameHandler
 		return playerStats.get(player.getName());
 	}
 
+	protected List<ItemStack> getStartItems()
+	{
+		List<ItemStack> items = new ArrayList<ItemStack>();
+		for(String item : plugin.getConfig().getStringList(ConfigEnum.START_ITEMS.toString()))
+		{
+			ZSignCustomItem customItem = ZSignCustomItem.getCustomItem(item.split("\\s"));
+			if(customItem != null)
+			{
+				items.add(customItem.getItem());
+				continue;
+			}
+			ItemStack itemStack = new ItemStack(Material.getMaterial(item.replaceAll(" ", "_").toUpperCase()));
+			items.add(itemStack);
+		}
+		for(ItemStack item : gamemode.getStartItems())
+		{
+			items.add(item);
+		}
+		return items;
+	}
+
 	public WaveHandler getWaveHandler()
 	{
 		return waveHandler;
@@ -475,7 +485,7 @@ public class GameHandler
 		}
 	}
 
-	public void respawnPlayer(Player player)
+	public void respawnPlayer(Player player, List<ItemStack> startItems)
 	{
 		if(!getPlayerStats(player).isAlive())
 		{
@@ -493,16 +503,9 @@ public class GameHandler
 			{
 				PlayerInventory pi = player.getInventory();
 				clearInventory(pi);
-				addStartItems(pi);
+				for(ItemStack item : startItems)
+					pi.addItem(item);
 			}
-		}
-	}
-
-	public void respawnPlayers()
-	{
-		for(Player player : getPlayers())
-		{
-			respawnPlayer(player);
 		}
 	}
 
@@ -574,7 +577,10 @@ public class GameHandler
 		{
 			for(PlayerStats stats : playerStats.values())
 			{
-				addToGame(stats);
+				PlayerRespawnInGameEvent event = new PlayerRespawnInGameEvent(stats.getPlayer(), getStartItems(), PlayerRespawnCause.GAME_START);
+				Bukkit.getPluginManager().callEvent(event);
+				if(!event.isCancelled())
+					addToGame(stats, event.getStartItems());
 			}
 
 			isRunning = true;
@@ -597,31 +603,7 @@ public class GameHandler
 		if(!isRunning && !isVoting)
 			return;
 		if(isRunning)
-		{
-			//Update achievements data, if enabled
-			if(plugin.isAchievementsEnabled())
-			{
-				for(PlayerStats stats : getPlayerStats().values())
-				{
-					if(!stats.isAlive())
-						continue;
-					String playerName = stats.getPlayer().getName();
-					String pluginName = "ZArena";
-					if(getGameMode().isApocalypse())
-					{
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInMap:"+getLevel().getName(), waveHandler.getGameLength());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInGamemode:"+getGameMode().getName(), waveHandler.getGameLength());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTime", waveHandler.getGameLength());
-					} else
-					{
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInMap:"+getLevel().getName(), waveHandler.getWave());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInGamemode:"+getGameMode().getName(), waveHandler.getWave());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWave", waveHandler.getWave());
-					}
-				}
-			}
 			waveHandler.stop();
-		}
 		if(isVoting)
 			levelVoter.stop();
 		isRunning = false;
