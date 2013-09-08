@@ -12,6 +12,13 @@
     </description>
     <url>http://dev.bukkit.org/server-mods/zarena/</url>
 
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bukkit_version>1.6.2-R0.2-SNAPSHOT</bukkit_version>
+        <github.global.server>github</github.global.server>
+        <built.repo.dir>${project.build.directory}/mvn-repo</built.repo.dir>
+    </properties>
+
     <distributionManagement>
         <repository>
             <id>github</id>
@@ -26,6 +33,10 @@
             <url>http://repo.bukkit.org/content/groups/public</url>
         </repository>
         <repository>
+            <id>customentitylibrary-repo</id>
+            <url>https://raw.github.com/smaltby/CustomEntityLibrary/mvn-repo/</url>
+        </repository>
+        <repository>
             <id>spout-repo</id>
             <url>http://repo.spout.org/</url>
         </repository>
@@ -38,12 +49,6 @@
             <url>http://mvnrepository.com/artifact/de.congrace/exp4j</url>
         </repository>
     </repositories>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit_version>1.6.2-R0.2-SNAPSHOT</bukkit_version>
-        <github.global.server>github</github.global.server>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -147,18 +152,18 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.7</version>
                 <configuration>
-                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+                    <altDeploymentRepository>internal.repo::default::file://${built.repo.dir}</altDeploymentRepository>
                 </configuration>
             </plugin>
 
             <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.7</version>
+                <version>0.8</version>
                 <configuration>
                     <message>Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
-                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                    <outputDirectory>${built.repo.dir}</outputDirectory>
                     <branch>refs/heads/mvn-repo</branch>
                     <includes><include>**/*</include></includes>
                     <repositoryName>ZArena</repositoryName>
