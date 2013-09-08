@@ -8,6 +8,7 @@ import java.util.Stack;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import com.github.achievementsx.AchievementsAPI;
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import com.github.customentitylibrary.entities.CustomPigZombie;
@@ -40,8 +41,7 @@ public class WaveHandler implements Runnable, Listener
 	private ZArena plugin;
 	private GameHandler gameHandler;
 
-	//Will be delegated to the config eventually
-	private static final double SPAWN_CHANCE = 0.05;
+	private double spawnChance;
 
 	private int timeUntilNextWave;
 	private Random rnd;
@@ -102,7 +102,7 @@ public class WaveHandler implements Runnable, Listener
 		Gamemode gm = gameHandler.getGameMode();
 		if(toSpawn <= 0 && !gm.isApocalypse())
 			return;
-		if(rnd.nextDouble() > (gm.isApocalypse() ? SPAWN_CHANCE /2 : SPAWN_CHANCE))
+		if(rnd.nextDouble() > (gm.isApocalypse() ? spawnChance /2 : spawnChance))
 			return;
 		if(entities.size() >= plugin.getConfig().getInt(ConfigEnum.MOB_CAP.toString()))
 			return;
@@ -235,6 +235,25 @@ public class WaveHandler implements Runnable, Listener
 		}
 	}
 
+	public double calcSpawnChance(int wave)
+	{
+		try
+		{
+			String formula = plugin.getConfig().getString(ConfigEnum.SPAWN_CHANCE.toString());
+			Calculable calc = new ExpressionBuilder(formula)
+					.withVariable("x",wave)
+					.build();
+			return calc.calculate();
+		} catch(UnknownFunctionException e)
+		{
+			ZArena.log(Level.WARNING, e.getMessage() + " in the custom formula for Spawn Chance, defined in the config.yml");
+		} catch(UnparsableExpressionException e)
+		{
+			ZArena.log(Level.WARNING, e.getMessage() + " in the custom formula for Spawn Chance, defined in the config.yml");
+		}
+		return 0.05;
+	}
+
 	private boolean checkNextWave()
 	{
 		Gamemode gm = gameHandler.getGameMode();
@@ -365,7 +384,7 @@ public class WaveHandler implements Runnable, Listener
 
 	public double getSpawnChance()
 	{
-		return SPAWN_CHANCE;
+		return spawnChance;
 	}
 
 	/**
@@ -446,6 +465,7 @@ public class WaveHandler implements Runnable, Listener
 		health = calcHealth(wave);
 		health *= gm.getHealthModifier();
 		toSpawn *= gm.getZombieAmountModifier();
+		spawnChance = calcSpawnChance(wave);
 		if(plugin.getConfig().getBoolean(ConfigEnum.QUANTITY_ADJUST.toString()))
 			toSpawn *= 1.5/(1 + Math.pow(Math.E, gameHandler.getAliveCount()/-3) + .25);
 
@@ -484,6 +504,7 @@ public class WaveHandler implements Runnable, Listener
 						if(stats.getWavesSinceDeath() >= respawnEveryWaves)
 						{
 							PlayerRespawnInGameEvent event = new PlayerRespawnInGameEvent(stats.getPlayer(), gameHandler.getStartItems(), PlayerRespawnCause.RESPAWN_WAVE);
+							Bukkit.getPluginManager().callEvent(event);
 							if(!event.isCancelled())
 								gameHandler.respawnPlayer(stats.getPlayer(), event.getStartItems());
 						} else
@@ -550,9 +571,9 @@ public class WaveHandler implements Runnable, Listener
 								{
 									if(!stats.hasDied())
 									{
-										plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInMap:"+gameHandler.getLevel().getName(), getGameLength());
-										plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTimeInGamemode:"+gameHandler.getGameMode().getName(), getGameLength());
-										plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestTime", getGameLength());
+										AchievementsAPI.setDataIfMax(playerName, pluginName, "highestTimeInMap:" + gameHandler.getLevel().getName(), getGameLength());
+										AchievementsAPI.setDataIfMax(playerName, pluginName, "highestTimeInGamemode:"+gameHandler.getGameMode().getName(), getGameLength());
+										AchievementsAPI.setDataIfMax(playerName, pluginName, "highestTime", getGameLength());
 									}
 								}
 							}
@@ -686,16 +707,16 @@ public class WaveHandler implements Runnable, Listener
 				String pluginName = "ZArena";
 				if(!gameHandler.getGameMode().isApocalypse())
 				{
-					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "wavesInMap:"+gameHandler.getLevel().getName(), 1);
-					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "wavesInGamemode:"+gameHandler.getGameMode().getName(), 1);
-					plugin.getAchievementsAPI().incrementData(playerName, pluginName, "waves", 1);
+					AchievementsAPI.incrementData(playerName, pluginName, "wavesInMap:"+gameHandler.getLevel().getName(), 1);
+					AchievementsAPI.incrementData(playerName, pluginName, "wavesInGamemode:"+gameHandler.getGameMode().getName(), 1);
+					AchievementsAPI.incrementData(playerName, pluginName, "waves", 1);
 					//Only do these stats if the player hasn't died because it's unfair if the player respawns on wave 20 or something, lives for 20 seconds,
 					//but still gets his/her highest wave set to 20
 					if(!stats.hasDied())
 					{
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInMap:"+gameHandler.getLevel().getName(), getWave());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWaveInGamemode:"+gameHandler.getGameMode().getName(), getWave());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestWave", getWave());
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "highestWaveInMap:"+gameHandler.getLevel().getName(), getWave());
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "highestWaveInGamemode:"+gameHandler.getGameMode().getName(), getWave());
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "highestWave", getWave());
 					}
 				}
 			}

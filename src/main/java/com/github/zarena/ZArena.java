@@ -54,7 +54,6 @@ public class ZArena extends JavaPlugin
 	private GameHandler gameHandler; //Game handler
 	private PlayerOptionsHandler playerOptionsHandler;
 
-	private AchievementsAPI achievements;
 	private boolean achievementsEnabled = false;
 
 	private Configuration config;
@@ -65,7 +64,6 @@ public class ZArena extends JavaPlugin
 	public void onEnable()
 	{
 		instance = this;
-
 		reloadConfig();
 
 		PluginManager pm = Bukkit.getServer().getPluginManager();
@@ -79,10 +77,7 @@ public class ZArena extends JavaPlugin
 		}
 		Plugin achievementsP = pm.getPlugin("AchievementsX");
 		if(achievementsP != null)
-		{
 			achievementsEnabled = true;
-			achievements = AchievementsX.getAchievementsAPI();
-		}
 		if(getConfig().getBoolean(ConfigEnum.ENABLE_KILLCOUNTER.toString()))
 		{
 			kc = new KillCounter();
@@ -174,11 +169,6 @@ public class ZArena extends JavaPlugin
 		//Reset static stuff
 		instance = null;
 		spoutEnabled = false;
-	}
-
-	public AchievementsAPI getAchievementsAPI()
-	{
-		return achievements;
 	}
 
 	@Override

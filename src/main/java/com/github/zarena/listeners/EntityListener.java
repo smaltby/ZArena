@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import com.github.achievementsx.AchievementsAPI;
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 
 import com.github.zarena.killcounter.KillCounter;
@@ -131,16 +132,16 @@ public class EntityListener implements Listener
 					{
 						String playerName = bestAttacker.getName();
 						String pluginName = "ZArena";
-						plugin.getAchievementsAPI().setData(playerName, pluginName, "kills", KillCounter.instance.getKills(bestAttacker.getName()));
-						plugin.getAchievementsAPI().incrementData(playerName, pluginName, "kills:" + type.getName(), 1);
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "killsInOneGame", stats.getKills());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "killsInOneGame:" + type.getName(), stats.getKills(type.getName()));
+						AchievementsAPI.setData(playerName, pluginName, "kills", KillCounter.instance.getKills(bestAttacker.getName()));
+						AchievementsAPI.incrementData(playerName, pluginName, "kills:" + type.getName(), 1);
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "killsInOneGame", stats.getKills());
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "killsInOneGame:" + type.getName(), stats.getKills(type.getName()));
 
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestMoneyInMap:" + gameHandler.getLevel().getName(), stats.getMoney());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestMoneyInGamemode:" + gameHandler.getGameMode().getName(), stats.getMoney());
-						plugin.getAchievementsAPI().setDataIfMax(playerName, pluginName, "highestMoney", stats.getMoney());
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "highestMoneyInMap:" + gameHandler.getLevel().getName(), stats.getMoney());
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "highestMoneyInGamemode:" + gameHandler.getGameMode().getName(), stats.getMoney());
+						AchievementsAPI.setDataIfMax(playerName, pluginName, "highestMoney", stats.getMoney());
 
-						plugin.getAchievementsAPI().setData(playerName, pluginName, "rank", KillCounter.instance.indexOf(playerName));
+						AchievementsAPI.setData(playerName, pluginName, "rank", KillCounter.instance.indexOf(playerName));
 					}
 				}
 			}

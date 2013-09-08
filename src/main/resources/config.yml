@@ -179,6 +179,11 @@ Shop Sign Header: ZBuy
 #The header for toll signs
 Toll Sign Header: ZPay
 
+#The chance of an entity spawning every 1/20 of a second. This may be an expression in which the variable 'x' represents the current wave.
+#For more details on how to make a custom formula, see here: http://dev.bukkit.org/bukkit-plugins/zarena/pages/custom-formulas/
+#The default formula below makes the spawn chance start at 0.05, and very slowly go up from there to around 0.075 at wave 15.
+Spawn Chance: log(x + 5) / 50 + 0.015
+
 #The chance of a wolf spawning when it is a normal wave
 Wolf Spawn Chance: 0.075
 

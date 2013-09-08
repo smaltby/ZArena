@@ -12,6 +12,14 @@
     </description>
     <url>http://dev.bukkit.org/server-mods/zarena/</url>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>GitHub ${project.artifactId} Repository</name>
+            <url>https://raw.github.com/smaltby/${project.artifactId}/mvn-repo</url>
+        </repository>
+    </distributionManagement>
+
     <repositories>
         <repository>
             <id>bukkit-repo</id>
@@ -34,6 +42,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit_version>1.6.2-R0.2-SNAPSHOT</bukkit_version>
+        <github.global.server>github</github.global.server>
     </properties>
 
     <dependencies>
@@ -130,6 +139,38 @@
                                 </excludes>
                             </artifactSet>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo</altDeploymentRepository>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.github.github</groupId>
+                <artifactId>site-maven-plugin</artifactId>
+                <version>0.7</version>
+                <configuration>
+                    <message>Maven artifacts for ${project.version}</message>
+                    <noJekyll>true</noJekyll>
+                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                    <branch>refs/heads/mvn-repo</branch>
+                    <includes><include>**/*</include></includes>
+                    <repositoryName>ZArena</repositoryName>
+                    <repositoryOwner>smaltby</repositoryOwner>
+                    <merge>true</merge>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                        <phase>deploy</phase>
                     </execution>
                 </executions>
             </plugin>

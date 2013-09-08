@@ -337,7 +337,10 @@ public class GameHandler
 				items.add(customItem.getItem());
 				continue;
 			}
-			ItemStack itemStack = new ItemStack(Material.getMaterial(item.replaceAll(" ", "_").toUpperCase()));
+			Material mat = Material.getMaterial(item.replaceAll(" ", "_").toUpperCase());
+			if(mat == null)
+				continue;
+			ItemStack itemStack = new ItemStack(mat);
 			items.add(itemStack);
 		}
 		for(ItemStack item : gamemode.getStartItems())

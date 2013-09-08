@@ -77,7 +77,7 @@ public class ZACommands implements CommandExecutor
 				handler.setLeaveLocation();
 				break;
 			case OPTIONS:
-				helpMessage = "zarena options";
+				helpMessage = "/zarena options";
 				handler.openOptions();
 				break;
 			case SESSION:

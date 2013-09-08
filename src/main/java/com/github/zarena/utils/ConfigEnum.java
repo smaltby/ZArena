@@ -62,7 +62,8 @@ public enum ConfigEnum
 	MOB_CAP("Mob Cap"),
 	KEEP_ITEMS_ACROSS_GAMES("Keep Items Across Games"),
 	KEEP_MONEY_ACROSS_GAMES("Keep Money Across Games"),
-	NEXT_WAVE_IF_ENTITY_STUCK("Start Next Wave If An Entity Is Stuck");
+	NEXT_WAVE_IF_ENTITY_STUCK("Start Next Wave If An Entity Is Stuck"),
+	SPAWN_CHANCE("Spawn Chance");
 
 	String path;
 	ConfigEnum(String path)

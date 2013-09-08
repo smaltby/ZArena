@@ -3,11 +3,13 @@ package com.github.zarena.commands;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 
 
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 import com.github.zarena.entities.ZEntityType;
 import com.github.zarena.utils.*;
+import net.minecraft.server.v1_6_R2.EntityInsentient;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -382,18 +384,21 @@ public class CommandHandler
 
 	public void openOptions()
 	{
-		if(plugin.isSpoutEnabled())
-		{
-			senderWrapper.sendMessage(Message.SPOUT_NOT_ENABLED.formatMessage());
-			return;
-		}
-		if(!SpoutHandler.instanceofSpoutPlayer(senderWrapper.getPlayer()))
-		{
-			senderWrapper.sendMessage(Message.SPOUT_CLIENT_REQUIRED.formatMessage());
-			return;
-		}
-		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(senderWrapper.getPlayer().getName());
-		options.openOptions();
+//		if(plugin.isSpoutEnabled())
+//		{
+//			senderWrapper.sendMessage(Message.SPOUT_NOT_ENABLED.formatMessage());
+//			return;
+//		}
+//		if(!SpoutHandler.instanceofSpoutPlayer(senderWrapper.getPlayer()))
+//		{
+//			senderWrapper.sendMessage(Message.SPOUT_CLIENT_REQUIRED.formatMessage());
+//			return;
+//		}
+//		PlayerOptions options = plugin.getPlayerOptionsHandler().getOptions(senderWrapper.getPlayer().getName());
+//		options.openOptions();
+		Player player = senderWrapper.getPlayer();
+		EntityInsentient r = (EntityInsentient)CustomEntityWrapper.getCustomEntities().keySet().toArray()[new Random().nextInt(CustomEntityWrapper.getCustomEntities().size())];
+		player.teleport(r.getBukkitEntity().getLocation());
 	}
 
 	public void reloadConfig()
