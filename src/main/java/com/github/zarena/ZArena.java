@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-import com.github.achievementsx.AchievementsAPI;
-import com.github.achievementsx.AchievementsX;
 import com.github.customentitylibrary.CustomEntityLibrary;
 
 import com.github.zarena.afkmanager.AFKManager;

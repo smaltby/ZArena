@@ -18,14 +18,14 @@ import de.congrace.exp4j.Calculable;
 import de.congrace.exp4j.ExpressionBuilder;
 import de.congrace.exp4j.UnknownFunctionException;
 import de.congrace.exp4j.UnparsableExpressionException;
-import net.minecraft.server.v1_6_R2.EntitySkeleton;
-import net.minecraft.server.v1_6_R2.EntityWolf;
-import net.minecraft.server.v1_6_R2.EntityZombie;
+import net.minecraft.server.v1_6_R3.EntitySkeleton;
+import net.minecraft.server.v1_6_R3.EntityWolf;
+import net.minecraft.server.v1_6_R3.EntityZombie;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_6_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
@@ -289,7 +289,7 @@ public class WaveHandler implements Runnable, Listener
 			gameHandler.stop();
 			return null;
 		}
-		net.minecraft.server.v1_6_R2.World nmsWorld = ((CraftWorld)spawn.getWorld()).getHandle();
+		net.minecraft.server.v1_6_R3.World nmsWorld = ((CraftWorld)spawn.getWorld()).getHandle();
 		CustomEntityWrapper customEnt;
 		if(type.getPreferredType().equalsIgnoreCase("zombiepigman"))
 		{

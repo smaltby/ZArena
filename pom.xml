@@ -14,7 +14,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit_version>1.6.2-R0.2-SNAPSHOT</bukkit_version>
+        <bukkit_version>1.6.4-R0.1-SNAPSHOT</bukkit_version>
         <github.global.server>github</github.global.server>
         <built.repo.dir>${project.build.directory}/mvn-repo</built.repo.dir>
     </properties>
