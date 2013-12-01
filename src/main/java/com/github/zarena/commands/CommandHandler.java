@@ -9,7 +9,7 @@ import java.util.Random;
 import com.github.customentitylibrary.entities.CustomEntityWrapper;
 import com.github.zarena.entities.ZEntityType;
 import com.github.zarena.utils.*;
-import net.minecraft.server.v1_6_R3.EntityInsentient;
+import net.minecraft.server.v1_7_R1.EntityInsentient;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

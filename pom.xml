@@ -4,7 +4,7 @@
 
     <groupId>com.github.zarena</groupId>
     <artifactId>ZArena</artifactId>
-    <version>0.8</version>
+    <version>0.9</version>
     <packaging>jar</packaging>
 
     <name>ZArena</name>
@@ -14,7 +14,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bukkit_version>1.6.4-R0.1-SNAPSHOT</bukkit_version>
+        <bukkit_version>1.7.2-R0.1-SNAPSHOT</bukkit_version>
         <github.global.server>github</github.global.server>
         <built.repo.dir>${project.build.directory}/mvn-repo</built.repo.dir>
     </properties>
@@ -84,7 +84,7 @@
         <dependency>
             <groupId>com.github.customentitylibrary</groupId>
             <artifactId>CustomEntityLibrary</artifactId>
-            <version>1.3</version>
+            <version>1.4</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

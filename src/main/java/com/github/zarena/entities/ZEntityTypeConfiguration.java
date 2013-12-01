@@ -3,7 +3,7 @@ package com.github.zarena.entities;
 import java.util.List;
 import java.util.ListIterator;
 
-import net.minecraft.server.v1_6_R3.*;
+import net.minecraft.server.v1_7_R1.*;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import com.github.customentitylibrary.entities.EntityTypeConfiguration;

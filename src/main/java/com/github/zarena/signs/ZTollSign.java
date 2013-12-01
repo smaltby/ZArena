@@ -11,19 +11,20 @@ import java.util.Random;
 import java.util.logging.Level;
 
 
-import net.minecraft.server.v1_6_R3.BlockDoor;
-import net.minecraft.server.v1_6_R3.BlockTrapdoor;
-import net.minecraft.server.v1_6_R3.EntityPlayer;
-import net.minecraft.server.v1_6_R3.MinecraftServer;
-import net.minecraft.server.v1_6_R3.PlayerInteractManager;
+import net.minecraft.server.v1_7_R1.BlockDoor;
+import net.minecraft.server.v1_7_R1.BlockTrapdoor;
+import net.minecraft.server.v1_7_R1.EntityPlayer;
+import net.minecraft.server.v1_7_R1.MinecraftServer;
+import net.minecraft.server.v1_7_R1.PlayerInteractManager;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_6_R3.CraftWorld;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_7_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.github.zarena.ZArena;
@@ -154,8 +155,8 @@ public class ZTollSign extends ZSign implements Externalizable
 	public boolean executeClick(Player player)
 	{
 		Block costBlock = getCostBlock();
-		net.minecraft.server.v1_6_R3.Block nmsBlock = net.minecraft.server.v1_6_R3.Block.byId[costBlock.getType().getId()];
-		net.minecraft.server.v1_6_R3.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
+		net.minecraft.server.v1_7_R1.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
+		net.minecraft.server.v1_7_R1.Block nmsBlock = nmsWorld.getType(costBlock.getX(), costBlock.getY(), costBlock.getZ());
 		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
 		switch(costBlock.getType())
 		{
@@ -263,10 +264,10 @@ public class ZTollSign extends ZSign implements Externalizable
 		Block costBlock = getCostBlock();
 		if(costBlock == null)
 			return;
-		net.minecraft.server.v1_6_R3.Block nmsBlock = net.minecraft.server.v1_6_R3.Block.byId[costBlock.getType().getId()];
-		net.minecraft.server.v1_6_R3.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
-		//We'll name him...Joe!
-		EntityPlayer player = new EntityPlayer(MinecraftServer.getServer(), nmsWorld, "Joe", new PlayerInteractManager(nmsWorld));
+		net.minecraft.server.v1_7_R1.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
+		net.minecraft.server.v1_7_R1.Block nmsBlock = nmsWorld.getType(costBlock.getX(), costBlock.getY(), costBlock.getZ());
+//		//We'll name him...Joe!
+//		EntityPlayer player = new EntityPlayer(MinecraftServer.getServer(), nmsWorld, "Joe", new PlayerInteractManager(nmsWorld));
 		switch(costBlock.getType())
 		{
 		case WOODEN_DOOR: case IRON_DOOR: case IRON_DOOR_BLOCK:
@@ -279,9 +280,9 @@ public class ZTollSign extends ZSign implements Externalizable
 			break;
 		case LEVER:
 			if(8 - (nmsWorld.getData(costBlock.getX(), costBlock.getY(), costBlock.getZ()) & 8) != 8 && !opposite)
-				nmsBlock.interact(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), player, 0, 0f, 0f, 0f);
+				nmsBlock.interact(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), null, 0, 0f, 0f, 0f);
 			else if(8 - (nmsWorld.getData(costBlock.getX(), costBlock.getY(), costBlock.getZ()) & 8) == 8 && opposite)
-				nmsBlock.interact(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), player, 0, 0f, 0f, 0f);
+				nmsBlock.interact(nmsWorld, costBlock.getX(), costBlock.getY(), costBlock.getZ(), null, 0, 0f, 0f, 0f);
 			active = opposite;
 			break;
 		case STONE_BUTTON: case WOOD_BUTTON:
@@ -289,8 +290,8 @@ public class ZTollSign extends ZSign implements Externalizable
 			break;
 		default:
 		}
-		//Bye bye Joe :(
-		Arrays.asList(player.server.getPlayers()).remove(player.getName());
+//		//Bye bye Joe :(
+//		Arrays.asList(player.server.getPlayers()).remove(player.getName());
 	}
 
 	public void setNoReset(boolean noReset)

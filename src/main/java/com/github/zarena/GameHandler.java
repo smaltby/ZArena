@@ -18,12 +18,12 @@ import com.github.customentitylibrary.entities.CustomEntityWrapper;
 import com.github.zarena.events.PlayerRespawnCause;
 import com.github.zarena.events.PlayerRespawnInGameEvent;
 import com.github.zarena.utils.*;
-import net.minecraft.server.v1_6_R3.NBTTagDouble;
-import net.minecraft.server.v1_6_R3.NBTTagList;
+import net.minecraft.server.v1_7_R1.NBTTagDouble;
+import net.minecraft.server.v1_7_R1.NBTTagList;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_6_R3.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -421,9 +421,9 @@ public class GameHandler
 			//Set location using NBT tags
 			Location leaveLocation = getPlayersLeaveLocation(playerName);
 			NBTTagList nbtLocation = new NBTTagList();
-			nbtLocation.add(new NBTTagDouble("x", leaveLocation.getX()));
-			nbtLocation.add(new NBTTagDouble("y", leaveLocation.getY()));
-			nbtLocation.add(new NBTTagDouble("z", leaveLocation.getZ()));
+			nbtLocation.add(new NBTTagDouble(leaveLocation.getX()));
+			nbtLocation.add(new NBTTagDouble(leaveLocation.getY()));
+			nbtLocation.add(new NBTTagDouble(leaveLocation.getZ()));
 			Utils.setOfflinePlayerTagValue(playerName, "Pos", nbtLocation);
 
 			//Set gamemode and level using NBT tags

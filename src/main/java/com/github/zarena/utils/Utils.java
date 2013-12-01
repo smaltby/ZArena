@@ -3,13 +3,13 @@ package com.github.zarena.utils;
 import java.io.*;
 
 
-import net.minecraft.server.v1_6_R3.*;
+import net.minecraft.server.v1_7_R1.*;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_6_R3.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_6_R3.inventory.CraftInventoryPlayer;
+import org.bukkit.craftbukkit.v1_7_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_7_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -451,7 +451,7 @@ public class Utils
 	public static CraftInventoryPlayer loadOfflinePlayerInventory(String playerName) throws IOException
 	{
 		NBTTagList list = (NBTTagList) getOfflinePlayerTagValue(playerName, "Inventory");
-		net.minecraft.server.v1_6_R3.PlayerInventory pi = new net.minecraft.server.v1_6_R3.PlayerInventory(null);
+		net.minecraft.server.v1_7_R1.PlayerInventory pi = new net.minecraft.server.v1_7_R1.PlayerInventory(null);
 		pi.b(list);
 		return new CraftInventoryPlayer(pi);
 	}
@@ -481,7 +481,7 @@ public class Utils
 				case 6: return compound.getDouble(tagName);
 				case 7: return compound.getByteArray(tagName);
 				case 8: return compound.getString(tagName);
-				case 9: return compound.getList(tagName);
+				case 9: return compound.getList(tagName, 10);
 				case 10: return compound.getCompound(tagName);
 				case 11: return compound.getIntArray(tagName);
 				default: return null;
@@ -521,8 +521,6 @@ public class Utils
 				compound.setByteArray(tagName, (byte[]) tagValue);
 			else if(tagValue instanceof String)
 				compound.setString(tagName, (String) tagValue);
-			else if(tagValue instanceof NBTTagCompound)
-				compound.setCompound(tagName, (NBTTagCompound) tagValue);
 			else if(tagValue instanceof int[])
 				compound.setIntArray(tagName, (int[]) tagValue);
 			else if(tagValue instanceof NBTBase)
