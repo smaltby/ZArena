@@ -162,13 +162,12 @@
                 <version>0.8</version>
                 <configuration>
                     <message>Maven artifacts for ${project.version}</message>
-                    <noJekyll>true</noJekyll>
                     <outputDirectory>${built.repo.dir}</outputDirectory>
                     <branch>refs/heads/mvn-repo</branch>
                     <includes><include>**/*</include></includes>
                     <repositoryName>ZArena</repositoryName>
                     <repositoryOwner>smaltby</repositoryOwner>
-                    <merge>true</merge>
+                    <merge>false</merge>
                 </configuration>
                 <executions>
                     <execution>

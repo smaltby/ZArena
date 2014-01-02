@@ -8,7 +8,7 @@
 #<black>
 #<dark_blue>
 #<dark_green>
-#<dark_aqua>
+#<dark_gray>
 #<dark_red>
 #<dark_purple>
 #<gold>
@@ -16,7 +16,7 @@
 #<dark_gray>
 #<blue>
 #<green>
-#<aqua>
+#<gray>
 #<red>
 #<light_purple>
 #<yellow>
@@ -45,7 +45,7 @@ Vote Start: "<dark_green>Level vote starting...<new_line>Type the command -"
 #NUM - The option number.
 #MAP - The option's map name.
 #GAMEMODE - The option's gamemode.
-Vote Option: "<red>/za vote %NUM% <dark_green>for map <dark_aqua>%MAP%<gray><<dark_aqua>%GAMEMODE%<gray>>"
+Vote Option: "<red>/za vote %NUM% <dark_green>for map <dark_gray>%MAP%<gray><<dark_gray>%GAMEMODE%<gray>>"
 
 #Broadcasted after all of the options have been presented.
 #TIME - Time until voting ends.
@@ -60,7 +60,7 @@ Votes For Each Map: "<red>Votes for %NUM%: %VOTES%."
 #Broadcasted when voting has ended, to announce the map that was chosen.
 #MAP - The option's map name.
 #GAMEMODE - The option's gamemode.
-Map Chosen: "<dark_gray>Level <dark_aqua>%MAP%<gray><<dark_aqua>%GAMEMODE%<gray>> <dark_gray>has been chosen."
+Map Chosen: "<dark_gray>Level <dark_gray>%MAP%<gray><<dark_gray>%GAMEMODE%<gray>> <dark_gray>has been chosen."
 
 #Broadcasted at the start of the preperation time before each wave.
 #WAVE - The next wave.
@@ -139,32 +139,32 @@ Send Stats: "<dark_gray>Money: <gray>%MONEY%<dark_gray> Points: <gray>%POINTS%"
 #Sent when the player is being told how long it is until they respawn.
 #PLAYER - The player
 #TIME - Time until the player respawns. Time units included. For example: 2 min 30 sec
-Respawn In Time: "<dark_gray>You will respawn in %TIME%."
+Respawn In Time: "<dark_gray>You will respawn in <red>%TIME%<dark_gray>."
 
 #Sent when the player joins during the middle of the game, and is being told how long it is until they respawn.
 #PLAYER - The player
 #TIME - Time until the player respawns. Time units included. For example: 2 min 30 sec
-Respawn In Time After Join : "<dark_gray>Welcome, %PLAYER%, you will respawn in %TIME%."
+Respawn In Time After Join : "<dark_gray>Welcome, %PLAYER%, you will respawn in <red>%TIME%<dark_gray>."
 
 #Sent when the player dies during the middle of the game, and is being told how long it is until they respawn.
 #PLAYER - The player
 #TIME - Time until the player respawns. Time units included. For example: 2 min 30 sec
-Respawn In Time After Death: "<dark_gray>You have died, and will respawn in %TIME%."
+Respawn In Time After Death: "<dark_gray>You have died, and will respawn in <red>%TIME%<dark_gray>."
 
 #Sent when the player is being told how long in waves it is until they respawn.
 #PLAYER - The player
 #WAVES - Time until the player respawns. Time units included. For example: 2 min 30 sec
-Respawn In Waves: "<dark_gray>You will respawn in %WAVES% waves."
+Respawn In Waves: "<dark_gray>You will respawn in <red>%WAVES% <dark_gray>waves."
 
 #Sent when the player joins during the middle of the game, and is being told how long it is in waves until they respawn.
 #PLAYER - The player
 #WAVES - Time until the player respawns. Time units included. For example: 2 min 30 sec
-Respawn In Waves After Join: "<dark_gray>Welcome, %PLAYER%, you will respawn in %WAVES% waves."
+Respawn In Waves After Join: "<dark_gray>Welcome, %PLAYER%, you will respawn in <red>%WAVES% <dark_gray>waves."
 
 #Sent when the player dies during the middle of the game, and is being told how long it is in waves until they respawn.
 #PLAYER - The player
 #WAVES - Time until the player respawns. Time units included. For example: 2 min 30 sec
-Respawn In Waves After Death: "<dark_gray>You have died, and will respawn in %WAVES% waves."
+Respawn In Waves After Death: "<dark_gray>You have died, and will respawn in <red>%WAVES% <dark_gray>waves."
 
 #Sent when the player joins during the middle of the game and RESPAWNING IS DISABLED. If you want to send a message to
 #a player when they join with respawning enabled, use either the 'Respawn In Waves After Join' or 'Respawn In Time After
@@ -196,7 +196,7 @@ No Level Loaded: "<red>No level currently loaded. A loaded level is required for
 
 #Sent when the player requests the current gamemode.
 #GAMEMODE - Current gamemode.
-Current Gamemode: "<dark_aqua>Current gamemode: %GAMEMODE%."
+Current Gamemode: "<gold>Current gamemode: <dark_gray>%GAMEMODE%."
 
 #Sent when the player tries to join the game with a non-empty inventory, and the config option
 #that requires an empty inventory before you join is set to true.
@@ -214,7 +214,7 @@ Level List Header: "<red>Level List:"
 
 #A single level in the list of levels.
 #LEVEL - Level name.
-Level List Item: "<dark_aqua>%LEVEL%, "
+Level List Item: "<dark_gray>%LEVEL%, "
 
 #Sent when the player leaves the game.
 Leave Game: "<red>Successfully left the ZArena game."
@@ -224,21 +224,21 @@ Players Alive Header: "<red>Players alive:"
 
 #A single player in the list of players alive.
 #PLAYER - Player's name.
-Players Alive Item: "<dark_aqua>%PLAYER%, "
+Players Alive Item: "<dark_gray>%PLAYER%, "
 
 #The header of the list of players in the session, sent when the player requests the list.
-Players In Session Header: "<dark_aqua>Players in game session:"
+Players In Session Header: "<red>Players in game session:"
 
 #A single player in the list of players in the session.
 #PLAYER - Player's name.
-Players In Session Item: "<dark_aqua>%PLAYER%, "
+Players In Session Item: "<dark_gray>%PLAYER%, "
 
 #The header of the list of ZSpawns in the session, sent when the player requests the list.
 ZSpawns List Header: "<red>ZSpawns:"
 
 #A single ZSpawn in the list of ZSpawns in the level.
 #ZSPAWN - ZSpawn's name.
-ZSpawns List Item: "<dark_aqua>%ZSPAWN%, "
+ZSpawns List Item: "<dark_gray>%ZSPAWN%, "
 
 #Sent when the player uses a command that contains a level that could not be found.
 Level Not Found: "<red>Level could not be found."
@@ -312,7 +312,7 @@ Game Must Be Running: "<red>The game must be running to do this."
 #A single item when info is requested on something about the plugin.
 #NAME - The name of the info being shown.
 #VALUE - The value of the info being shown.
-Info Item: "<gold>%NAME%: <dark_aqua>%VALUE%"
+Info Item: "<gold>%NAME%: <dark_gray>%VALUE%"
 
 #Sent when the player uses a command that contains a player that could not be found.
 Player Not Found: "<red>Player could not be found."
@@ -338,7 +338,7 @@ ISpawn Set: "<red>ISpawn set successfully."
 
 #Sent when the player sets the leave location for the game.
 #LOCATION - Location set to.
-Leave Location Set: "<red>Leave location set successfully to <dark_aqua>%LOCATION%."
+Leave Location Set: "<red>Leave location set successfully to <dark_gray>%LOCATION%."
 
 #Sent when the player tries to set the wave, but the wave value isn't an integer.
 Wave Must Be Integer: "<red>Wave must be a valid integer."
@@ -348,7 +348,7 @@ Wave Set: "<red>Wave successfully set."
 
 #Sent when the player sucessfully sets the ZSpawn;
 #ZSPAWN - Name of the ZSpawn that got set.
-ZSpawn Set: "<red>ZSpawn <dark_aqua>%ZSPAWN%<red> set successfully."
+ZSpawn Set: "<red>ZSpawn <dark_gray>%ZSPAWN%<red> set successfully."
 
 #The header of the game stats list, sent when the player requests the list.
 Game Stats Header: "<gold>Game Stats:"
@@ -356,7 +356,7 @@ Game Stats Header: "<gold>Game Stats:"
 #A single statistic in the list of game stats in the list.
 #MONEY - Money.
 #POINTS - Points.
-Game Stats Item: "<gold>%PLAYER%: <dark_aqua>%MONEY% money, %POINTS% points, "
+Game Stats Item: "<gold>%PLAYER%: <dark_gray>%MONEY% money, %POINTS% points, "
 
 #Sent when the player tries to start the game, but it is already running.
 Game Already Running: "<red>Game already running."
@@ -377,7 +377,7 @@ Must Be Ingame To Vote: "<red>You must be in game to vote."
 Vote Must Be Valid Integer: "<red>Vote must be a valid integer."
 
 #Sent when the player tries to vote, but his/her vote is not between 1 and 3.
-Vote Must Range From 1 To 3: "<dark_aqua>Vote must be an integer ranging from 1 to 3."
+Vote Must Range From 1 To 3: "<dark_gray>Vote must be an integer ranging from 1 to 3."
 
 #Sent when the player sucessfully votes.
 Vote Successful: "<red>Thank you for voting!"
@@ -401,7 +401,7 @@ integer greater than 0"
 Kills Set: "<dark_green>%PLAYER%'s kills successfully set to %NUM%"
 
 #Called when the player uses '/kc top'.
-Top Killers Header: "<dark_aqua>Top Killers:"
+Top Killers Header: "<dark_gray>Top Killers:"
 
 #Called when the player uses '/kc top'.
 #NUM - The rank of the player.
@@ -414,7 +414,7 @@ Top Killers Item: "<gold>#%NUM%: %PLAYER% - %KILLS% kills"
 #KILLS - The kills of that player.
 #RANK - The rank of that player.
 #TOTAL - The total number of players who are in the rankings.
-Player Kills Info: "<dark_aqua>Player: <white>%PLAYER%<new_line><red>Total Kills: <white>%KILLS%<new_line><red>Rank: <white>%RANK%/%TOTAL%"
+Player Kills Info: "<dark_gray>Player: <white>%PLAYER%<new_line><red>Total Kills: <white>%KILLS%<new_line><red>Rank: <white>%RANK%/%TOTAL%"
 
 #The following are names of types of info that are sent when you use '/za info'. They can be translated
 #to another language if necessary. Do not use color codes, new lines, or make the values empty.
