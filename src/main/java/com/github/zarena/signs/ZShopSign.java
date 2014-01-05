@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -135,7 +136,7 @@ public class ZShopSign extends ZSign implements Externalizable
 		if(!(getLocation().getBlock().getState() instanceof Sign))
 		{
 			ZArena.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to it's sign having been removed;");
-			level.removeZSign(this);
+			getLevel().removeZSign(this);
 			return;
 		}
 		Sign sign = (Sign) getLocation().getBlock().getState();
@@ -197,5 +198,54 @@ public class ZShopSign extends ZSign implements Externalizable
 		out.writeShort(damage);
 		out.writeByte(id);
 		out.writeObject(enchantments);
+	}
+
+	@Override
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> map = super.serialize();
+		map.put("Type", type);
+		map.put("Amount", amount);
+		map.put("Damage", damage);
+		map.put("ID", id);
+
+		Map<String, Object> enchantmentsMap = new LinkedHashMap<String, Object>();
+		Integer index = 0;
+		for(Entry<Integer, Integer> entry : enchantments.entrySet())
+		{
+			Map<String, Object> enchantment = new LinkedHashMap<String, Object>();
+			enchantment.put("ID", entry.getKey());
+			enchantment.put("Level", entry.getValue());
+			enchantmentsMap.put((index++).toString(), enchantment);
+		}
+		map.put("Enchantments", enchantmentsMap);
+		map.put("Class", ZShopSign.class.getName());
+
+		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ZShopSign deserialize(Map<String, Object> map)
+	{
+		ZShopSign shopSign = new ZShopSign();
+		shopSign.level = (String) map.get("Level");
+		shopSign.location = (LocationSer) map.get("Location");
+		shopSign.price = (Integer) map.get("Price");
+
+		shopSign.type = (Integer) map.get("Type");
+		shopSign.amount = (Integer) map.get("Amount");
+		shopSign.damage = ((Integer) map.get("Damage")).shortValue();
+		shopSign.id = ((Integer) map.get("ID")).byteValue();
+
+		Map<String, Object> enchantmentsMap = (Map<String, Object>) map.get("Enchantments");
+		for(Object o : enchantmentsMap.values())
+		{
+			Map<String, Object> enchantment = (Map<String, Object>) o;
+			int id = (Integer) enchantment.get("ID");
+			int level = (Integer) enchantment.get("Level");
+			shopSign.enchantments.put(id, level);
+		}
+
+		return shopSign;
 	}
 }

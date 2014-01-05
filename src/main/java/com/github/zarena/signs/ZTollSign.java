@@ -4,18 +4,13 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Level;
 
 
 import net.minecraft.server.v1_7_R1.BlockDoor;
 import net.minecraft.server.v1_7_R1.BlockTrapdoor;
 import net.minecraft.server.v1_7_R1.EntityPlayer;
-import net.minecraft.server.v1_7_R1.MinecraftServer;
-import net.minecraft.server.v1_7_R1.PlayerInteractManager;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -23,7 +18,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_7_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_7_R1.block.CraftBlock;
 import org.bukkit.craftbukkit.v1_7_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
@@ -39,13 +33,13 @@ public class ZTollSign extends ZSign implements Externalizable
 	private static final int VERSION = 3;
 
 	private LocationSer costBlockLocation; //The location of the block that costs money to be used
-	private boolean usableOnce;	//Whether or not this sign can only be used once
+	private boolean useableOnce;	//Whether or not this sign can only be used once
 	private boolean opposite; 	//The sign's costblock starts out open/on, as opposed to closed/off
 	private boolean noReset; 	//The sign's costblock doesn't reset, staying the same across multiple games
 	private boolean active;
 	private String name;
 
-	public List<LocationSer> zSpawns;	//List of zSpawns that are only active when this sign is active
+	public List<LocationSer> zSpawns = new ArrayList<LocationSer>();	//List of zSpawns that are only active when this sign is active
 
 	/**
 	 * Empty constructor for externalization.
@@ -61,7 +55,6 @@ public class ZTollSign extends ZSign implements Externalizable
 		this.costBlockLocation = costBlockLocation;
 		this.name = name;
 		active = false;
-		zSpawns = new ArrayList<LocationSer>();
 		for(String flag : flags)
 		{
 			try
@@ -69,7 +62,7 @@ public class ZTollSign extends ZSign implements Externalizable
 				switch(StringEnums.valueOf(flag.toUpperCase().replaceAll("-", "")))
 				{
 				case UO: case USABLEONCE:
-					setUsableOnce(true);
+					setUseableOnce(true);
 					break;
 				case OP: case OPPOSITE:
 					setOpposite(true);
@@ -110,9 +103,9 @@ public class ZTollSign extends ZSign implements Externalizable
 	private boolean canBeUsed()
 	{
 		boolean usable = true;
-		if(active && !opposite && usableOnce)
+		if(active && !opposite && useableOnce)
 			usable = false;
-		else if(!active && opposite && usableOnce)
+		else if(!active && opposite && useableOnce)
 			usable = false;
 		return usable;
 	}
@@ -231,9 +224,9 @@ public class ZTollSign extends ZSign implements Externalizable
 		return noReset;
 	}
 
-	public boolean isUsableOnce()
+	public boolean isUseableOnce()
 	{
-		return usableOnce;
+		return useableOnce;
 	}
 
 	public void reload()
@@ -241,7 +234,7 @@ public class ZTollSign extends ZSign implements Externalizable
 		if(!(getLocation().getBlock().getState() instanceof Sign))
 		{
 			ZArena.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to it's sign having been removed;");
-			level.removeZSign(this);
+			getLevel().removeZSign(this);
 			return;
 		}
 		if(getCostBlock() == null)
@@ -252,7 +245,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			if(getCostBlock() == null)
 			{
 				ZArena.log(Level.INFO, "The sign at "+location.toString()+" has been removed due to the block it tolls having been removed.");
-				level.removeZSign(this);
+				getLevel().removeZSign(this);
 			}
 		}
 	}
@@ -266,8 +259,6 @@ public class ZTollSign extends ZSign implements Externalizable
 			return;
 		net.minecraft.server.v1_7_R1.World nmsWorld = ((CraftWorld) costBlock.getWorld()).getHandle();
 		net.minecraft.server.v1_7_R1.Block nmsBlock = nmsWorld.getType(costBlock.getX(), costBlock.getY(), costBlock.getZ());
-//		//We'll name him...Joe!
-//		EntityPlayer player = new EntityPlayer(MinecraftServer.getServer(), nmsWorld, "Joe", new PlayerInteractManager(nmsWorld));
 		switch(costBlock.getType())
 		{
 		case WOODEN_DOOR: case IRON_DOOR: case IRON_DOOR_BLOCK:
@@ -290,8 +281,6 @@ public class ZTollSign extends ZSign implements Externalizable
 			break;
 		default:
 		}
-//		//Bye bye Joe :(
-//		Arrays.asList(player.server.getPlayers()).remove(player.getName());
 	}
 
 	public void setNoReset(boolean noReset)
@@ -304,9 +293,9 @@ public class ZTollSign extends ZSign implements Externalizable
 		this.opposite = opposite;
 	}
 
-	public void setUsableOnce(boolean usable)
+	public void setUseableOnce(boolean usable)
 	{
-		usableOnce = usable;
+		useableOnce = usable;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -322,7 +311,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			active = false;
 			name = generateString(new Random(), "abcdefghigsadjas", 10);
 			zSpawns = new ArrayList<LocationSer>();
-			usableOnce = false;
+			useableOnce = false;
 		}
 		else if(ver == 1)
 		{
@@ -330,7 +319,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			active = in.readBoolean();
 			name = in.readUTF();
 			zSpawns = new ArrayList<LocationSer>();
-			usableOnce = false;
+			useableOnce = false;
 		}
 		else if(ver == 2)
 		{
@@ -338,7 +327,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			active = in.readBoolean();
 			name = in.readUTF();
 			zSpawns = (List<LocationSer>) in.readObject();
-			usableOnce = false;
+			useableOnce = false;
 		}
 		else if(ver == 3)
 		{
@@ -346,7 +335,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			active = in.readBoolean();
 			name = in.readUTF();
 			zSpawns = (List<LocationSer>) in.readObject();
-			usableOnce = in.readBoolean();
+			useableOnce = in.readBoolean();
 		}
 		else
 		{
@@ -365,7 +354,7 @@ public class ZTollSign extends ZSign implements Externalizable
 		out.writeBoolean(active);
 		out.writeUTF(name);
 		out.writeObject(zSpawns);
-		out.writeBoolean(usableOnce);
+		out.writeBoolean(useableOnce);
 	}
 
 	private static String generateString(Random rng, String characters, int length)
@@ -376,5 +365,52 @@ public class ZTollSign extends ZSign implements Externalizable
 	        text[i] = characters.charAt(rng.nextInt(characters.length()));
 	    }
 	    return new String(text);
+	}
+
+	@Override
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> map = super.serialize();
+		map.put("Name", name);
+		map.put("Tolled Block Location", costBlockLocation);
+		map.put("Useable Once", useableOnce);
+		map.put("Opposite", opposite);
+		map.put("No Reset", noReset);
+		map.put("Active", active);
+
+		Map<String, Object> zSpawnsMap = new LinkedHashMap<String, Object>();
+		Integer index = 0;
+		for(LocationSer loc : zSpawns)
+		{
+			zSpawnsMap.put((index++).toString(), loc);
+		}
+		map.put("ZSpawns", zSpawnsMap);
+
+		map.put("Class", ZTollSign.class.getName());
+
+		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ZTollSign deserialize(Map<String, Object> map)
+	{
+		ZTollSign tollSign = new ZTollSign();
+		tollSign.level = (String) map.get("Level");
+		tollSign.location = (LocationSer) map.get("Location");
+		tollSign.price = (Integer) map.get("Price");
+
+		tollSign.name = (String) map.get("Name");
+		tollSign.costBlockLocation = (LocationSer) map.get("Tolled Block Location");
+		tollSign.useableOnce = (Boolean) map.get("Useable Once");
+		tollSign.opposite = (Boolean) map.get("Opposite");
+		tollSign.noReset = (Boolean) map.get("No Reset");
+		tollSign.active = (Boolean) map.get("Active");
+
+		for(Object o : ((Map<String, Object>) map.get("ZSpawns")).values())
+		{
+			tollSign.zSpawns.add((LocationSer) o );
+		}
+
+		return tollSign;
 	}
 }

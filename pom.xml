@@ -16,14 +16,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <bukkit_version>1.7.2-R0.1-SNAPSHOT</bukkit_version>
         <github.global.server>github</github.global.server>
-        <built.repo.dir>${project.build.directory}/mvn-repo</built.repo.dir>
     </properties>
 
     <distributionManagement>
         <repository>
-            <id>github</id>
-            <name>GitHub ${project.artifactId} Repository</name>
-            <url>https://raw.github.com/smaltby/${project.artifactId}/mvn-repo</url>
+            <id>internal.repo</id>
+            <name>Temporary Staging Repository</name>
+            <url>file://${project.build.directory}/mvn-repo</url>
         </repository>
     </distributionManagement>
 
@@ -149,25 +148,18 @@
             </plugin>
 
             <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.7</version>
-                <configuration>
-                    <altDeploymentRepository>internal.repo::default::file://${built.repo.dir}</altDeploymentRepository>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>com.github.github</groupId>
                 <artifactId>site-maven-plugin</artifactId>
-                <version>0.8</version>
+                <version>0.9</version>
                 <configuration>
                     <message>Maven artifacts for ${project.version}</message>
-                    <outputDirectory>${built.repo.dir}</outputDirectory>
-                    <branch>refs/heads/mvn-repo</branch>
+                    <noJekyll>true</noJekyll>
+                    <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory>
+                    <branch>refs/heads/master</branch>
                     <includes><include>**/*</include></includes>
-                    <repositoryName>ZArena</repositoryName>
+                    <repositoryName>Maven-Repos</repositoryName>
                     <repositoryOwner>smaltby</repositoryOwner>
-                    <merge>false</merge>
+                    <merge>true</merge>
                 </configuration>
                 <executions>
                     <execution>

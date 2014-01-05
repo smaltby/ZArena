@@ -8,6 +8,9 @@ import java.util.logging.Level;
 import com.github.customentitylibrary.CustomEntityLibrary;
 
 import com.github.zarena.afkmanager.AFKManager;
+import com.github.zarena.signs.ZShopSign;
+import com.github.zarena.signs.ZSign;
+import com.github.zarena.signs.ZTollSign;
 import com.github.zarena.utils.*;
 import net.milkbowl.vault.economy.Economy;
 
@@ -18,6 +21,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -89,6 +93,7 @@ public class ZArena extends JavaPlugin
 		//Load some stuff the game handler relies on
 		loadDonatorInfo();
 		loadZSignCustomItems();
+		registerSerializables();
 
 		gameHandler = new GameHandler(); //Create the Game Handler...needs to be done so early because stuff below rely on it
 
@@ -469,6 +474,15 @@ public class ZArena extends JavaPlugin
 				SpoutHandler.updatePlayerOptions();
 		}
 		tick++;
+	}
+
+	private void registerSerializables()
+	{
+		ConfigurationSerialization.registerClass(ZSign.class);
+		ConfigurationSerialization.registerClass(ZShopSign.class);
+		ConfigurationSerialization.registerClass(ZTollSign.class);
+		ConfigurationSerialization.registerClass(LocationSer.class);
+		ConfigurationSerialization.registerClass(ZLevel.class);
 	}
 
 	@Override

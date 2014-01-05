@@ -30,8 +30,6 @@ import com.github.zarena.events.GameStopEvent;
 import com.github.zarena.events.LevelChangeCause;
 import com.github.zarena.events.LevelChangeEvent;
 import com.github.zarena.signs.ZTollSign;
-import com.github.zarena.spout.PlayerOptions;
-import com.github.zarena.spout.SpoutHandler;
 
 public class CommandHandler
 {
@@ -310,13 +308,13 @@ public class CommandHandler
 			switch(StringEnums.valueOf(flag.toUpperCase()))
 			{
 			case UO: case USABLEONCE:
-				if(sign.isUsableOnce())
+				if(sign.isUseableOnce())
 				{
-					sign.setUsableOnce(false);
+					sign.setUseableOnce(false);
 					senderWrapper.sendMessage(Message.SIGN_UNMARKED_AS_USEABLE_ONCE.formatMessage());
 					break;
 				}
-				sign.setUsableOnce(true);
+				sign.setUseableOnce(true);
 				senderWrapper.sendMessage(Message.SIGN_MARKED_AS_USEABLE_ONCE.formatMessage());
 				break;
 			case OP: case OPPOSITE:

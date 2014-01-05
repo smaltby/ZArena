@@ -4,28 +4,28 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.logging.Level;
 
+import com.github.zarena.*;
 import com.github.zarena.utils.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 
-import com.github.zarena.GameHandler;
-import com.github.zarena.PlayerStats;
-import com.github.zarena.ZArena;
-import com.github.zarena.ZLevel;
 import com.github.zarena.commands.CommandSenderWrapper;
 
-public abstract class ZSign implements Externalizable
+public abstract class ZSign implements Externalizable, ConfigurationSerializable
 {
 	private static final long serialVersionUID = "ZSIGN".hashCode(); // DO NOT CHANGE
 	private static final int VERSION = 1;
 	
-	public ZLevel level;
+	String level;
 	LocationSer location;
 	int price;
 	
@@ -38,7 +38,7 @@ public abstract class ZSign implements Externalizable
 	
 	public ZSign(ZLevel level, LocationSer location, int price)
 	{
-		this.level = level;
+		this.level = level.getName();
 		this.location = location;
 		this.price = price;
 	}
@@ -90,7 +90,7 @@ public abstract class ZSign implements Externalizable
 	
 	public ZLevel getLevel()
 	{
-		return level;
+		return ZArena.getInstance().getGameHandler().getLevelHandler().getLevel(level);
 	}
 	
 	public Location getLocation()
@@ -156,7 +156,7 @@ public abstract class ZSign implements Externalizable
 			{
 				if(level.getZSign(getLocation().getBlock()) != null)
 				{
-					this.level = level;
+					this.level = level.getName();
 				}
 			}
 		}
@@ -164,7 +164,7 @@ public abstract class ZSign implements Externalizable
 		{
 			location = (LocationSer) in.readObject();
 			price = in.readInt();
-			level = (ZLevel) in.readObject();
+			level = in.readObject().toString();
 		}
 		else
 		{
@@ -181,5 +181,25 @@ public abstract class ZSign implements Externalizable
 		out.writeObject(location);
 		out.writeInt(price);
 		out.writeObject(level);
+	}
+
+	@Override
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		map.put("Level", level);
+		map.put("Location", location);
+		map.put("Price", price);
+		return map;
+	}
+
+	public static ZSign deserialize(Map<String, Object> map)
+	{
+		if(map.get("Class").equals(ZShopSign.class.getName()))
+			return ZShopSign.deserialize(map);
+		else if(map.get("Class").equals(ZTollSign.class.getName()))
+			return ZTollSign.deserialize(map);
+		else
+			throw new IllegalArgumentException("Unknown ZSign class");
 	}
 }

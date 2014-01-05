@@ -1,13 +1,11 @@
 package com.github.zarena;
 
-import java.io.Externalizable;
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import com.github.zarena.utils.Constants;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.*;
+import java.util.*;
 import java.util.logging.Level;
 
 public class LevelHandler implements Externalizable
@@ -19,8 +17,8 @@ public class LevelHandler implements Externalizable
 	 */
 	private static final int VERSION = 0;
 	
-	private List<com.github.zarena.ZLevel> levels = new ArrayList<com.github.zarena.ZLevel>();
-	private transient Random rnd;
+	private List<ZLevel> levels = new ArrayList<ZLevel>();
+	private Random rnd;
 	
 	public LevelHandler()
 	{
@@ -68,6 +66,53 @@ public class LevelHandler implements Externalizable
 	public List<ZLevel> getLevels()
 	{
 		return levels;
+	}
+
+	public void saveLevels()
+	{
+		for(ZLevel level : levels)
+		{
+			YamlConfiguration levelYaml = new YamlConfiguration();
+			levelYaml.set("root", level.serialize());
+
+			File levelFile = new File(Constants.LEVELS_FOLDER+File.separator+level.getName()+".yml");
+			try
+			{
+				levelYaml.save(levelFile);
+			} catch(IOException e)
+			{
+				e.printStackTrace();
+				ZArena.log(Level.WARNING, "ZArena: Couldn't save the the level "+level.getName()+".");
+			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void loadLevels()
+	{
+		File levelsFolder = new File(Constants.LEVELS_FOLDER);
+		levelsFolder.mkdir();
+		// Get all files that end in .yml in the levels folder, using a filename filter
+		File[] levelFiles = levelsFolder.listFiles(new FilenameFilter()
+		{
+			@Override
+			public boolean accept(File dir, String name)
+			{
+				return name.endsWith(".yml");
+			}
+
+		});
+		for(File levelFile : levelFiles)
+		{
+			MemorySection root = (MemorySection) YamlConfiguration.loadConfiguration(levelFile).get("root");
+			Map<String, Object> rootMap = new HashMap<String, Object>();
+			for(String key : root.getKeys(true))
+			{
+				rootMap.put(key, root.get(key));
+			}
+			ZLevel level = ZLevel.deserialize(rootMap);
+			levels.add(level);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

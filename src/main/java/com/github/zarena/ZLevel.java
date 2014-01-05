@@ -4,13 +4,8 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Random;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
@@ -19,9 +14,11 @@ import org.bukkit.block.Block;
 import com.github.zarena.signs.ZSign;
 import com.github.zarena.signs.ZTollSign;
 import com.github.zarena.utils.LocationSer;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
 
 
-public class ZLevel implements Externalizable
+public class ZLevel implements Externalizable, ConfigurationSerializable
 {
 	private static final long serialVersionUID = "ZLEVEL".hashCode(); // DO NOT CHANGE
 	/**
@@ -33,20 +30,24 @@ public class ZLevel implements Externalizable
 	private LocationSer dSpawn;
 	private LocationSer iSpawn;
 	private Map<String, LocationSer> zSpawns;
-	private List<LocationSer> activeZSpawns;
+	private List<LocationSer> zSpawnLocations;
 	private List<String> bossSpawns;	//List of names of zombie spawns that also act as boss spawns
 	private List<ZSign> zSigns;
 	private String name;
 	private String world;
-	//There's no real point in making them transient. But screw it, I never get to use this keyword...
-	private transient Random rnd = new Random();
-	private transient List<LocationSer> inactiveZSpawns = new ArrayList<LocationSer>();
+
+	private Random rnd = new Random();
+	private List<LocationSer> inactiveZSpawns = new ArrayList<LocationSer>();
 	
 	/**
-	 * Empty constructor for externalization.
+	 * Empty constructor for serialization.
 	 */
 	public ZLevel()
 	{
+		zSpawns = new HashMap<String, LocationSer>();
+		zSpawnLocations = new ArrayList<LocationSer>();
+		bossSpawns = new ArrayList<String>();
+		zSigns = new ArrayList<ZSign>();
 		inactiveZSpawns = new ArrayList<LocationSer>();
 	}
 	
@@ -56,10 +57,6 @@ public class ZLevel implements Externalizable
 		this.name = name;
 		iSpawn = LocationSer.convertFromBukkitLocation(spawn);
 		dSpawn = LocationSer.convertFromBukkitLocation(spawn);
-		zSpawns = new HashMap<String, LocationSer>();
-		activeZSpawns = new ArrayList<LocationSer>();
-		bossSpawns = new ArrayList<String>();
-		zSigns = new ArrayList<ZSign>();
 		world = spawn.getWorld().getName();
 	}
 	
@@ -75,7 +72,7 @@ public class ZLevel implements Externalizable
 		if(zSpawns.containsKey(name))
 			removeZombieSpawn(name);
 		zSpawns.put(name, LocationSer.convertFromBukkitLocation(location));
-		activeZSpawns.add(LocationSer.convertFromBukkitLocation(location));
+		zSpawnLocations.add(LocationSer.convertFromBukkitLocation(location));
 	}
 	
 	public void addZSign(ZSign sign)
@@ -125,12 +122,12 @@ public class ZLevel implements Externalizable
 	
 	public Location getRandomZombieSpawn()
 	{
-		if (activeZSpawns.size() == 0)
+		if (zSpawnLocations.size() == 0)
 			return null;
 		Location spawn;
 		do
 		{
-			spawn = LocationSer.convertToBukkitLocation(activeZSpawns.get(rnd.nextInt(activeZSpawns.size())));
+			spawn = LocationSer.convertToBukkitLocation(zSpawnLocations.get(rnd.nextInt(zSpawnLocations.size())));
 		} while(inactiveZSpawns.contains(LocationSer.convertFromBukkitLocation(spawn)));
 		return spawn;
 	}
@@ -202,7 +199,7 @@ public class ZLevel implements Externalizable
 		if(location == null)
 			return false;
 		zSpawns.remove(name);
-		activeZSpawns.remove(location);
+		zSpawnLocations.remove(location);
 		bossSpawns.remove(name);
 		return true;
 	}
@@ -258,6 +255,67 @@ public class ZLevel implements Externalizable
 	{
 		this.name = name;
 	}
+
+	@Override
+	public Map<String, Object> serialize()
+	{
+		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		map.put("Name", name);
+		map.put("World", world);
+		map.put("Initial Spawn", iSpawn);
+		map.put("Death Spawn", dSpawn);
+
+		Map<String, Object> zSpawnMap = new TreeMap<String, Object>();
+		for(Entry<String, LocationSer> entry : zSpawns.entrySet())
+		{
+			Map<String, Object> zSpawn = new LinkedHashMap<String, Object>();
+			zSpawn.put("Location", entry.getValue());
+			zSpawn.put("Boss", bossSpawns.contains(entry.getKey()));
+			zSpawnMap.put(entry.getKey(), zSpawn);
+		}
+		map.put("ZSpawns", zSpawnMap);
+
+		Map<String, Object> zSignMap = new LinkedHashMap<String, Object>();
+		Integer index = 0;
+		for(ZSign sign : zSigns)
+		{
+			zSignMap.put((index++).toString(), sign);
+		}
+		map.put("Signs", zSignMap);
+
+		return map;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static ZLevel deserialize(Map<String, Object> map)
+	{
+		ZLevel level = new ZLevel();
+		level.name = (String) map.get("Name");
+		level.world = (String) map.get("World");
+		level.iSpawn = (LocationSer) map.get("Initial Spawn");
+		level.dSpawn = (LocationSer) map.get("Death Spawn");
+
+		MemorySection zSpawnSection = (MemorySection) map.get("ZSpawns");
+		for(String name : zSpawnSection.getKeys(false))
+		{
+			MemorySection zSpawn = (MemorySection) zSpawnSection.get(name);
+			LocationSer location = (LocationSer) zSpawn.get("Location");
+			boolean boss = (Boolean) zSpawn.get("Boss");
+
+			level.zSpawns.put(name, location);
+			level.zSpawnLocations.add(location);
+			if(boss)
+				level.bossSpawns.add(name);
+		}
+
+		MemorySection zSignSection = (MemorySection) map.get("Signs");
+		for(String key : zSignSection.getKeys(false))
+		{
+			level.zSigns.add((ZSign) zSignSection.get(key));
+		}
+
+		return level;
+	}
 	
 	@Override
 	public String toString()
@@ -274,7 +332,7 @@ public class ZLevel implements Externalizable
 		if(ver == 0)
 		{
 			name = in.readUTF();
-			activeZSpawns = (List<LocationSer>) in.readObject();
+			zSpawnLocations = (List<LocationSer>) in.readObject();
 			zSpawns = (Map<String, LocationSer>) in.readObject();
 			bossSpawns = new ArrayList<String>();
 			zSigns = new ArrayList<ZSign>();
@@ -284,7 +342,7 @@ public class ZLevel implements Externalizable
 		else if(ver == 1)
 		{
 			name = in.readUTF();
-			activeZSpawns = (List<LocationSer>) in.readObject();
+			zSpawnLocations = (List<LocationSer>) in.readObject();
 			zSpawns = (Map<String, LocationSer>) in.readObject();
 			bossSpawns = new ArrayList<String>();
 			zSigns = (List<ZSign>) in.readObject();
@@ -294,7 +352,7 @@ public class ZLevel implements Externalizable
 		else if(ver == 2)
 		{
 			name = in.readUTF();
-			activeZSpawns = (List<LocationSer>) in.readObject();
+			zSpawnLocations = (List<LocationSer>) in.readObject();
 			zSpawns = (Map<String, LocationSer>) in.readObject();
 			bossSpawns = (List<String>) in.readObject();
 			zSigns = (List<ZSign>) in.readObject();
@@ -316,7 +374,7 @@ public class ZLevel implements Externalizable
 		out.writeInt(VERSION);
 		
 		out.writeUTF(name);
-		out.writeObject(activeZSpawns);
+		out.writeObject(zSpawnLocations);
 		out.writeObject(zSpawns);
 		out.writeObject(bossSpawns);
 		out.writeObject(zSigns);

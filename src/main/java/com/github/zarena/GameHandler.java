@@ -373,23 +373,30 @@ public class GameHandler
 	void loadLevelHandler()
 	{
 		File path = new File(Constants.LEVEL_PATH);
+		//Old method of loading levels
+		if(path.exists())
+		{
+			try
+			{
+				FileInputStream fis = new FileInputStream(path);
+				CustomObjectInputStream ois = new CustomObjectInputStream(fis);
 
-        try
-        {
-        	FileInputStream fis = new FileInputStream(path);
-        	CustomObjectInputStream ois = new CustomObjectInputStream(fis);
+				levelHandler = new LevelHandler();
+				levelHandler.readExternal(ois);
 
-            levelHandler = new LevelHandler();
-            levelHandler.readExternal(ois);
+				ois.close();
+				fis.close();
 
-            ois.close();
-            fis.close();
-
-        } catch (Exception e)
-        {
-        	ZArena.log(Level.WARNING, "ZArena: Couldn't load the LevelHandler database. Ignore if this is the first time the plugin has been run.");
-            levelHandler = new LevelHandler();
-        }
+			} catch (Exception e)
+			{
+				ZArena.log(Level.WARNING, "ZArena: Couldn't load the LevelHandler database. Ignore if this is the first time the plugin has been run.");
+				levelHandler = new LevelHandler();
+			}
+		} else	//New method of loading levels
+		{
+			levelHandler = new LevelHandler();
+			levelHandler.loadLevels();
+		}
 	}
 
 	/**
@@ -514,42 +521,12 @@ public class GameHandler
 
 	public void saveLevelHandler(boolean backup)
 	{
+		//Remove the old levels.ext
 		File path = new File(Constants.LEVEL_PATH);
-		File[] backups = new File[5];
-		backups[0] = path;
+		if(path.exists())
+			path.delete();
 
-		for(int i = 1; i < 5; i++)
-		{
-			backups[i] = new File(Constants.PLUGIN_FOLDER+File.separator+"levelsbackup"+ i +".ext");
-		}
-
-		try
-		{
-			if(backup)
-			{
-				//If the two files are equal, there's no need for a backup
-				if(!Utils.fileEquals(backups[0], backups[1]))
-				{
-					for(int i = 4; i > 0; i--)
-					{
-						if(backups[i - 1].exists())
-							Files.move(backups[i - 1], backups[i]);
-					}
-				}
-			}
-
-			FileOutputStream fos = new FileOutputStream(path);
-			ObjectOutputStream oos = new ObjectOutputStream(fos);
-
-            levelHandler.writeExternal(oos);
-
-            oos.close();
-            fos.close();
-
-        } catch (IOException e)
-        {
-        	ZArena.log(Level.WARNING, "ZArena: Error saving the LevelHandler database.");
-        }
+		levelHandler.saveLevels();
 	}
 
 	public void setGameMode(Gamemode gameMode)
