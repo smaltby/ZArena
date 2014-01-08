@@ -293,7 +293,7 @@ public class WaveHandler implements Runnable, Listener
 		CustomEntityWrapper customEnt;
 		if(type.getPreferredType().equalsIgnoreCase("zombiepigman"))
 		{
-			CustomPigZombie pig = new CustomPigZombie(nmsWorld);
+			CustomPigZombie pig = new CustomPigZombie(nmsWorld, true);
 			pig.angerLevel = 1;
 			customEnt = CustomEntityWrapper.spawnCustomEntity(pig, spawn, type);
 		} else if(type.getPreferredType().equalsIgnoreCase("zombie"))
