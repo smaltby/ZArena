@@ -4,7 +4,7 @@
 
     <groupId>com.github.zarena</groupId>
     <artifactId>ZArena</artifactId>
-    <version>0.9.1</version>
+    <version>0.10</version>
     <packaging>jar</packaging>
 
     <name>ZArena</name>
@@ -160,6 +160,7 @@
                     <repositoryName>Maven-Repos</repositoryName>
                     <repositoryOwner>smaltby</repositoryOwner>
                     <merge>true</merge>
+                    <force>true</force>
                 </configuration>
                 <executions>
                     <execution>

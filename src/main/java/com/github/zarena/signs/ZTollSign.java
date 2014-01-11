@@ -30,7 +30,7 @@ import com.github.zarena.utils.StringEnums;
 public class ZTollSign extends ZSign implements Externalizable
 {
 	private static final long serialVersionUID = "ZTOLLSIGN".hashCode(); // DO NOT CHANGE
-	private static final int VERSION = 3;
+	private static final int VERSION = 4;
 
 	private LocationSer costBlockLocation; //The location of the block that costs money to be used
 	private boolean useableOnce;	//Whether or not this sign can only be used once
@@ -39,7 +39,8 @@ public class ZTollSign extends ZSign implements Externalizable
 	private boolean active;
 	private String name;
 
-	public List<LocationSer> zSpawns = new ArrayList<LocationSer>();	//List of zSpawns that are only active when this sign is active
+	public List<String> zSpawns = new ArrayList<String>();	//List of zSpawn names that are only active when this sign is active
+	public List<LocationSer> oldZSpawns;
 
 	/**
 	 * Empty constructor for externalization.
@@ -310,7 +311,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			costBlockLocation = (LocationSer) in.readObject();
 			active = false;
 			name = generateString(new Random(), "abcdefghigsadjas", 10);
-			zSpawns = new ArrayList<LocationSer>();
+			zSpawns = new ArrayList<String>();
 			useableOnce = false;
 		}
 		else if(ver == 1)
@@ -318,7 +319,7 @@ public class ZTollSign extends ZSign implements Externalizable
 			costBlockLocation = (LocationSer) in.readObject();
 			active = in.readBoolean();
 			name = in.readUTF();
-			zSpawns = new ArrayList<LocationSer>();
+			zSpawns = new ArrayList<String>();
 			useableOnce = false;
 		}
 		else if(ver == 2)
@@ -326,7 +327,8 @@ public class ZTollSign extends ZSign implements Externalizable
 			costBlockLocation = (LocationSer) in.readObject();
 			active = in.readBoolean();
 			name = in.readUTF();
-			zSpawns = (List<LocationSer>) in.readObject();
+			oldZSpawns = (List<LocationSer>) in.readObject();
+			zSpawns = new ArrayList<String>();
 			useableOnce = false;
 		}
 		else if(ver == 3)
@@ -334,7 +336,16 @@ public class ZTollSign extends ZSign implements Externalizable
 			costBlockLocation = (LocationSer) in.readObject();
 			active = in.readBoolean();
 			name = in.readUTF();
-			zSpawns = (List<LocationSer>) in.readObject();
+			oldZSpawns = (List<LocationSer>) in.readObject();
+			zSpawns = new ArrayList<String>();
+			useableOnce = in.readBoolean();
+		}
+		else if(ver == 4)
+		{
+			costBlockLocation = (LocationSer) in.readObject();
+			active = in.readBoolean();
+			name = in.readUTF();
+			zSpawns = (List<String>) in.readObject();
 			useableOnce = in.readBoolean();
 		}
 		else
@@ -378,13 +389,14 @@ public class ZTollSign extends ZSign implements Externalizable
 		map.put("No Reset", noReset);
 		map.put("Active", active);
 
-		Map<String, Object> zSpawnsMap = new LinkedHashMap<String, Object>();
-		Integer index = 0;
-		for(LocationSer loc : zSpawns)
+		String allZSpawns = "";
+		for(String name : zSpawns)
 		{
-			zSpawnsMap.put((index++).toString(), loc);
+			allZSpawns += name + ",";
 		}
-		map.put("ZSpawns", zSpawnsMap);
+		if(!allZSpawns.isEmpty())
+			allZSpawns = allZSpawns.substring(0, allZSpawns.length() - 1);
+		map.put("ZSpawns", allZSpawns);
 
 		map.put("Class", ZTollSign.class.getName());
 
@@ -406,9 +418,10 @@ public class ZTollSign extends ZSign implements Externalizable
 		tollSign.noReset = (Boolean) map.get("No Reset");
 		tollSign.active = (Boolean) map.get("Active");
 
-		for(Object o : ((Map<String, Object>) map.get("ZSpawns")).values())
+		String allZSpawns = (String) map.get("ZSpawns");
+		for(String zSpawn : allZSpawns.split(","))
 		{
-			tollSign.zSpawns.add((LocationSer) o );
+			tollSign.zSpawns.add(zSpawn);
 		}
 
 		return tollSign;

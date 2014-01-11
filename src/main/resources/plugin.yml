@@ -1,7 +1,7 @@
 name: ZArena
 main: com.github.zarena.ZArena
 author: kabbage
-version: 0.9.1
+version: 0.10
 softdepend: [Spout, Vault, AchievementsX]
 commands:
     zarena:

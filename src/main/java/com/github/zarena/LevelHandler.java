@@ -1,6 +1,10 @@
 package com.github.zarena;
 
+import com.github.zarena.signs.ZSign;
+import com.github.zarena.signs.ZTollSign;
 import com.github.zarena.utils.Constants;
+import com.github.zarena.utils.LocationSer;
+import org.bukkit.Location;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -124,6 +128,25 @@ public class LevelHandler implements Externalizable
 		if(ver == 0)
 		{
 			levels = (List<ZLevel>) in.readObject();
+			//Handle update from .ext level storage to .yml
+			for(ZLevel level : levels)
+			{
+				for(ZSign sign : level.getZSigns())
+				{
+					if(!(sign instanceof ZTollSign))
+						continue;
+					ZTollSign tollSign = (ZTollSign) sign;
+					for(LocationSer locationSer : tollSign.oldZSpawns)
+					{
+						Location location = LocationSer.convertToBukkitLocation(locationSer);
+						for(String zSpawnName : level.getZSpawnNames())
+						{
+							if(level.getZombieSpawn(zSpawnName).equals(location))
+								tollSign.zSpawns.add(zSpawnName);
+						}
+					}
+				}
+			}
 		}
 		else
 		{

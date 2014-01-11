@@ -367,15 +367,14 @@ public class CommandHandler
 			senderWrapper.sendMessage(Message.ZSPAWN_NOT_FOUND.formatMessage());
 			return;
 		}
-		LocationSer zSpawnSer = LocationSer.convertFromBukkitLocation(zSpawn);
-		if(sign.zSpawns.contains(zSpawnSer))
+		if(sign.zSpawns.contains(zSpawnerName))
 		{
-			sign.zSpawns.remove(zSpawnSer);
+			sign.zSpawns.remove(zSpawnerName);
 			level.resetInactiveZSpawns();
 			senderWrapper.sendMessage(Message.ZSPAWN_UNMARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE.formatMessage());
 			return;
 		}
-		sign.zSpawns.add(zSpawnSer);
+		sign.zSpawns.add(zSpawnerName);
 		level.resetInactiveZSpawns();
 		senderWrapper.sendMessage(Message.ZSPAWN_MARKED_AS_ACTIVE_WHEN_SIGN_ACTIVE.formatMessage());
 	}

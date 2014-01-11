@@ -33,11 +33,13 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 	private List<LocationSer> zSpawnLocations;
 	private List<String> bossSpawns;	//List of names of zombie spawns that also act as boss spawns
 	private List<ZSign> zSigns;
+	//Used to maintain disabled ZTollSigns, so they can later be restored without having to reset every single attribute
+	private Map<String, ZTollSign> disabledZTollSigns;
 	private String name;
 	private String world;
 
 	private Random rnd = new Random();
-	private List<LocationSer> inactiveZSpawns = new ArrayList<LocationSer>();
+	private List<String> inactiveZSpawns = new ArrayList<String>();
 	
 	/**
 	 * Empty constructor for serialization.
@@ -48,7 +50,7 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 		zSpawnLocations = new ArrayList<LocationSer>();
 		bossSpawns = new ArrayList<String>();
 		zSigns = new ArrayList<ZSign>();
-		inactiveZSpawns = new ArrayList<LocationSer>();
+		disabledZTollSigns = new HashMap<String, ZTollSign>();
 	}
 	
 	public ZLevel(String name, Location spawn)
@@ -77,6 +79,17 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 	
 	public void addZSign(ZSign sign)
 	{
+		if(sign instanceof ZTollSign)
+		{
+			ZTollSign tollSign = (ZTollSign) sign;
+			//Check if the name is one of a previously disabled ZTollSign
+			if(disabledZTollSigns.containsKey(tollSign.getName()))
+			{
+				zSigns.add(disabledZTollSigns.remove(tollSign.getName()));
+				return;
+			}
+		}
+		//If the sign isn't a ZTollSign, or is a ZTollSign, but not in the disabled map, just add it like normal
 		zSigns.add(sign);
 	}
 	
@@ -124,12 +137,12 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 	{
 		if (zSpawnLocations.size() == 0)
 			return null;
-		Location spawn;
+		String spawn;
 		do
 		{
-			spawn = LocationSer.convertToBukkitLocation(zSpawnLocations.get(rnd.nextInt(zSpawnLocations.size())));
-		} while(inactiveZSpawns.contains(LocationSer.convertFromBukkitLocation(spawn)));
-		return spawn;
+			spawn = getZSpawnNames().get(rnd.nextInt(getZSpawnNames().size()));
+		} while(inactiveZSpawns.contains(spawn));
+		return LocationSer.convertToBukkitLocation(zSpawns.get(spawn));
 	}
 	
 	public String getWorld()
@@ -173,9 +186,9 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 		return null;
 	}
 	
-	public Set<String> getZSpawnNames()
+	public List<String> getZSpawnNames()
 	{
-		return zSpawns.keySet();
+		return new ArrayList<String>(zSpawns.keySet());
 	}
 	
 	public void reloadSigns()
@@ -207,13 +220,20 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 	public void removeZSign(ZSign sign)
 	{
 		if(sign != null)
+		{
+			if(sign instanceof ZTollSign)
+			{
+				ZTollSign zTollSign = (ZTollSign) sign;
+				disabledZTollSigns.put(zTollSign.getName(), zTollSign);
+			}
 			zSigns.remove(sign);
+		}
 		resetInactiveZSpawns();
 	}
 	
 	public void resetInactiveZSpawns()
 	{
-		List<LocationSer> signActivatedZSpawns = new ArrayList<LocationSer>();
+		List<String> signActivatedZSpawns = new ArrayList<String>();
 		inactiveZSpawns.clear();
 		for(ZSign sign: zSigns)
 		{
@@ -283,6 +303,14 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 		}
 		map.put("Signs", zSignMap);
 
+		Map<String, Object> disabledZSignMap = new LinkedHashMap<String, Object>();
+		index = 0;
+		for(ZSign sign : disabledZTollSigns.values())
+		{
+			disabledZSignMap.put((index++).toString(), sign);
+		}
+		map.put("Disabled Signs", disabledZSignMap);
+
 		return map;
 	}
 
@@ -312,6 +340,13 @@ public class ZLevel implements Externalizable, ConfigurationSerializable
 		for(String key : zSignSection.getKeys(false))
 		{
 			level.zSigns.add((ZSign) zSignSection.get(key));
+		}
+
+		MemorySection disabledZSignSection = (MemorySection) map.get("Disabled Signs");
+		for(String key : disabledZSignSection.getKeys(false))
+		{
+			ZTollSign zTollSign = (ZTollSign) disabledZSignSection.get(key);
+			level.disabledZTollSigns.put(zTollSign.getName(), zTollSign);
 		}
 
 		return level;
