@@ -714,7 +714,7 @@ public class CommandHandler
 		locXYZ.add(player.getLocation().getY());
 		locXYZ.add(player.getLocation().getZ());
 		plugin.getConfig().set(ConfigEnum.GAME_LEAVE_LOCATION.toString(), locXYZ);
-		senderWrapper.sendMessage(Message.LEAVE_LOCATION_SET.formatMessage());
+		senderWrapper.sendMessage(Message.LEAVE_LOCATION_SET.formatMessage("["+locXYZ.get(0)+", "+locXYZ.get(1)+", "+locXYZ.get(2)+"]"));
 	}
 
 	public void setWave(String waveString)
